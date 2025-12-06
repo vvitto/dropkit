@@ -1,0 +1,1729 @@
+# TelegramUI - React UI Kit for Telegram Mini Apps
+
+A comprehensive React component library designed for building Telegram Mini Apps. This library provides platform-adaptive components that automatically adjust their appearance based on the platform (iOS or base).
+
+## Installation
+
+```bash
+npm install @telegram-apps/telegram-ui
+```
+
+## Getting Started
+
+Wrap your application with `AppRoot` component:
+
+```tsx
+import { AppRoot } from '@telegram-apps/telegram-ui';
+import '@telegram-apps/telegram-ui/dist/styles.css';
+
+function App() {
+  return (
+    <AppRoot>
+      {/* Your app content */}
+    </AppRoot>
+  );
+}
+```
+
+---
+
+## Components Reference
+
+### BLOCKS
+
+#### Accordion
+Container for collapsible content sections using Context API for state management.
+
+```tsx
+import { Accordion } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| id | string | auto | Optional ID for accessibility (a11y) |
+| expanded | boolean | required | Whether accordion is expanded |
+| onChange | (expanded: boolean) => void | required | Callback when state changes |
+| children | ReactNode | required | Accordion.Summary and Accordion.Content |
+
+**Sub-components:**
+- `Accordion.Summary` - Clickable header (extends CellProps)
+- `Accordion.Content` - Collapsible content area
+
+**Example:**
+```tsx
+<Accordion expanded={isOpen} onChange={setIsOpen}>
+  <Accordion.Summary>Click to expand</Accordion.Summary>
+  <Accordion.Content>Hidden content here</Accordion.Content>
+</Accordion>
+```
+
+---
+
+#### Avatar
+Renders an image with avatar-specific styling, including optional acronym display and badge support.
+
+```tsx
+import { Avatar } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends ImageProps):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| acronym | string | - | One or two letters as placeholder |
+| size | 20 \| 24 \| 28 \| 40 \| 48 \| 96 | 40 | Avatar size in pixels |
+| fallbackIcon | ReactNode | - | Icon displayed when image fails to load |
+| src | string | - | Image source URL |
+
+**Sub-components:**
+- `Avatar.Badge` - Badge overlay (supports only type="number")
+
+**Example:**
+```tsx
+<Avatar src="/user.jpg" size={48} acronym="JD">
+  <Avatar.Badge type="number">5</Avatar.Badge>
+</Avatar>
+```
+
+---
+
+#### AvatarStack
+Displays multiple avatars in a stacked layout.
+
+```tsx
+import { AvatarStack } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| children | ReactElement<AvatarProps>[] | required | Array of Avatar components |
+
+**Example:**
+```tsx
+<AvatarStack>
+  <Avatar src="/user1.jpg" />
+  <Avatar src="/user2.jpg" />
+  <Avatar src="/user3.jpg" />
+</AvatarStack>
+```
+
+---
+
+#### Badge
+Small numeric or dot indicator for notifications, statuses, or counts.
+
+```tsx
+import { Badge } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| type | 'number' \| 'dot' | required | Visual style of the badge |
+| mode | 'primary' \| 'critical' \| 'secondary' \| 'gray' \| 'white' | 'primary' | Color scheme |
+| large | boolean | false | Increases size (only for type='number') |
+| children | ReactNode | - | Badge content (for type='number') |
+
+**Example:**
+```tsx
+<Badge type="number" mode="critical">99+</Badge>
+<Badge type="dot" mode="primary" />
+```
+
+---
+
+#### Banner
+Prominent graphical element for branding, promotion, or announcements.
+
+```tsx
+import { Banner } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| type | 'section' \| 'inline' | - | Layout style |
+| before | ReactNode | - | Left side content (icon/image) |
+| callout | ReactNode | - | Content above main content |
+| header | ReactNode | - | Main text/title |
+| subheader | ReactNode | - | Additional info below header |
+| description | ReactNode | - | Further details |
+| background | ReactNode | - | Custom background component |
+| onCloseIcon | MouseEventHandler | - | Close icon callback |
+| children | ReactNode | - | Buttons or other content |
+
+**Example:**
+```tsx
+<Banner
+  header="Welcome!"
+  subheader="Check out new features"
+  description="We've added exciting updates"
+  onCloseIcon={() => setVisible(false)}
+>
+  <Button size="s">Learn More</Button>
+</Banner>
+```
+
+---
+
+#### Blockquote
+Stylized blockquote for quotations or special text.
+
+```tsx
+import { Blockquote } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| type | 'text' \| 'other' | 'text' | Content type |
+| topRightIcon | ReactNode | Quote icon | Icon in top right corner |
+| children | ReactNode | - | Blockquote content |
+
+**Example:**
+```tsx
+<Blockquote>
+  "The only way to do great work is to love what you do."
+</Blockquote>
+```
+
+---
+
+#### Button
+Interactive button with customizable size, mode, and loading state.
+
+```tsx
+import { Button } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| before | ReactNode | - | Component before text (icon) |
+| after | ReactNode | - | Component after text (badge) |
+| size | 's' \| 'm' \| 'l' | 'm' | Button size |
+| stretched | boolean | false | Fill container width |
+| mode | 'filled' \| 'bezeled' \| 'plain' \| 'gray' \| 'outline' \| 'white' | 'filled' | Visual style |
+| loading | boolean | false | Show loading indicator |
+| disabled | boolean | false | Disable interactions |
+| Component | ElementType | 'button' | Root element type |
+
+**Example:**
+```tsx
+<Button mode="filled" size="l" before={<Icon24Add />}>
+  Add Item
+</Button>
+<Button mode="outline" loading>Processing...</Button>
+```
+
+---
+
+#### Card
+Container for card-styled UI elements with context support.
+
+```tsx
+import { Card } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| type | 'plain' \| 'ambient' | 'plain' | Visual style |
+
+**Sub-components:**
+- `Card.Cell` - Cell component styled for card context (extends CellProps)
+- `Card.Chip` - Chip component styled for card context (extends ChipProps)
+
+**Example:**
+```tsx
+<Card type="ambient">
+  <Card.Chip>Featured</Card.Chip>
+  <Card.Cell subtitle="Description">Card Title</Card.Cell>
+</Card>
+```
+
+---
+
+#### Cell
+Flexible container for list items, form fields, and more.
+
+```tsx
+import { Cell } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends TappableProps):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| subhead | ReactNode | - | Content above main content |
+| children | ReactNode | - | Main header content |
+| hint | ReactNode | - | Content alongside header |
+| titleBadge | ReactElement<BadgeProps> | - | Badge next to header |
+| subtitle | ReactNode | - | Content below header |
+| description | ReactNode | - | Additional description |
+| before | ReactNode | - | Left side content |
+| after | ReactNode | - | Right side content |
+| Component | ElementType | 'div' | Root element type |
+| hovered | boolean | false | External hover state |
+| multiline | boolean | false | Allow multiline content |
+
+**Example:**
+```tsx
+<Cell
+  before={<Avatar size={48} src="/user.jpg" />}
+  subtitle="Online"
+  after={<Badge type="dot" />}
+>
+  John Doe
+</Cell>
+```
+
+---
+
+#### ButtonCell
+Interactive cell component with leading and trailing elements.
+
+```tsx
+import { ButtonCell } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| mode | 'default' \| 'destructive' | 'default' | Visual theme |
+| before | ReactNode | - | Element before content |
+| after | ReactNode | - | Element after content |
+| Component | ElementType | 'button' | Root element type |
+| children | ReactNode | - | Button content |
+
+**Example:**
+```tsx
+<ButtonCell before={<Icon24Add />}>Add new item</ButtonCell>
+<ButtonCell mode="destructive" before={<Icon24Delete />}>Delete</ButtonCell>
+```
+
+---
+
+#### Info
+Display text information or avatar stack.
+
+```tsx
+import { Info } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| type | 'text' \| 'avatarStack' | 'text' | Content type |
+| subtitle | string | - | Text for type='text' |
+| avatarStack | ReactElement<AvatarStackProps> | - | Avatar stack for type='avatarStack' |
+| children | ReactNode | - | Main content |
+
+---
+
+#### Navigation
+Navigation element with optional text and icon.
+
+```tsx
+import { Navigation } from '@telegram-apps/telegram-ui';
+```
+
+**Props:** HTMLAttributes<HTMLDivElement>
+
+**Example:**
+```tsx
+<Cell after={<Navigation>Details</Navigation>}>View Profile</Cell>
+```
+
+---
+
+#### IconButton
+Button for icon-only interactions.
+
+```tsx
+import { IconButton } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| size | 's' \| 'm' \| 'l' | 'm' | Button size (20px, 24px, 28px icons) |
+| mode | 'bezeled' \| 'plain' \| 'gray' \| 'outline' | 'bezeled' | Visual style |
+
+**Example:**
+```tsx
+<IconButton mode="plain" size="m">
+  <Icon24Settings />
+</IconButton>
+```
+
+---
+
+#### IconContainer
+Wrapper for icon elements with consistent styling.
+
+```tsx
+import { IconContainer } from '@telegram-apps/telegram-ui';
+```
+
+**Props:** HTMLAttributes<HTMLDivElement>
+
+---
+
+#### Image
+Image component with fallback support and badge overlay.
+
+```tsx
+import { Image } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| size | 20 \| 24 \| 28 \| 40 \| 48 \| 96 | 40 | Image size in pixels |
+| fallbackIcon | ReactNode | - | Icon when image fails to load |
+| children | ReactNode | - | Overlay content |
+| src | string | - | Image source URL |
+
+**Sub-components:**
+- `Image.Badge` - Badge overlay (supports only type="number")
+
+**Example:**
+```tsx
+<Image src="/product.jpg" size={96}>
+  <Image.Badge type="number">New</Image.Badge>
+</Image>
+```
+
+---
+
+#### InlineButtons
+Container for inline button items.
+
+```tsx
+import { InlineButtons } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| mode | 'plain' \| 'bezeled' \| 'gray' | - | Styling mode for all items |
+| children | ReactElement<InlineButtonsItemProps>[] | required | InlineButtons.Item components |
+
+**Sub-components:**
+- `InlineButtons.Item` - Individual inline button
+
+**InlineButtons.Item Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| text | string | - | Button text |
+| mode | 'plain' \| 'bezeled' \| 'gray' | 'plain' | Button style |
+| children | ReactNode | - | Icon content |
+
+**Example:**
+```tsx
+<InlineButtons mode="bezeled">
+  <InlineButtons.Item text="Share"><Icon24Share /></InlineButtons.Item>
+  <InlineButtons.Item text="Copy"><Icon24Copy /></InlineButtons.Item>
+</InlineButtons>
+```
+
+---
+
+#### List
+Container for list items with platform-specific styles.
+
+```tsx
+import { List } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| Component | ElementType | 'div' | Root element type |
+
+**Example:**
+```tsx
+<List>
+  <Cell>Item 1</Cell>
+  <Cell>Item 2</Cell>
+</List>
+```
+
+---
+
+#### Placeholder
+Display placeholder with text, images, and actions.
+
+```tsx
+import { Placeholder } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| children | ReactNode | - | Primary visual content |
+| header | ReactNode | - | Title/header text |
+| description | ReactNode | - | Descriptive text |
+| action | ReactNode | - | Action element (button) |
+
+**Example:**
+```tsx
+<Placeholder
+  header="No items found"
+  description="Try adjusting your search"
+  action={<Button>Reset Filters</Button>}
+>
+  <img src="/empty.svg" />
+</Placeholder>
+```
+
+---
+
+#### Section
+Organize content into sections with headers and footers.
+
+```tsx
+import { Section } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| header | ReactNode | - | Section header (string auto-wrapped) |
+| footer | ReactNode | - | Section footer (string auto-wrapped) |
+
+**Sub-components:**
+- `Section.Header` - Custom header with `large` prop
+- `Section.Footer` - Custom footer with `centered` prop
+
+**Section.Header Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| large | boolean | false | Large title style |
+
+**Section.Footer Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| centered | boolean | false | Center text |
+
+**Example:**
+```tsx
+<Section header="Settings" footer="Manage your preferences">
+  <Cell>Notifications</Cell>
+  <Cell>Privacy</Cell>
+</Section>
+
+<Section header={<Section.Header large>Large Title</Section.Header>}>
+  <Cell>Content</Cell>
+</Section>
+```
+
+---
+
+#### Steps
+Visual indicator for multi-step processes.
+
+```tsx
+import { Steps } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| count | number | required | Total number of steps |
+| progress | number | required | Completed steps (0-indexed, up to count) |
+
+**Example:**
+```tsx
+<Steps count={5} progress={3} />
+```
+
+---
+
+#### Timeline
+Sequence of events in vertical or horizontal layout.
+
+```tsx
+import { Timeline } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| horizontal | boolean | false | Horizontal orientation |
+| active | number | - | Index of active item |
+| children | ReactElement<TimelineItemProps>[] | required | Timeline.Item components |
+
+**Sub-components:**
+- `Timeline.Item` - Individual timeline item
+
+**Timeline.Item Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| mode | 'active' \| 'pre-active' | - | Item state (auto-set by parent) |
+| horizontal | boolean | - | Horizontal mode (auto-set by parent) |
+| header | string | - | Item header |
+| children | ReactNode | - | Item description |
+
+**Example:**
+```tsx
+<Timeline active={2}>
+  <Timeline.Item header="Order Placed">Your order was received</Timeline.Item>
+  <Timeline.Item header="Processing">Order is being prepared</Timeline.Item>
+  <Timeline.Item header="Shipped">On the way</Timeline.Item>
+  <Timeline.Item header="Delivered">Enjoy your purchase</Timeline.Item>
+</Timeline>
+```
+
+---
+
+### FORM
+
+#### Checkbox
+Custom styled checkbox with optional indeterminate state.
+
+```tsx
+import { Checkbox } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends InputHTMLAttributes):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| indeterminate | boolean | false | Show indeterminate icon |
+| disabled | boolean | false | Disable checkbox |
+
+**Example:**
+```tsx
+<Cell after={<Checkbox checked={selected} onChange={handleChange} />}>
+  Accept Terms
+</Cell>
+```
+
+---
+
+#### Chip
+Compact element for inputs, attributes, or actions.
+
+```tsx
+import { Chip } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| mode | 'elevated' \| 'mono' \| 'outline' | 'elevated' | Visual style |
+| before | ReactNode | - | Content before text |
+| after | ReactNode | - | Content after text |
+| Component | ElementType | 'div' | Root element type |
+| children | ReactNode | - | Chip text content |
+
+**Example:**
+```tsx
+<Chip mode="mono" before={<Icon16Check />}>Selected</Chip>
+<Chip mode="outline" after={<Icon16Close />}>Tag</Chip>
+```
+
+---
+
+#### ColorInput
+Color picker input with hex value display.
+
+```tsx
+import { ColorInput } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends FormPublicProps, InputHTMLAttributes):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| header | ReactNode | - | Input header |
+| before | ReactNode | - | Content before input |
+| status | 'default' \| 'error' \| 'focused' | 'default' | Visual state |
+| value | string | '#EFEFF4' | Color value |
+| onChange | ChangeEventHandler | - | Change callback |
+
+**Example:**
+```tsx
+<ColorInput
+  header="Background Color"
+  value={color}
+  onChange={(e) => setColor(e.target.value)}
+/>
+```
+
+---
+
+#### FileInput
+File input styled as a button.
+
+```tsx
+import { FileInput } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends InputHTMLAttributes):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| label | string | 'Attach file' | Button label text |
+
+**Example:**
+```tsx
+<FileInput
+  label="Upload Document"
+  accept=".pdf,.doc"
+  onChange={handleFileSelect}
+/>
+```
+
+---
+
+#### FormInput
+Base wrapper for form inputs with header, status, and before/after slots.
+
+```tsx
+import { FormInput } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| status | 'default' \| 'error' \| 'focused' | 'default' | Visual state |
+| header | ReactNode | - | Header content (base platform only) |
+| before | ReactNode | - | Content before input |
+| after | ReactNode | - | Content after input |
+| disabled | boolean | false | Disable state |
+
+---
+
+#### Input
+Text input field with form integration.
+
+```tsx
+import { Input } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends FormPublicProps, InputHTMLAttributes):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| type | string | 'text' | Input type |
+| header | ReactNode | - | Input header |
+| before | ReactNode | - | Content before input |
+| after | ReactNode | - | Content after input |
+| status | 'default' \| 'error' \| 'focused' | 'default' | Visual state |
+| disabled | boolean | false | Disable input |
+
+**Example:**
+```tsx
+<Input
+  header="Email"
+  type="email"
+  placeholder="Enter your email"
+  status={error ? 'error' : 'default'}
+/>
+```
+
+---
+
+#### Multiselect
+Comprehensive multiselect input with dropdown, chips, and search.
+
+```tsx
+import { Multiselect } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| options | MultiselectOption[] | required | Available options |
+| value | MultiselectOption[] | [] | Selected options |
+| defaultValue | MultiselectOption[] | - | Default selected options |
+| onChange | (value: MultiselectOption[]) => void | - | Selection change callback |
+| inputValue | string | - | Controlled input value |
+| onInputChange | (value: string) => void | - | Input change callback |
+| filterFn | Function | - | Custom filter function |
+| closeDropdownAfterSelect | boolean | false | Close dropdown on select |
+| selectedBehavior | string | - | Selected item behavior |
+| emptyText | string | - | Empty state text |
+| creatable | boolean | false | Allow creating new options |
+| renderChip | Function | - | Custom chip renderer |
+| renderOption | Function | - | Custom option renderer |
+| header | ReactNode | - | Input header |
+| before | ReactNode | - | Content before input |
+| status | 'default' \| 'error' \| 'focused' | 'default' | Visual state |
+
+**MultiselectOption type:**
+```ts
+type MultiselectOption = {
+  value: string | number;
+  label: ReactElement | string | number;
+  [index: string]: any;
+};
+```
+
+**Example:**
+```tsx
+<Multiselect
+  header="Select Tags"
+  options={[
+    { value: 1, label: 'React' },
+    { value: 2, label: 'TypeScript' },
+    { value: 3, label: 'CSS' },
+  ]}
+  value={selectedTags}
+  onChange={setSelectedTags}
+  creatable
+/>
+```
+
+---
+
+#### Multiselectable
+Custom multiselectable checkbox with platform-specific icons.
+
+```tsx
+import { Multiselectable } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends InputHTMLAttributes):**
+Standard checkbox input props.
+
+**Example:**
+```tsx
+<Cell after={<Multiselectable checked={selected} />}>
+  Option with checkbox
+</Cell>
+```
+
+---
+
+#### PinInput
+PIN code input with virtual keypad.
+
+```tsx
+import { PinInput } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| label | string | 'Enter your pin' | Label above PIN cells |
+| pinCount | number | 4 | Number of PIN digits (min 2) |
+| value | number[] | [] | Current PIN values |
+| onChange | (value: number[]) => void | - | PIN change callback |
+| onBiometricAuth | () => void | - | Biometric auth callback |
+| biometricType | 'faceid' \| 'fingerprint' | - | Biometric type to display |
+
+**Example:**
+```tsx
+<PinInput
+  label="Enter PIN"
+  pinCount={6}
+  value={pin}
+  onChange={setPin}
+  biometricType="fingerprint"
+  onBiometricAuth={handleBiometric}
+/>
+```
+
+---
+
+#### Radio
+Custom styled radio button.
+
+```tsx
+import { Radio } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends InputHTMLAttributes):**
+Standard radio input props.
+
+**Example:**
+```tsx
+<Cell after={<Radio name="option" value="1" />}>Option 1</Cell>
+<Cell after={<Radio name="option" value="2" />}>Option 2</Cell>
+```
+
+---
+
+#### Rating
+Customizable rating input with fractional support.
+
+```tsx
+import { Rating } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| precision | 0.1 \| 0.2 \| 0.25 \| 0.5 \| 1 | 1 | Rating precision |
+| max | number | 5 | Maximum rating value |
+| value | number | 0 | Current rating value |
+| onChange | (value: number) => void | - | Rating change callback |
+| IconContainer | ElementType | Star icon | Custom rating icon |
+
+**Example:**
+```tsx
+<Rating
+  value={rating}
+  onChange={setRating}
+  precision={0.5}
+  max={5}
+/>
+```
+
+---
+
+#### Select
+Custom styled select dropdown.
+
+```tsx
+import { Select } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends FormPublicProps, SelectHTMLAttributes):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| header | ReactNode | - | Select header |
+| before | ReactNode | - | Content before select |
+| status | 'default' \| 'error' \| 'focused' | 'default' | Visual state |
+| children | ReactNode | required | Option elements |
+
+**Example:**
+```tsx
+<Select header="Country">
+  <option value="us">United States</option>
+  <option value="uk">United Kingdom</option>
+  <option value="de">Germany</option>
+</Select>
+```
+
+---
+
+#### Selectable
+Custom styled selectable radio button with platform-specific icons.
+
+```tsx
+import { Selectable } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends InputHTMLAttributes):**
+Standard radio input props.
+
+**Example:**
+```tsx
+<Cell after={<Selectable checked={selected} />}>
+  Selectable Option
+</Cell>
+```
+
+---
+
+#### Slider
+Slider input for value or range selection.
+
+```tsx
+import { Slider } from '@telegram-apps/telegram-ui';
+```
+
+**Single value props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| multiple | false | - | Single-thumb mode |
+| value | number | - | Current value |
+| defaultValue | number | - | Default value |
+| onChange | (value: number, event) => void | - | Change callback |
+
+**Range props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| multiple | true | - | Range mode |
+| value | [number, number] | - | Current range |
+| defaultValue | [number, number] | - | Default range |
+| onChange | (value: [number, number], event) => void | - | Change callback |
+
+**Common props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| min | number | 0 | Minimum value |
+| max | number | 100 | Maximum value |
+| step | number | 1 | Step value |
+| disabled | boolean | false | Disable slider |
+| before | ReactNode | - | Content before slider |
+| after | ReactNode | - | Content after slider |
+| getAriaLabel | (index: number) => string | - | Dynamic aria-label |
+| getAriaValueText | (value: number, index: number) => string | - | Custom aria-valuetext |
+
+**Example:**
+```tsx
+<Slider value={volume} onChange={setVolume} min={0} max={100} />
+<Slider multiple value={priceRange} onChange={setPriceRange} min={0} max={1000} />
+```
+
+---
+
+#### Switch
+Toggle switch component.
+
+```tsx
+import { Switch } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends InputHTMLAttributes):**
+Standard checkbox input props.
+
+**Example:**
+```tsx
+<Cell after={<Switch checked={enabled} onChange={toggleEnabled} />}>
+  Enable Notifications
+</Cell>
+```
+
+---
+
+#### Textarea
+Multi-line text input.
+
+```tsx
+import { Textarea } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends FormPublicProps, TextareaHTMLAttributes):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| header | ReactNode | - | Textarea header |
+| status | 'default' \| 'error' \| 'focused' | 'default' | Visual state |
+
+**Example:**
+```tsx
+<Textarea
+  header="Description"
+  placeholder="Enter description..."
+  rows={4}
+/>
+```
+
+---
+
+### TYPOGRAPHY
+
+#### Typography (Base)
+Base typography component with customizable styling.
+
+```tsx
+import { Typography } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| weight | '1' \| '2' \| '3' | '3' | Font weight (1=bold, 2=semibold, 3=regular) |
+| caps | boolean | false | Transform to uppercase |
+| Component | ElementType | 'span' | Root element type |
+| plain | boolean | true | Remove default margins |
+
+---
+
+#### Caption
+Small descriptive text.
+
+```tsx
+import { Caption } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends TypographyProps):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| level | '1' \| '2' | '1' | Size level |
+
+---
+
+#### Text
+General-purpose text rendering.
+
+```tsx
+import { Text } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends TypographyProps):**
+Standard typography props.
+
+---
+
+#### Subheadline
+Secondary heading or subheading.
+
+```tsx
+import { Subheadline } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends TypographyProps):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| level | '1' \| '2' | '1' | Size level |
+
+Default component: `h6`
+
+---
+
+#### Headline
+Section headings or important titles.
+
+```tsx
+import { Headline } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends TypographyProps):**
+Standard typography props.
+
+Default component: `h5`
+
+---
+
+#### Title
+Page or section headings.
+
+```tsx
+import { Title } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends TypographyProps):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| level | '1' \| '2' \| '3' | '2' | Size level (1=h2, 2=h3, 3=h4) |
+
+---
+
+#### LargeTitle
+Primary page titles.
+
+```tsx
+import { LargeTitle } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends TypographyProps):**
+Standard typography props.
+
+Default component: `h1`
+
+---
+
+### FEEDBACK
+
+#### CircularProgress
+Circular progress indicator.
+
+```tsx
+import { CircularProgress } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| size | 'small' \| 'medium' \| 'large' | 'medium' | Indicator size |
+| progress | number | 0 | Progress percentage (0-100) |
+
+**Example:**
+```tsx
+<CircularProgress size="large" progress={75} />
+```
+
+---
+
+#### Progress
+Linear progress bar.
+
+```tsx
+import { Progress } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| value | number | 0 | Progress percentage (0-100) |
+
+**Example:**
+```tsx
+<Progress value={65} />
+```
+
+---
+
+#### Skeleton
+Loading placeholder component.
+
+```tsx
+import { Skeleton } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| withoutAnimation | boolean | false | Disable shimmer animation |
+| visible | boolean | false | Show skeleton overlay |
+
+**Example:**
+```tsx
+<Skeleton visible={isLoading}>
+  <Cell>Content loads here</Cell>
+</Skeleton>
+```
+
+---
+
+#### Snackbar
+Brief message at the bottom of the screen.
+
+```tsx
+import { Snackbar } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| before | ReactNode | - | Left side content |
+| after | ReactNode | - | Right side content |
+| children | ReactNode | - | Main message |
+| description | ReactNode | - | Additional content below message |
+| link | ReactElement<LinkProps> | - | Link component |
+| duration | number | 4000 | Auto-dismiss duration (ms) |
+| onClose | () => void | required | Close callback |
+
+**Sub-components:**
+- `Snackbar.Button` - Action button for snackbar
+
+**Example:**
+```tsx
+{showSnackbar && (
+  <Snackbar
+    onClose={() => setShowSnackbar(false)}
+    description="Your changes have been saved"
+    after={<Snackbar.Button>Undo</Snackbar.Button>}
+  >
+    Success!
+  </Snackbar>
+)}
+```
+
+---
+
+#### Spinner
+Loading indicator with platform-specific styling.
+
+```tsx
+import { Spinner } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| size | 's' \| 'm' \| 'l' | 'm' | Spinner size |
+
+**Example:**
+```tsx
+<Spinner size="l" />
+```
+
+---
+
+#### Spoiler
+Hide/show content with click.
+
+```tsx
+import { Spoiler } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| visible | boolean | false | Content visibility |
+
+**Example:**
+```tsx
+<Spoiler visible={showSpoiler}>
+  This content is hidden by default
+</Spoiler>
+```
+
+---
+
+### NAVIGATION
+
+#### Breadcrumbs
+Navigation trail with customizable dividers.
+
+```tsx
+import { Breadcrumbs } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| divider | 'dot' \| 'slash' \| 'chevron' | 'dot' | Divider type |
+| children | ReactNode | - | Breadcrumb items |
+
+**Sub-components:**
+- `Breadcrumbs.Item` - Individual breadcrumb item
+
+**Example:**
+```tsx
+<Breadcrumbs divider="chevron">
+  <Breadcrumbs.Item>Home</Breadcrumbs.Item>
+  <Breadcrumbs.Item>Products</Breadcrumbs.Item>
+  <Breadcrumbs.Item>Details</Breadcrumbs.Item>
+</Breadcrumbs>
+```
+
+---
+
+#### CompactPagination
+Compact pagination controls.
+
+```tsx
+import { CompactPagination } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| mode | 'default' \| 'ambient' \| 'white' | 'default' | Color theme |
+| children | ReactElement[] | - | CompactPagination.Item components |
+
+**Sub-components:**
+- `CompactPagination.Item` - Individual pagination dot
+
+**Example:**
+```tsx
+<CompactPagination mode="ambient">
+  <CompactPagination.Item selected />
+  <CompactPagination.Item />
+  <CompactPagination.Item />
+</CompactPagination>
+```
+
+---
+
+#### Link
+Standard anchor element with styling.
+
+```tsx
+import { Link } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends AnchorHTMLAttributes):**
+Standard anchor props.
+
+**Example:**
+```tsx
+<Link href="/about">About Us</Link>
+```
+
+---
+
+#### Pagination
+Full pagination controls with page numbers.
+
+```tsx
+import { Pagination } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| boundaryCount | number | - | Pages at start and end |
+| count | number | - | Total pages |
+| defaultPage | number | - | Default page (uncontrolled) |
+| hideNextButton | boolean | false | Hide next button |
+| hidePrevButton | boolean | false | Hide previous button |
+| onChange | (event, page: number) => void | - | Page change callback |
+| page | number | - | Current page (controlled) |
+| siblingCount | number | - | Pages around current page |
+| disabled | boolean | false | Disable pagination |
+
+**Example:**
+```tsx
+<Pagination
+  count={10}
+  page={currentPage}
+  onChange={(_, page) => setCurrentPage(page)}
+  siblingCount={1}
+  boundaryCount={1}
+/>
+```
+
+---
+
+#### SegmentedControl
+Toggle between views or filter content.
+
+```tsx
+import { SegmentedControl } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| children | ReactElement<SegmentedControlItemProps>[] | required | SegmentedControl.Item components |
+
+**Sub-components:**
+- `SegmentedControl.Item` - Individual segment
+
+**SegmentedControl.Item Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| selected | boolean | false | Whether item is selected |
+
+**Example:**
+```tsx
+<SegmentedControl>
+  <SegmentedControl.Item selected={tab === 'all'} onClick={() => setTab('all')}>
+    All
+  </SegmentedControl.Item>
+  <SegmentedControl.Item selected={tab === 'active'} onClick={() => setTab('active')}>
+    Active
+  </SegmentedControl.Item>
+</SegmentedControl>
+```
+
+---
+
+#### TabsList
+Horizontal tabs for navigation.
+
+```tsx
+import { TabsList } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| children | ReactElement<TabsItemProps>[] | required | TabsList.Item components |
+
+**Sub-components:**
+- `TabsList.Item` - Individual tab
+
+**TabsList.Item Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| selected | boolean | false | Whether tab is selected |
+
+**Example:**
+```tsx
+<TabsList>
+  <TabsList.Item selected={activeTab === 0} onClick={() => setActiveTab(0)}>
+    Tab 1
+  </TabsList.Item>
+  <TabsList.Item selected={activeTab === 1} onClick={() => setActiveTab(1)}>
+    Tab 2
+  </TabsList.Item>
+</TabsList>
+```
+
+---
+
+### LAYOUT
+
+#### FixedLayout
+Fixed position layout for headers/footers.
+
+```tsx
+import { FixedLayout } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| Component | ElementType | 'div' | Root element type |
+| vertical | 'top' \| 'bottom' | 'bottom' | Vertical position |
+
+**Example:**
+```tsx
+<FixedLayout vertical="bottom">
+  <Button stretched>Fixed Button</Button>
+</FixedLayout>
+```
+
+---
+
+#### Tabbar
+Bottom navigation tab bar.
+
+```tsx
+import { Tabbar } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| children | ReactElement<TabbarItemProps>[] | required | Tabbar.Item components |
+
+**Sub-components:**
+- `Tabbar.Item` - Individual tab bar item
+
+**Tabbar.Item Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| selected | boolean | false | Whether tab is active |
+| text | string | - | Tab text |
+| children | ReactNode | - | Tab icon (28x28) |
+
+**Example:**
+```tsx
+<Tabbar>
+  <Tabbar.Item selected={tab === 'home'} text="Home" onClick={() => setTab('home')}>
+    <Icon28Home />
+  </Tabbar.Item>
+  <Tabbar.Item selected={tab === 'search'} text="Search" onClick={() => setTab('search')}>
+    <Icon28Search />
+  </Tabbar.Item>
+  <Tabbar.Item selected={tab === 'profile'} text="Profile" onClick={() => setTab('profile')}>
+    <Icon28Profile />
+  </Tabbar.Item>
+</Tabbar>
+```
+
+---
+
+### OVERLAYS
+
+#### Modal
+Modal dialog with drawer-style presentation.
+
+```tsx
+import { Modal } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| open | boolean | - | Display state |
+| onOpenChange | (open: boolean) => void | - | State change callback |
+| header | ReactNode | - | Header component |
+| overlayComponent | ReactNode | ModalOverlay | Custom overlay |
+| trigger | ReactNode | - | Trigger element |
+| nested | boolean | false | Enable nesting |
+| closeThreshold | number | - | Swipe close threshold (0-1) |
+| scrollLockTimeout | number | - | Scroll lock debounce (ms) |
+| modal | boolean | - | Background interaction |
+| preventScrollRestoration | boolean | - | Prevent scroll restore |
+| snapPoints | (number \| string)[] | - | Snap points for positioning |
+| dismissible | boolean | - | Allow dismissal |
+
+**Sub-components:**
+- `Modal.Header` - Modal header with before/after slots
+- `Modal.Overlay` - Overlay backdrop
+- `Modal.Close` - Close button
+
+**Modal.Header Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| before | ReactNode | - | Left side content |
+| after | ReactNode | - | Right side content |
+| children | ReactNode | - | Header title (iOS only) |
+
+**Example:**
+```tsx
+<Modal
+  open={isOpen}
+  onOpenChange={setIsOpen}
+  header={<Modal.Header after={<Modal.Close />}>Title</Modal.Header>}
+>
+  <Placeholder header="Modal Content">
+    <Button onClick={() => setIsOpen(false)}>Close</Button>
+  </Placeholder>
+</Modal>
+```
+
+---
+
+#### Popper
+Floating element with dynamic positioning.
+
+```tsx
+import { Popper } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| targetRef | RefObject<HTMLElement> \| VirtualElement | required | Target element reference |
+| placement | 'auto' \| 'top' \| 'bottom' \| 'left' \| 'right' \| etc. | 'auto' | Placement direction |
+| sameWidth | boolean | - | Match target width |
+| offsetByMainAxis | number | 8 | Main axis offset |
+| offsetByCrossAxis | number | 0 | Cross axis offset |
+| withArrow | boolean | true | Show arrow |
+| arrowProps | FloatingArrowProps | - | Arrow configuration |
+| ArrowIcon | ElementType | Default arrow | Custom arrow icon |
+| Component | ElementType | 'div' | Root element type |
+| autoUpdateOnTargetResize | boolean | false | Auto-update on resize |
+
+**Example:**
+```tsx
+<Popper targetRef={buttonRef} placement="top">
+  Popper content
+</Popper>
+```
+
+---
+
+#### Tooltip
+Text labels on hover/focus/touch.
+
+```tsx
+import { Tooltip } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends PopperProps):**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| mode | 'light' \| 'dark' | 'light' | Color theme |
+| targetRef | RefObject<HTMLElement> | required | Target element |
+
+**Example:**
+```tsx
+<Tooltip targetRef={buttonRef} mode="dark">
+  Helpful tooltip text
+</Tooltip>
+```
+
+---
+
+### SERVICE
+
+#### AppRoot
+Root component for the application. Required wrapper for all TelegramUI components.
+
+```tsx
+import { AppRoot } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| platform | 'ios' \| 'base' | auto-detected | Application platform |
+| appearance | 'light' \| 'dark' | auto-detected | Color scheme |
+| portalContainer | RefObject | AppRoot container | Portal container override |
+
+**Example:**
+```tsx
+<AppRoot platform="ios" appearance="dark">
+  <App />
+</AppRoot>
+```
+
+---
+
+#### RootRenderer
+Renders children into portal container.
+
+```tsx
+import { RootRenderer } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| children | ReactNode | - | Content to render in portal |
+
+---
+
+#### Tappable
+Base component for interactive elements with ripple effect.
+
+```tsx
+import { Tappable } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| Component | ElementType | 'div' | Root element type |
+| interactiveAnimation | 'opacity' \| 'background' | 'background' | Interaction style |
+| readOnly | boolean | - | Disable interactions |
+
+---
+
+#### VisuallyHidden
+Visually hidden but accessible content.
+
+```tsx
+import { VisuallyHidden } from '@telegram-apps/telegram-ui';
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| Component | ElementType | 'span' | Root element type |
+
+**Example:**
+```tsx
+<VisuallyHidden>Screen reader only text</VisuallyHidden>
+```
+
+---
+
+### MISC
+
+#### Divider
+Horizontal line separator.
+
+```tsx
+import { Divider } from '@telegram-apps/telegram-ui';
+```
+
+**Props (extends HTMLAttributes<HTMLHRElement>):**
+Standard HR element props.
+
+**Example:**
+```tsx
+<Cell>Item 1</Cell>
+<Divider />
+<Cell>Item 2</Cell>
+```
+
+---
+
+## Platform Detection
+
+Components automatically adapt based on platform. Use the `usePlatform` hook for custom logic:
+
+```tsx
+import { usePlatform } from '@telegram-apps/telegram-ui';
+
+function MyComponent() {
+  const platform = usePlatform();
+  // platform: 'ios' | 'base'
+}
+```
+
+## Appearance
+
+Components support light and dark modes. Use `AppRoot` appearance prop or let it auto-detect from Telegram:
+
+```tsx
+<AppRoot appearance="dark">
+  <App />
+</AppRoot>
+```
+
+## CSS Variables
+
+The library uses CSS custom properties for theming. Import styles:
+
+```tsx
+import '@telegram-apps/telegram-ui/dist/styles.css';
+```
+
+---
+
+## Summary
+
+**Total Components:** 50+ main components
+**Categories:**
+- Blocks: 18 components (Accordion, Avatar, Badge, Banner, Button, Card, Cell, etc.)
+- Form: 16 components (Checkbox, Chip, Input, Select, Slider, Switch, etc.)
+- Typography: 7 components (Caption, Text, Subheadline, Headline, Title, LargeTitle)
+- Feedback: 6 components (CircularProgress, Progress, Skeleton, Snackbar, Spinner, Spoiler)
+- Navigation: 6 components (Breadcrumbs, Link, Pagination, SegmentedControl, TabsList)
+- Layout: 2 components (FixedLayout, Tabbar)
+- Overlays: 3 components (Modal, Popper, Tooltip)
+- Service: 4 components (AppRoot, RootRenderer, Tappable, VisuallyHidden)
+- Misc: 1 component (Divider)
