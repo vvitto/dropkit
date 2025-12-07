@@ -5,7 +5,7 @@ class TelegramBotService
   BASE_URL = "https://api.telegram.org"
 
   def initialize(bot_token: nil)
-    @bot_token = bot_token || Rails.application.credentials.telegram_bot_token
+    @bot_token = bot_token || Rails.application.credentials.telegram.bot.token
   end
 
   def create_invoice_link(product:, buyer:)

@@ -10,7 +10,7 @@ class TelegramAuthService
       .sort
     data_check_string = data_check_arr.join("\n")
 
-    secret_key = OpenSSL::HMAC.digest("sha256", "WebAppData", Rails.application.credentials.telegram_bot_token)
+    secret_key = OpenSSL::HMAC.digest("sha256", "WebAppData", Rails.application.credentials.telegram.bot.token)
     signature = OpenSSL::HMAC.hexdigest("sha256", secret_key, data_check_string)
 
     p init_data["hash"], signature

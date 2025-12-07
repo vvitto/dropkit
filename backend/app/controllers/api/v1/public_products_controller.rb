@@ -17,7 +17,7 @@ module Api
       end
 
       def check_access
-        has_access = @product.purchased_by?(current_user) || @product.user == current_user
+        has_access = @product.purchased_by?(current_user)
 
         render json: { has_access: has_access }
       end

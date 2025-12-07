@@ -2,6 +2,8 @@ import react from '@vitejs/plugin-react-swc';
 import { defineConfig } from 'vite';
 import mkcert from 'vite-plugin-mkcert';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import tailwindcss from "@tailwindcss/vite"
+import path from "path"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -24,7 +26,13 @@ export default defineConfig({
     // Using this plugin requires admin rights on the first dev-mode launch.
     // https://www.npmjs.com/package/vite-plugin-mkcert
     process.env.HTTPS && mkcert(),
+    tailwindcss()
   ],
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "./src"),
+        },
+    },
   build: {
     target: 'esnext',
     minify: 'terser'

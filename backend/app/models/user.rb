@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id            :integer          not null, primary key
+#  first_name    :string           not null
+#  language_code :string           default("en")
+#  last_name     :string
+#  username      :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  telegram_id   :bigint           not null
+#
+# Indexes
+#
+#  index_users_on_telegram_id  (telegram_id) UNIQUE
+#
 class User < ApplicationRecord
   has_many :products, dependent: :destroy
   has_many :purchases, foreign_key: :buyer_id, dependent: :destroy

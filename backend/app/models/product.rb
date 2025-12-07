@@ -1,3 +1,27 @@
+# == Schema Information
+#
+# Table name: products
+#
+#  id           :integer          not null, primary key
+#  content_text :text
+#  content_type :string           not null
+#  is_active    :boolean          default(TRUE)
+#  price_stars  :integer          not null
+#  sales_count  :integer          default(0)
+#  title        :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  user_id      :integer          not null
+#
+# Indexes
+#
+#  index_products_on_is_active  (is_active)
+#  index_products_on_user_id    (user_id)
+#
+# Foreign Keys
+#
+#  user_id  (user_id => users.id)
+#
 class Product < ApplicationRecord
   belongs_to :user
   has_many :purchases, dependent: :destroy
