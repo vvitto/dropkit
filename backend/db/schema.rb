@@ -14,14 +14,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_06_000003) do
   create_table "products", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
-    t.string "content_type", null: false
-    t.text "content_text"
+    t.string "description"
+    t.string "tg_file_id", null: false
     t.integer "price_stars", null: false
-    t.integer "sales_count", default: 0
-    t.boolean "is_active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["is_active"], name: "index_products_on_is_active"
     t.index ["user_id"], name: "index_products_on_user_id"
   end
 
@@ -30,7 +27,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_06_000003) do
     t.integer "buyer_id", null: false
     t.string "telegram_payment_charge_id"
     t.integer "amount_stars", null: false
-    t.string "status", default: "completed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["buyer_id"], name: "index_purchases_on_buyer_id"

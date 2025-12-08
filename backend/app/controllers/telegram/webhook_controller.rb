@@ -1,7 +1,17 @@
 class Telegram::WebhookController < Telegram::Bot::UpdatesController
 
   def message(message)
-    print message
+    text = "<b>Хотите создать новый товар?</b>"
+
+    file_id = message[:photo]&.last&.dig(:file_id) # хз почему ласт, мб надо чекать по размеру файла и надо проверить что остальнон
+
+    reply_with :message, text: text, parse_mode: "HTML", reply_markup: {
+      inline_keyboard: [
+        [
+          { text: "Создать цифровой товар", url: "https://t.me/dropkit_bot?startapp=r_#{file_id}" },
+        ]
+      ]
+    }
   end
 
   def pre_checkout_query(_)

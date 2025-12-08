@@ -19,6 +19,7 @@ class User < ApplicationRecord
   has_many :products, dependent: :destroy
   has_many :purchases, foreign_key: :buyer_id, dependent: :destroy
   has_many :purchased_products, through: :purchases, source: :product
+  has_many :product_intents, dependent: :destroy
 
   validates :telegram_id, presence: true, uniqueness: true
   validates :first_name, presence: true

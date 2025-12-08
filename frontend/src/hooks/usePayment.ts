@@ -20,7 +20,7 @@ export function usePayment() {
       const { invoice_url } = await createInvoice(productId);
 
       // 2. Open Telegram invoice
-      const status = await invoice.open(invoice_url, 'url');
+      const status = await invoice.openUrl(invoice_url);
 
       // 3. Handle result
       if (status === 'paid') {

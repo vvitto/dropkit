@@ -5,7 +5,6 @@ class CreatePurchases < ActiveRecord::Migration[8.0]
       t.references :buyer, null: false, foreign_key: { to_table: :users }
       t.string :telegram_payment_charge_id
       t.integer :amount_stars, null: false
-      t.string :status, default: "completed"
 
       t.timestamps
     end

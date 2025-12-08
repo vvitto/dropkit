@@ -7,23 +7,13 @@ export interface Product {
   price_stars: number;
   sales_count: number;
   is_active: boolean;
+  is_archived: boolean;
   created_at: string;
   content_text?: string;
   file_attached?: boolean;
   file_name?: string;
+  cover_url?: string;
 }
-
-export interface PublicProduct {
-  id: number;
-  title: string;
-  content_type: ContentType;
-  price_stars: number;
-  seller: {
-    first_name: string;
-    username: string | null;
-  };
-}
-
 export interface ProductContent {
   type: ContentType;
   filename?: string;
@@ -37,4 +27,14 @@ export interface CreateProductData {
   content_text?: string;
   price_stars: number;
   file?: File;
+  cover?: File;
+}
+
+export interface UpdateProductData {
+  title?: string;
+  content_text?: string;
+  price_stars?: number;
+  file?: File;
+  cover?: File;
+  remove_cover?: boolean;
 }

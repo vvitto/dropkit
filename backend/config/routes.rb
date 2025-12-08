@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
       resources :products, only: [ :index, :create, :show, :update, :destroy ]
 
+      resources :product_intents, only: [ :create ]
+
       resources :public_products, only: [ :show ] do
         member do
           get :check_access
