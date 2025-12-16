@@ -9,6 +9,7 @@ module Api
           title: @product.title,
           description: @product.description,
           price_stars: @product.price_stars,
+          cover_url: @product.cover.attached? ? url_for(@product.cover) : nil,
           is_purchased: @product.purchased_by?(current_user),
           is_owner: @product.user == current_user,
           seller: {
@@ -76,6 +77,26 @@ module Api
         render json: {
           tg_file_id: @product.tg_file_id
         }
+      end
+
+      def deliver_content
+        unless @product.purchased_by?(current_user) || @product.user == current_user
+          render json: { error: "Access denied" }, status: :forbidden
+          return
+        end
+
+        begin
+          client = Telegram.bot
+          client.send_photo(
+            chat_id: current_user.telegram_id,
+            photo: @product.tg_file_id,
+            caption: "📦 #{@product.title}"
+          )
+
+          render json: { success: true }
+        rescue TelegramBotService::ApiError => e
+          render json: { error: "Failed to send file: #{e.message}" }, status: :service_unavailable
+        end
       end
 
       private

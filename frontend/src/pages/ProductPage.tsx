@@ -1,19 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import {
-  Star,
-  User,
-  FileImage,
-  Loader2,
-  CheckCircle2,
-  ShoppingCart,
-  ArrowLeft,
-  Download
-} from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { getPublicProduct, type PublicProduct } from '@/api/products';
+import {useEffect, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
+import {ArrowLeft, CheckCircle2, Download, FileImage, Loader2, ShoppingCart, Star, User} from 'lucide-react';
+import {openTelegramLink} from '@tma.js/sdk-react';
+import {Button} from '@/components/ui/button';
+import {Card, CardContent} from '@/components/ui/card';
+import {deliverContent, getPublicProduct, type PublicProduct} from '@/api/products';
 
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +13,8 @@ export function ProductPage() {
   const [product, setProduct] = useState<PublicProduct | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDelivering, setIsDelivering] = useState(false);
+  const [delivered, setDelivered] = useState(false);
 
   useEffect(() => {
     async function loadProduct() {
@@ -46,9 +39,20 @@ export function ProductPage() {
     console.log('Buy product:', product?.id);
   };
 
-  const handleDownload = () => {
-    // Content access logic will be implemented later
-    console.log('Download content for product:', product?.id);
+  const handleDownload = async () => {
+    if (!product || isDelivering) return;
+
+    try {
+      setIsDelivering(true);
+      await deliverContent(product.id);
+      openTelegramLink('https://t.me/dropkit_bot');
+
+      setDelivered(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Не удалось отправить файл');
+    } finally {
+      setIsDelivering(false);
+    }
   };
 
   if (isLoading) {
@@ -104,9 +108,17 @@ export function ProductPage() {
         <Card className="mb-6 overflow-hidden">
           <CardContent className="p-0">
             {/* Product Image/Preview */}
-            <div className="h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 flex items-center justify-center">
-              <FileImage className="w-16 h-16 text-primary/50" />
-            </div>
+            {product.cover_url ? (
+              <img
+                src={product.cover_url}
+                alt={product.title}
+                className="w-full h-48 object-cover"
+              />
+            ) : (
+              <div className="h-48 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 flex items-center justify-center">
+                <FileImage className="w-16 h-16 text-primary/50" />
+              </div>
+            )}
 
             {/* Product Info */}
             <div className="p-4">
@@ -179,11 +191,26 @@ export function ProductPage() {
         {hasAccess ? (
           <Button
             onClick={handleDownload}
+            disabled={isDelivering || delivered}
             className="w-full h-12 text-base"
             size="lg"
           >
-            <Download className="w-5 h-5" />
-            Скачать файл
+            {isDelivering ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Отправка...
+              </>
+            ) : delivered ? (
+              <>
+                <CheckCircle2 className="w-5 h-5" />
+                Файл отправлен в чат
+              </>
+            ) : (
+              <>
+                <Download className="w-5 h-5" />
+                Получить файл
+              </>
+            )}
           </Button>
         ) : (
           <Button

@@ -39,6 +39,7 @@ export interface PublicProduct {
   title: string;
   description?: string;
   price_stars: number;
+  cover_url?: string;
   is_purchased: boolean;
   is_owner: boolean;
   seller: {
@@ -62,4 +63,8 @@ export async function confirmPayment(
   return api.post(`/public_products/${productId}/confirm_payment`, {
     telegram_payment_charge_id: chargeId,
   });
+}
+
+export async function deliverContent(productId: number): Promise<{ success: boolean }> {
+  return api.post<{ success: boolean }>(`/public_products/${productId}/deliver_content`);
 }

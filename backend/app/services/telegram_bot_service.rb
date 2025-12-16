@@ -37,6 +37,28 @@ class TelegramBotService
     response["result"]
   end
 
+  def send_document(chat_id:, document_file_id:, caption: nil)
+    params = {
+      chat_id: chat_id,
+      document: document_file_id
+    }
+    params[:caption] = caption if caption.present?
+
+    response = call_api("sendDocument", params)
+    response["result"]
+  end
+
+  # def send_photo(chat_id:, photo:, caption: nil)
+  #   params = {
+  #     chat_id: chat_id,
+  #     document: document_file_id
+  #   }
+  #   params[:caption] = caption if caption.present?
+  #
+  #   response = call_api("sendPhoto", params)
+  #   response["result"]
+  # end
+
   private
 
   def call_api(method, params = {})

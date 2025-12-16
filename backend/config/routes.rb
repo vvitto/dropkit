@@ -15,6 +15,7 @@ Rails.application.routes.draw do
           post :create_invoice
           post :confirm_payment
           get :content
+          post :deliver_content
         end
       end
     end

@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {Navigate, useNavigate} from 'react-router-dom';
 import {miniApp, useLaunchParams} from '@tma.js/sdk-react';
-import { Plus, FileText, Star, Archive } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { getProducts } from '@/api/products';
-import type { Product } from '@/types/product';
+import {Archive, FileText, Plus, Star} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Card, CardContent} from '@/components/ui/card';
+import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
+import {getProducts} from '@/api/products';
+import type {Product} from '@/types/product';
 import {createProductIntent} from "@/api/product_intents.ts";
 import {routes} from "@/navigation/routes.tsx";
 
@@ -18,7 +16,7 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <Card
       className="cursor-pointer hover:bg-accent/50 transition-colors"
-      onClick={() => navigate(`/edit/${product.id}`)}
+      onClick={() => navigate(`/p/${product.id}`)}
     >
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
@@ -60,8 +58,6 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 function EmptyState({ isArchive = false }: { isArchive?: boolean }) {
-
-
     const handleProductCreate = async () => {
         await createProductIntent();
         miniApp.close();
@@ -115,7 +111,6 @@ function LoadingState() {
 }
 
 export function IndexPage() {
-
   const [activeProducts, setActiveProducts] = useState<Product[]>([]);
   const [archivedProducts, setArchivedProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
