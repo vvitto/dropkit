@@ -2,6 +2,7 @@ import {Star} from 'lucide-react';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {Label} from '@/components/ui/label';
+import type {FieldErrors} from './useCreateProduct';
 
 interface ProductFormFieldsProps {
   title: string;
@@ -10,7 +11,7 @@ interface ProductFormFieldsProps {
   onTitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onPriceChange: (value: string) => void;
-  error: string | null;
+  errors: FieldErrors;
 }
 
 export function ProductFormFields({
@@ -20,7 +21,7 @@ export function ProductFormFields({
   onTitleChange,
   onDescriptionChange,
   onPriceChange,
-  error,
+  errors,
 }: ProductFormFieldsProps) {
   return (
     <div className="space-y-5">
@@ -34,11 +35,15 @@ export function ProductFormFields({
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           maxLength={100}
-          className="h-12"
+          className={`h-12 ${errors.title ? 'border-destructive focus-visible:ring-destructive' : ''}`}
         />
-        <p className="text-xs text-muted-foreground">
-          {title.length}/100 символов
-        </p>
+        {errors.title ? (
+          <p className="text-xs text-destructive">{errors.title}</p>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            {title.length}/100 символов
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -69,17 +74,27 @@ export function ProductFormFields({
             value={priceStars}
             onChange={(e) => onPriceChange(e.target.value)}
             min={1}
-            className="h-12 pl-10"
+            className={`h-12 pl-10 pr-20 ${errors.priceStars ? 'border-destructive focus-visible:ring-destructive' : ''}`}
           />
+          {priceStars && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+              ≈ ${(parseInt(priceStars, 10) * 0.013).toFixed(2)}
+            </span>
+          )}
         </div>
-        <p className="text-xs text-muted-foreground">
-          Укажите цену в Telegram Stars (1 звезда ≈ $0.013)
-        </p>
+        {errors.priceStars ? (
+          <p className="text-xs text-destructive">{errors.priceStars}</p>
+        ) : (
+          <div className="text-xs text-muted-foreground space-y-0.5">
+            <p>1 звезда ≈ $0.013</p>
+            <p>Комиссия сервиса — 5% с каждой продажи</p>
+          </div>
+        )}
       </div>
 
-      {error && (
+      {errors.general && (
         <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-          <p className="text-sm text-destructive">{error}</p>
+          <p className="text-sm text-destructive">{errors.general}</p>
         </div>
       )}
     </div>

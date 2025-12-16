@@ -25,7 +25,7 @@ export function CreatePage() {
     handleCoverSelect,
     handleSubmit,
     isSubmitting,
-    error,
+    errors,
     createdProduct,
     fileId,
   } = useCreateProduct();
@@ -75,7 +75,7 @@ export function CreatePage() {
           onTitleChange={setTitle}
           onDescriptionChange={setDescription}
           onPriceChange={setPriceStars}
-          error={error}
+          errors={errors}
         />
       </form>
 

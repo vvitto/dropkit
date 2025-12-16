@@ -11,6 +11,12 @@ export interface ProductFormData {
   coverPreview: string | null;
 }
 
+export interface FieldErrors {
+  title?: string;
+  priceStars?: string;
+  general?: string;
+}
+
 export interface UseCreateProductReturn {
   formData: ProductFormData;
   setTitle: (value: string) => void;
@@ -20,28 +26,44 @@ export interface UseCreateProductReturn {
   handleCoverSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   isSubmitting: boolean;
-  error: string | null;
+  errors: FieldErrors;
   createdProduct: Product | null;
   fileId: string | null;
-  isFormValid: boolean;
 }
 
 export function useCreateProduct(): UseCreateProductReturn {
   const launchParams = useLaunchParams();
 
-  const [title, setTitle] = useState('');
+  const [title, setTitleState] = useState('');
   const [description, setDescription] = useState('');
-  const [priceStars, setPriceStars] = useState('');
+  const [priceStars, setPriceStarsState] = useState('');
   const [cover, setCover] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [createdProduct, setCreatedProduct] = useState<Product | null>(null);
 
   const coverInputRef = useRef<HTMLInputElement>(null);
 
   const startParam = launchParams.tgWebAppStartParam;
   const fileId = startParam?.startsWith('r_') ? startParam.slice(2) : null;
+
+  const setTitle = (value: string) => {
+    setTitleState(value);
+    if (errors.title && value.trim()) {
+      setErrors((prev) => ({ ...prev, title: undefined }));
+    }
+  };
+
+  const setPriceStars = (value: string) => {
+    setPriceStarsState(value);
+    if (errors.priceStars) {
+      const price = parseInt(value, 10);
+      if (price && price >= 1) {
+        setErrors((prev) => ({ ...prev, priceStars: undefined }));
+      }
+    }
+  };
 
   const handleCoverSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -55,45 +77,56 @@ export function useCreateProduct(): UseCreateProductReturn {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+  const validate = (): boolean => {
+    const newErrors: FieldErrors = {};
 
     if (!title.trim()) {
-      setError('Введите название товара');
-      return;
+      newErrors.title = 'Введите название товара';
     }
 
     const price = parseInt(priceStars, 10);
-    if (!price || price < 1) {
-      setError('Укажите цену (минимум 1 звезда)');
-      return;
+    if (!priceStars) {
+      newErrors.priceStars = 'Укажите цену';
+    } else if (!price || price < 1) {
+      newErrors.priceStars = 'Минимальная цена — 1 звезда';
     }
 
     if (!fileId) {
-      setError('Файл не найден. Попробуйте отправить файл боту заново');
+      newErrors.general = 'Файл не найден. Попробуйте отправить файл боту заново';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validate()) {
       return;
     }
 
     try {
       setIsSubmitting(true);
+      setErrors({});
+
       const product = await createProduct({
         title: title.trim(),
         description: description.trim() || undefined,
-        price_stars: price,
-        tg_file_id: fileId,
+        price_stars: parseInt(priceStars, 10),
+        tg_file_id: fileId!,
         cover: cover || undefined,
       });
 
       setCreatedProduct(product);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ошибка при создании товара');
+      setErrors({
+        general: err instanceof Error ? err.message : 'Ошибка при создании товара',
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const isFormValid = Boolean(title.trim() && priceStars);
 
   return {
     formData: {
@@ -110,9 +143,8 @@ export function useCreateProduct(): UseCreateProductReturn {
     handleCoverSelect,
     handleSubmit,
     isSubmitting,
-    error,
+    errors,
     createdProduct,
     fileId,
-    isFormValid,
   };
 }
