@@ -22,9 +22,11 @@
 class Product < ApplicationRecord
   belongs_to :user
   has_many :purchases, dependent: :destroy
+  has_one_attached :cover
 
   validates :title, presence: true, length: { maximum: 100 }
   validates :price_stars, presence: true, numericality: { greater_than: 0, only_integer: true }
+  validates :tg_file_id, presence: true
 
   def purchased_by?(user)
     purchases.exists?(buyer: user)

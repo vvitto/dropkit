@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {Navigate, useNavigate} from 'react-router-dom';
 import {miniApp, useLaunchParams} from '@tma.js/sdk-react';
-import { Plus, FileText, Link as LinkIcon, Type, Star, Archive } from 'lucide-react';
+import { Plus, FileText, Star, Archive } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,15 +12,8 @@ import type { Product } from '@/types/product';
 import {createProductIntent} from "@/api/product_intents.ts";
 import {routes} from "@/navigation/routes.tsx";
 
-const contentTypeIcons = {
-  file: FileText,
-  link: LinkIcon,
-  text: Type,
-};
-
 function ProductCard({ product }: { product: Product }) {
   const navigate = useNavigate();
-  const Icon = contentTypeIcons[product.content_type];
 
   return (
     <Card
@@ -37,7 +30,7 @@ function ProductCard({ product }: { product: Product }) {
             />
           ) : (
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-              <Icon className="w-5 h-5 text-primary" />
+              <FileText className="w-5 h-5 text-primary" />
             </div>
           )}
           <div className="flex-1 min-w-0">
@@ -49,17 +42,17 @@ function ProductCard({ product }: { product: Product }) {
               </span>
               <span className="text-muted-foreground">·</span>
               <span className="text-sm text-muted-foreground">
-                Продано: {product.sales_count}
+                {/*Продано: {product.sales_count}*/}
               </span>
             </div>
           </div>
-          {product.is_archived ? (
-            <Badge variant="secondary" className="shrink-0">Архив</Badge>
-          ) : product.is_active ? (
-            <Badge variant="success" className="shrink-0">Активен</Badge>
-          ) : (
-            <Badge variant="secondary" className="shrink-0">Черновик</Badge>
-          )}
+          {/*{product.is_archived ? (*/}
+          {/*  <Badge variant="secondary" className="shrink-0">Архив</Badge>*/}
+          {/*) : product.is_active ? (*/}
+          {/*  <Badge variant="success" className="shrink-0">Активен</Badge>*/}
+          {/*) : (*/}
+          {/*  <Badge variant="secondary" className="shrink-0">Черновик</Badge>*/}
+          {/*)}*/}
         </div>
       </CardContent>
     </Card>
@@ -67,7 +60,12 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 function EmptyState({ isArchive = false }: { isArchive?: boolean }) {
-  const navigate = useNavigate();
+
+
+    const handleProductCreate = async () => {
+        await createProductIntent();
+        miniApp.close();
+    }
 
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
@@ -87,7 +85,7 @@ function EmptyState({ isArchive = false }: { isArchive?: boolean }) {
           : 'Создайте свой первый цифровой товар и начните продавать прямо в Telegram'}
       </p>
       {!isArchive && (
-        <Button onClick={() => navigate('/create')}>
+        <Button onClick={handleProductCreate}>
           <Plus className="w-4 h-4" />
           Создать товар
         </Button>
@@ -135,12 +133,9 @@ export function IndexPage() {
     async function loadProducts() {
       try {
         setIsLoading(true);
-        const [active, archived] = await Promise.all([
-          getProducts(false),
-          getProducts(true),
-        ]);
+        const active = await getProducts();
         setActiveProducts(active);
-        setArchivedProducts(archived);
+        // setArchivedProducts(archived);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ошибка загрузки');
       } finally {

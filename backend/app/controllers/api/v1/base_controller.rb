@@ -2,6 +2,7 @@ module Api
   module V1
     class BaseController < ActionController::API
       include TelegramAuthenticatable
+      include Rails.application.routes.url_helpers
 
       rescue_from ActiveRecord::RecordNotFound do |e|
         render json: { error: "Not found" }, status: :not_found

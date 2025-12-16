@@ -14,6 +14,9 @@ function StartParamRouter() {
     if (startParam?.startsWith('p_')) {
       const productId = startParam.slice(2);
       navigate(`/p/${productId}`, { replace: true });
+    } else if (startParam?.startsWith('r_')) {
+      // r_ prefix means user wants to create a product with uploaded file
+      navigate('/products/new', { replace: true });
     }
   }, [lp.tgWebAppStartParam, navigate]);
 

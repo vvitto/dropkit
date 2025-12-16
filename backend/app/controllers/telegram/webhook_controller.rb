@@ -18,6 +18,34 @@ class Telegram::WebhookController < Telegram::Bot::UpdatesController
     answer_pre_checkout_query(true)
   end
 
+  def inline_query(_, __)
+    answer_inline_query(
+      [
+        {
+          type: 'article',
+          id: SecureRandom.hex(10),
+          thumbnail_url: 'https://picsum.photos/536/354',
+          title: 'Test title',
+          description: 'Test description',
+          input_message_content: {
+            message_text: 'Message content text',
+            link_preview_options: {
+              url: 'https://picsum.photos/536/354'
+            }
+          },
+           reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: "🎮 Play game", url: "https://t.me/mutant_gifts_bot?startapp" }
+                  ]
+                ]
+              }
+        },
+
+      ]
+    )
+  end
+
   def start!(params = nil, *_)
     p "================================"
     # log_info("Start command received")

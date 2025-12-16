@@ -7,8 +7,10 @@ module Api
         render json: {
           id: @product.id,
           title: @product.title,
-          content_type: @product.content_type,
+          description: @product.description,
           price_stars: @product.price_stars,
+          is_purchased: @product.purchased_by?(current_user),
+          is_owner: @product.user == current_user,
           seller: {
             first_name: @product.user.first_name,
             username: @product.user.username
@@ -59,8 +61,7 @@ module Api
         purchase = @product.purchases.create!(
           buyer: current_user,
           telegram_payment_charge_id: charge_id,
-          amount_stars: @product.price_stars,
-          status: :completed
+          amount_stars: @product.price_stars
         )
 
         render json: { success: true, purchase_id: purchase.id }
@@ -72,19 +73,15 @@ module Api
           return
         end
 
-        content_data = @product.content_for_buyer
-
-        if @product.file? && @product.file.attached?
-          content_data[:url] = rails_blob_url(@product.file, disposition: "attachment")
-        end
-
-        render json: content_data
+        render json: {
+          tg_file_id: @product.tg_file_id
+        }
       end
 
       private
 
       def set_product
-        @product = Product.active.find(params[:id])
+        @product = Product.find(params[:id])
       end
     end
   end

@@ -7,13 +7,65 @@ module Api
         render json: @products.map { |p| product_json(p) }
       end
 
+      def create
+        @product = current_user.products.build(product_params)
+
+        if @product.save
+          render json: product_json(@product), status: :created
+        else
+          render json: { error: @product.errors.full_messages.join(", ") }, status: :unprocessable_entity
+        end
+      end
+
+      def create_share_message
+        product = current_user.products.find(params[:id])
+        response = Telegram.bot.save_prepared_inline_message(
+          user_id: current_user.telegram_id,
+          result: {
+            type: "photo",
+            thumb_url: 'https://picsum.photos/536/354',
+            photo_url: 'https://picsum.photos/536/354',
+            caption: 'test caption',
+            id: "share_#{Time.now.to_i}",
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: "Создать цифровой товар", url: "https://t.me/dropkit_bot?startapp=r_#{product.id}" },
+                ]
+              ]
+            }
+          },
+          allow_user_chats: true,
+          allow_group_chats: true,
+          allow_channel_chats: true
+        )
+
+        if response["ok"]
+          render json: { message_id: response["result"]["id"] }, status: :ok
+        else
+          Rails.logger.error "Failed to prepare share message: #{response.inspect}"
+          render json: { error: "Failed to prepare share message" }, status: :unprocessable_entity
+        end
+
+      rescue Telegram::Bot::Error => e
+        Rails.logger.error "Error while preparing share message: #{e.class.name} #{e.message}"
+        render json: { error: "Failed to prepare share message" }, status: :unprocessable_entity
+      end
+
       private
+
+      def product_params
+        params.require(:product).permit(:title, :description, :price_stars, :tg_file_id, :cover)
+      end
 
       def product_json(product)
         {
           id: product.id,
           title: product.title,
+          description: product.description,
           price_stars: product.price_stars,
+          tg_file_id: product.tg_file_id,
+          cover_url: product.cover.attached? ? url_for(product.cover) : nil,
           created_at: product.created_at.iso8601
         }
       end
