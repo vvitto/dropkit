@@ -1,6 +1,11 @@
 class Telegram::WebhookController < Telegram::Bot::UpdatesController
 
   def message(message)
+    if message["successful_payment"].present?
+      process_successful_payment(message["successful_payment"])
+      return
+    end
+
     text = "<b>Хотите создать новый товар?</b>"
 
     reply_with :message, text: text, parse_mode: "HTML", reply_markup: {
@@ -90,5 +95,35 @@ class Telegram::WebhookController < Telegram::Bot::UpdatesController
 #     else
 #       raise e
 #     end
+  end
+
+  private
+
+  def process_successful_payment(payment)
+    Rails.logger.info "[Telegram Webhook] Processing successful payment"
+
+    payload = JSON.parse(payment["invoice_payload"])
+    return unless payload["product_id"].present?
+
+    product = Product.find(payload["product_id"])
+    buyer = User.find(payload["buyer_id"])
+
+    # Skip if already purchased (idempotency)
+    if Purchase.exists?(telegram_payment_charge_id: payment["telegram_payment_charge_id"])
+      Rails.logger.info "[Telegram Webhook] Payment already processed: #{payment["telegram_payment_charge_id"]}"
+      return
+    end
+
+    Purchase.create!(
+      product: product,
+      buyer: buyer,
+      amount_stars: payment["total_amount"],
+      telegram_payment_charge_id: payment["telegram_payment_charge_id"]
+    )
+
+    Rails.logger.info "[Telegram Webhook] Purchase created for product #{product.id} by user #{buyer.id}"
+  rescue StandardError => e
+    Rails.logger.error "[Telegram Webhook] Error processing payment: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
   end
 end

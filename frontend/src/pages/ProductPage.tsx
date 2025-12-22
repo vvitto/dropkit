@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {ArrowLeft, CheckCircle2, Download, FileImage, Loader2, ShoppingCart, Star, User} from 'lucide-react';
-import {openTelegramLink} from '@tma.js/sdk-react';
+import {invoice, openTelegramLink} from '@tma.js/sdk-react';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent} from '@/components/ui/card';
-import {deliverContent, getPublicProduct, type PublicProduct} from '@/api/products';
+import {createInvoice, deliverContent, getPublicProduct, type PublicProduct} from '@/api/products';
 
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +15,7 @@ export function ProductPage() {
   const [error, setError] = useState<string | null>(null);
   const [isDelivering, setIsDelivering] = useState(false);
   const [delivered, setDelivered] = useState(false);
+  const [isPurchasing, setIsPurchasing] = useState(false);
 
   useEffect(() => {
     async function loadProduct() {
@@ -34,9 +35,28 @@ export function ProductPage() {
     loadProduct();
   }, [id]);
 
-  const handleBuy = () => {
-    // Payment logic will be implemented later
-    console.log('Buy product:', product?.id);
+  const handleBuy = async () => {
+    if (!product || isPurchasing) return;
+
+    try {
+      setIsPurchasing(true);
+      setError(null);
+
+      const { invoice_url } = await createInvoice(product.id);
+      const status = await invoice.openUrl(invoice_url);
+
+      if (status === 'paid') {
+        setProduct({ ...product, is_purchased: true });
+      } else if (status === 'cancelled') {
+        // User cancelled - no error needed
+      } else if (status === 'failed') {
+        setError('Payment failed. Please try again.');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not create the payment');
+    } finally {
+      setIsPurchasing(false);
+    }
   };
 
   const handleDownload = async () => {
@@ -215,12 +235,22 @@ export function ProductPage() {
         ) : (
           <Button
             onClick={handleBuy}
+            disabled={isPurchasing}
             className="w-full h-12 text-base"
             size="lg"
           >
-            <ShoppingCart className="w-5 h-5" />
-            Купить за {product.price_stars}
-            <Star className="w-4 h-4 ml-1 text-amber-300" />
+            {isPurchasing ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Оплата...
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="w-5 h-5" />
+                Купить за {product.price_stars}
+                <Star className="w-4 h-4 ml-1 text-amber-300" />
+              </>
+            )}
           </Button>
         )}
       </div>
