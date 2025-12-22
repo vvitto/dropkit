@@ -87,10 +87,10 @@ module Api
 
         begin
           client = Telegram.bot
-          client.send_photo(
+          client.copy_message(
             chat_id: current_user.telegram_id,
-            photo: @product.tg_file_id,
-            caption: "📦 #{@product.title}"
+            from_chat_id: '8552432490',
+            message_id: @product.tg_file_id
           )
 
           render json: { success: true }

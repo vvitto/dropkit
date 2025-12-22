@@ -1,10 +1,8 @@
 import {useNavigate} from 'react-router-dom';
 import {shareMessage} from '@tma.js/sdk-react';
 import {Loader2, Sparkles} from 'lucide-react';
-
 import {Button} from '@/components/ui/button';
 import {createProductShareMessage} from '@/api/products';
-
 import {useCreateProduct} from './useCreateProduct';
 import {SuccessScreen} from './SuccessScreen';
 import {NoFileScreen} from './NoFileScreen';

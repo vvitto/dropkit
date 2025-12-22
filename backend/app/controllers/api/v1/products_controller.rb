@@ -11,6 +11,15 @@ module Api
         @product = current_user.products.build(product_params)
 
         if @product.save
+          client = Telegram.bot
+          id = client.copy_message(
+            chat_id: '8552432490',
+            from_chat_id: current_user.telegram_id,
+            message_id: params[:product][:tg_file_id]
+          )
+
+          @product.update!(tg_file_id: id['result']['message_id'])
+
           render json: product_json(@product), status: :created
         else
           render json: { error: @product.errors.full_messages.join(", ") }, status: :unprocessable_entity
