@@ -203,12 +203,12 @@ export function ProductPage() {
             ) : delivered ? (
               <>
                 <CheckCircle2 className="w-5 h-5" />
-                Файл отправлен в чат
+                Сообщение отправлено в чат
               </>
             ) : (
               <>
                 <Download className="w-5 h-5" />
-                Получить файл
+                Получить товар
               </>
             )}
           </Button>

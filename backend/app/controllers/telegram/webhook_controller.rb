@@ -17,31 +17,41 @@ class Telegram::WebhookController < Telegram::Bot::UpdatesController
   end
 
   def inline_query(_, __)
-    answer_inline_query(
-      [
-        {
-          type: 'article',
-          id: SecureRandom.hex(10),
-          thumbnail_url: 'https://picsum.photos/536/354',
-          title: 'Test title',
-          description: 'Test description',
-          input_message_content: {
-            message_text: 'Message content text',
-            link_preview_options: {
-              url: 'https://picsum.photos/536/354'
-            }
-          },
-           reply_markup: {
-                inline_keyboard: [
-                  [
-                    { text: "🎮 Play game", url: "https://t.me/mutant_gifts_bot?startapp" }
-                  ]
-                ]
-              }
-        },
+    user_id = payload.dig("from", "id")
+    query = payload["query"]
 
-      ]
-    )
+    scope = Product.joins(:user).where(user: { telegram_id: user_id })
+    if query.present?
+      scope .where("title LIKE ?", "%#{query}%")
+    end
+    products = scope.limit(10).all
+
+    resp = products.map do |product|
+      img_url = product.cover.attached? ? "https://dropkit.ngrok.dev#{Rails.application.routes.url_helpers.rails_blob_path(product.cover)}" : 'https://picsum.photos/536/354'
+
+      {
+        type: 'article',
+        id: product.id,
+        thumbnail_url: img_url,
+        title: product.title,
+        description: product.description || '',
+        input_message_content: {
+          message_text: product.description || '',
+          link_preview_options: {
+            url: img_url
+          }
+        },
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: "⭐ Purchase product", url: "https://t.me/dropkit_bot?startapp=p_#{product.id}" }
+            ]
+          ]
+        }
+      }
+    end
+
+    answer_inline_query(resp)
   end
 
   def start!(params = nil, *_)

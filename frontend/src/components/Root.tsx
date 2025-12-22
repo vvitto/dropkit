@@ -1,6 +1,6 @@
-import { App } from '@/components/App.tsx';
-import { ErrorBoundary } from '@/components/ErrorBoundary.tsx';
-import { AuthProvider } from '@/context/AuthContext.tsx';
+import {App} from '@/components/App.tsx';
+import {ErrorBoundary} from '@/components/ErrorBoundary.tsx';
+import {AuthProvider} from '@/context/AuthContext.tsx';
 
 function ErrorBoundaryError({ error }: { error: unknown }) {
   return (

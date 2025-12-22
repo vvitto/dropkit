@@ -4,6 +4,7 @@ import {miniApp, useLaunchParams} from '@tma.js/sdk-react';
 import {Archive, Plus} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
+import {HeaderTabs} from '@/components/layout/HeaderTabs';
 import {getProducts} from '@/api/products';
 import {createProductIntent} from '@/api/product_intents';
 import {routes} from '@/navigation/routes';
@@ -61,9 +62,7 @@ export function IndexPage() {
   if (!isLoading && !hasAnyProducts) {
     return (
       <div className="flex flex-col min-h-screen">
-        <header className="p-4 border-b">
-          <h1 className="text-xl font-semibold">Мои товары</h1>
-        </header>
+        <HeaderTabs />
         <EmptyState />
       </div>
     );
@@ -71,9 +70,7 @@ export function IndexPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="p-4 border-b">
-        <h1 className="text-xl font-semibold">Мои товары</h1>
-      </header>
+      <HeaderTabs />
 
       <div className="flex-1 overflow-auto p-4 pb-24">
         {archivedProducts.length > 0 ? (

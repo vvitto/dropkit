@@ -28,18 +28,19 @@ module Api
 
       def create_share_message
         product = current_user.products.find(params[:id])
+        img_url = product.cover.attached? ? url_for(product.cover) : 'https://picsum.photos/536/354'
         response = Telegram.bot.save_prepared_inline_message(
           user_id: current_user.telegram_id,
           result: {
             type: "photo",
-            thumb_url: 'https://picsum.photos/536/354',
-            photo_url: 'https://picsum.photos/536/354',
-            caption: 'test caption',
+            thumb_url: img_url,
+            photo_url: img_url,
+            caption: product.title,
             id: "share_#{Time.now.to_i}",
             reply_markup: {
               inline_keyboard: [
                 [
-                  { text: "Создать цифровой товар", url: "https://t.me/dropkit_bot?startapp=r_#{product.id}" },
+                  { text: "⭐ Purchase product", url: "https://t.me/dropkit_bot?startapp=p_#{product.id}" },
                 ]
               ]
             }
