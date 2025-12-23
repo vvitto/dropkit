@@ -2,14 +2,16 @@
 #
 # Table name: users
 #
-#  id            :integer          not null, primary key
-#  first_name    :string           not null
-#  language_code :string           default("en")
-#  last_name     :string
-#  username      :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  telegram_id   :bigint           not null
+#  id                     :integer          not null, primary key
+#  cached_available_stars :integer          default(0), not null
+#  cached_pending_stars   :integer          default(0), not null
+#  first_name             :string           not null
+#  language_code          :string           default("en")
+#  last_name              :string
+#  username               :string
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  telegram_id            :bigint           not null
 #
 # Indexes
 #
@@ -20,6 +22,8 @@ class User < ApplicationRecord
   has_many :purchases, foreign_key: :buyer_id, dependent: :destroy
   has_many :purchased_products, through: :purchases, source: :product
   has_many :product_intents, dependent: :destroy
+  has_many :balance_transactions, dependent: :destroy
+  has_many :withdrawals, dependent: :destroy
 
   validates :telegram_id, presence: true, uniqueness: true
   validates :first_name, presence: true
@@ -37,5 +41,29 @@ class User < ApplicationRecord
 
   def display_name
     username.present? ? "@#{username}" : first_name
+  end
+
+  # Balance methods (O(1) - read from cache)
+  def available_stars
+    cached_available_stars
+  end
+
+  def pending_stars
+    cached_pending_stars
+  end
+
+  # Total earned from sales (requires query)
+  def total_earned_stars
+    balance_transactions.sales.sum(:amount)
+  end
+
+  # Recalculate cache from balance_transactions (for consistency checks)
+  def recalculate_balance!
+    available = balance_transactions.available.sum(:amount)
+    pending = balance_transactions.pending.sum(:amount)
+    update!(
+      cached_available_stars: [available, 0].max,
+      cached_pending_stars: [pending, 0].max
+    )
   end
 end

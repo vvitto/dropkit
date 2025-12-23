@@ -4,6 +4,7 @@
 #
 #  id                         :integer          not null, primary key
 #  amount_stars               :integer          not null
+#  payment_method             :string           default("stars"), not null
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #  buyer_id                   :integer          not null
@@ -23,9 +24,42 @@
 #  product_id  (product_id => products.id)
 #
 class Purchase < ApplicationRecord
+  LOCKUP_PERIODS = {
+    "stars" => 21.days,
+    "ton" => 0.days,
+    "usdt" => 0.days
+  }.freeze
+
   belongs_to :product
   belongs_to :buyer, class_name: "User"
+  has_one :balance_transaction, as: :source, class_name: "BalanceTransaction"
 
   validates :amount_stars, presence: true, numericality: { greater_than: 0, only_integer: true }
   validates :telegram_payment_charge_id, uniqueness: true, allow_nil: true
+  validates :payment_method, presence: true
+
+  after_create :create_seller_transaction
+
+  private
+
+  def create_seller_transaction
+    seller = product.user
+    lockup = LOCKUP_PERIODS.fetch(payment_method, 21.days)
+    immediate = lockup.zero?
+
+    BalanceTransaction.create!(
+      user: seller,
+      transaction_type: "sale",
+      amount: amount_stars,
+      available_at: immediate ? nil : lockup.from_now,
+      processed: immediate,
+      source: self
+    )
+
+    if immediate
+      seller.increment!(:cached_available_stars, amount_stars)
+    else
+      seller.increment!(:cached_pending_stars, amount_stars)
+    end
+  end
 end

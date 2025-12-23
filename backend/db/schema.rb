@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_16_095251) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_22_000005) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -39,6 +39,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_16_095251) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "balance_transactions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "transaction_type", null: false
+    t.integer "amount", null: false
+    t.datetime "available_at"
+    t.boolean "processed", default: false, null: false
+    t.string "source_type"
+    t.integer "source_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["source_type", "source_id"], name: "index_transactions_on_source"
+    t.index ["transaction_type"], name: "index_balance_transactions_on_transaction_type"
+    t.index ["user_id", "available_at"], name: "index_balance_transactions_on_user_id_and_available_at"
+    t.index ["user_id", "processed"], name: "index_balance_transactions_on_user_id_and_processed"
+    t.index ["user_id"], name: "index_balance_transactions_on_user_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
@@ -57,6 +74,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_16_095251) do
     t.integer "amount_stars", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "payment_method", default: "stars", null: false
     t.index ["buyer_id"], name: "index_purchases_on_buyer_id"
     t.index ["product_id", "buyer_id"], name: "index_purchases_on_product_id_and_buyer_id"
     t.index ["product_id"], name: "index_purchases_on_product_id"
@@ -71,12 +89,33 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_16_095251) do
     t.string "language_code", default: "en"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "cached_available_stars", default: 0, null: false
+    t.integer "cached_pending_stars", default: 0, null: false
     t.index ["telegram_id"], name: "index_users_on_telegram_id", unique: true
+  end
+
+  create_table "withdrawals", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "amount_stars", null: false
+    t.integer "net_amount_stars", null: false
+    t.decimal "usd_equivalent", precision: 10, scale: 2
+    t.string "status", default: "pending", null: false
+    t.string "payment_method"
+    t.string "payment_details"
+    t.text "admin_notes"
+    t.datetime "processed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status"], name: "index_withdrawals_on_status"
+    t.index ["user_id", "status"], name: "index_withdrawals_on_user_id_and_status"
+    t.index ["user_id"], name: "index_withdrawals_on_user_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "balance_transactions", "users"
   add_foreign_key "products", "users"
   add_foreign_key "purchases", "products"
   add_foreign_key "purchases", "users", column: "buyer_id"
+  add_foreign_key "withdrawals", "users"
 end

@@ -18,6 +18,14 @@ Rails.application.routes.draw do
           post :deliver_content
         end
       end
+
+      resource :income, only: [ :show ], controller: :income
+
+      resources :withdrawals, only: [ :create ] do
+        member do
+          post :cancel
+        end
+      end
     end
   end
 
