@@ -68,3 +68,5 @@ group :test do
 end
 
 gem 'telegram-bot'
+gem "ed25519"
+gem "jwt"

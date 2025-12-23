@@ -20,6 +20,8 @@ Rails.application.routes.draw do
       end
 
       resource :income, only: [ :show ], controller: :income
+      get "wallet/payload", to: "wallet#payload"
+      post "wallet/validate", to: "wallet#validate"
 
       resources :withdrawals, only: [ :create ] do
         member do

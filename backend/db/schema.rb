@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_22_000005) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_22_000006) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -91,6 +91,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_22_000005) do
     t.datetime "updated_at", null: false
     t.integer "cached_available_stars", default: 0, null: false
     t.integer "cached_pending_stars", default: 0, null: false
+    t.string "wallet_address"
     t.index ["telegram_id"], name: "index_users_on_telegram_id", unique: true
   end
 

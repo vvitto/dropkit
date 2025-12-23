@@ -31,7 +31,7 @@ export function IncomePage() {
     loadData();
   }, []);
 
-  const handleWithdraw = async (paymentDetails: string) => {
+  const handleWithdraw = async () => {
     if (!data) return;
 
     try {
@@ -39,7 +39,6 @@ export function IncomePage() {
       await createWithdrawal({
         amount_stars: data.summary.available_stars,
         payment_method: 'ton_wallet',
-        payment_details: paymentDetails,
       });
       setIsWithdrawalModalOpen(false);
       await loadData();

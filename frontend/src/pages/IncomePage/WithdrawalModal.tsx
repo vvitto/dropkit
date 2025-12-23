@@ -1,13 +1,11 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Star, AlertCircle, Loader2, Clock } from 'lucide-react';
+import { Star, AlertCircle, Loader2, Clock, Wallet } from 'lucide-react';
+import { useWalletConnect } from '@/hooks/useWalletConnect';
 
 interface WithdrawalModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (paymentDetails: string) => Promise<void>;
+  onSubmit: () => Promise<void>;
   amount: number;
   commissionRate: number;
   isSubmitting: boolean;
@@ -21,8 +19,7 @@ export function WithdrawalModal({
   commissionRate,
   isSubmitting,
 }: WithdrawalModalProps) {
-  const [walletAddress, setWalletAddress] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const { isConnected, shortAddress, connect, disconnect } = useWalletConnect();
 
   if (!isOpen) return null;
 
@@ -30,28 +27,15 @@ export function WithdrawalModal({
   const netAmount = amount - commission;
 
   const handleSubmit = async () => {
-    if (!walletAddress.trim()) {
-      setError('Введите адрес кошелька');
-      return;
-    }
-
     try {
-      setError(null);
-      await onSubmit(walletAddress);
-      setWalletAddress('');
+      await onSubmit();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не удалось создать заявку');
+      console.error('Withdrawal error:', err);
     }
-  };
-
-  const handleClose = () => {
-    setWalletAddress('');
-    setError(null);
-    onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-end" onClick={handleClose}>
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-end" onClick={onClose}>
       <div
         className="w-full bg-background rounded-t-2xl p-6 space-y-4 animate-in slide-in-from-bottom"
         onClick={(e) => e.stopPropagation()}
@@ -79,14 +63,25 @@ export function WithdrawalModal({
           </div>
         </div>
 
+        {/* Wallet Connection */}
         <div className="space-y-2">
-          <Label htmlFor="wallet">TON кошелёк</Label>
-          <Input
-            id="wallet"
-            placeholder="UQ..."
-            value={walletAddress}
-            onChange={(e) => setWalletAddress(e.target.value)}
-          />
+          <p className="text-sm text-muted-foreground">Кошелёк для вывода</p>
+          {isConnected ? (
+            <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Wallet className="w-4 h-4 text-primary" />
+                <span className="font-medium">{shortAddress}</span>
+              </div>
+              <Button variant="ghost" size="sm" onClick={disconnect}>
+                Отключить
+              </Button>
+            </div>
+          ) : (
+            <Button variant="outline" className="w-full" onClick={connect}>
+              <Wallet className="w-4 h-4 mr-2" />
+              Подключить кошелёк
+            </Button>
+          )}
         </div>
 
         {/* Processing time notice */}
@@ -95,21 +90,14 @@ export function WithdrawalModal({
           <span>Перевод средств может занять до 24 часов</span>
         </div>
 
-        {error && (
-          <div className="flex items-center gap-2 text-destructive text-sm">
-            <AlertCircle className="w-4 h-4" />
-            {error}
-          </div>
-        )}
-
         <div className="flex gap-3 pt-2">
-          <Button variant="outline" className="flex-1" onClick={handleClose}>
+          <Button variant="outline" className="flex-1" onClick={onClose}>
             Отмена
           </Button>
           <Button
             className="flex-1"
             onClick={handleSubmit}
-            disabled={isSubmitting || amount <= 0}
+            disabled={isSubmitting || amount <= 0 || !isConnected}
           >
             {isSubmitting ? (
               <>
@@ -117,7 +105,7 @@ export function WithdrawalModal({
                 Отправка...
               </>
             ) : (
-              'Отправить заявку'
+              'Подтвердить вывод'
             )}
           </Button>
         </div>
