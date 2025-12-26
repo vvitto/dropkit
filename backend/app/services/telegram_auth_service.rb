@@ -2,7 +2,6 @@ class TelegramAuthService
   class AuthError < StandardError; end
 
   def self.validate_init_data(init_data)
-
     return false unless init_data["hash"]
 
     data_check_arr = init_data.reject { |k, _| k == "hash" }

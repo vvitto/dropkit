@@ -2,24 +2,30 @@ module Api
   module V1
     class ProductsController < BaseController
       def index
-        @products = current_user.products.order(created_at: :desc)
+        @products = current_user.products.active.order(created_at: :desc)
 
         render json: @products.map { |p| product_json(p) }
       end
 
       def show
-        @product = current_user.products.find(params[:id])
+        @product = current_user.products.active.find(params[:id])
         render json: product_json(@product)
       end
 
       def update
-        @product = current_user.products.find(params[:id])
+        @product = current_user.products.active.find(params[:id])
 
         if @product.update(update_params)
           render json: product_json(@product)
         else
           render json: { error: @product.errors.full_messages.join(", ") }, status: :unprocessable_entity
         end
+      end
+
+      def destroy
+        @product = current_user.products.active.find(params[:id])
+        @product.soft_delete!
+        head :no_content
       end
 
       def create
@@ -34,7 +40,7 @@ module Api
               message_id: params[:product][:tg_file_id]
             )
 
-            @product.update!(tg_file_id: id['result']['message_id'])
+            @product.update!(tg_file_id: id["result"]["message_id"])
 
             render json: product_json(@product), status: :created
           else
@@ -44,8 +50,8 @@ module Api
       end
 
       def create_share_message
-        product = current_user.products.find(params[:id])
-        img_url = product.cover.attached? ? url_for(product.cover) : 'https://picsum.photos/536/354'
+        product = current_user.products.active.find(params[:id])
+        img_url = product.cover.attached? ? url_for(product.cover) : "https://picsum.photos/536/354"
         response = Telegram.bots[:chat].save_prepared_inline_message(
           user_id: current_user.telegram_id,
           result: {
@@ -57,7 +63,7 @@ module Api
             reply_markup: {
               inline_keyboard: [
                 [
-                  { text: "⭐ Purchase product", url: "https://t.me/dropkit_bot?startapp=p_#{product.id}" },
+                  { text: "⭐ Purchase product", url: "https://t.me/dropkit_bot?startapp=p_#{product.id}" }
                 ]
               ]
             }

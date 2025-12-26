@@ -67,6 +67,6 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem 'telegram-bot'
+gem "telegram-bot"
 gem "ed25519"
 gem "jwt"

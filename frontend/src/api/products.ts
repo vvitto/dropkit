@@ -40,6 +40,10 @@ export async function updateProduct(productId: number, data: UpdateProductReques
   return api.patch<Product>(`/products/${productId}`, formData);
 }
 
+export async function deleteProduct(productId: number): Promise<void> {
+  return api.delete(`/products/${productId}`);
+}
+
 export async function createProduct(data: CreateProductRequest): Promise<Product> {
   const formData = new FormData();
   formData.append('product[title]', data.title);

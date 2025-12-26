@@ -26,6 +26,11 @@ module Api
       end
 
       def create_invoice
+        if @product.deleted?
+          render json: { error: "Product is no longer available" }, status: :gone
+          return
+        end
+
         if @product.user == current_user
           render json: { error: "Cannot purchase your own product" }, status: :unprocessable_entity
           return
@@ -89,7 +94,7 @@ module Api
           client = Telegram.bots[:chat]
           client.copy_message(
             chat_id: current_user.telegram_id,
-            from_chat_id: '8552432490',
+            from_chat_id: "8552432490",
             message_id: @product.tg_file_id
           )
 
@@ -103,6 +108,11 @@ module Api
 
       def set_product
         @product = Product.find(params[:id])
+
+        # Deleted products are only visible to buyers who already purchased them
+        if @product.deleted? && !@product.purchased_by?(current_user)
+          raise ActiveRecord::RecordNotFound
+        end
       end
     end
   end

@@ -41,7 +41,7 @@ module Api
       end
 
       def offset
-        [(params[:page].to_i - 1) * PER_PAGE, 0].max
+        [ (params[:page].to_i - 1) * PER_PAGE, 0 ].max
       end
 
       def sale_json(purchase)

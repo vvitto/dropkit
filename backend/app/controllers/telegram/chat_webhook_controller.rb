@@ -10,7 +10,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     reply_with :message, text: text, parse_mode: "HTML", reply_markup: {
       inline_keyboard: [
         [
-          { text: "Создать цифровой товар", url: "https://t.me/dropkit_bot?startapp=r_#{message[:message_id]}" },
+          { text: "Создать цифровой товар", url: "https://t.me/dropkit_bot?startapp=r_#{message[:message_id]}" }
         ]
       ]
     }
@@ -31,16 +31,16 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     products = scope.limit(10).all
 
     resp = products.map do |product|
-      img_url = product.cover.attached? ? "https://dropkit.ngrok.dev#{Rails.application.routes.url_helpers.rails_blob_path(product.cover)}" : 'https://picsum.photos/536/354'
+      img_url = product.cover.attached? ? "https://dropkit.ngrok.dev#{Rails.application.routes.url_helpers.rails_blob_path(product.cover)}" : "https://picsum.photos/536/354"
 
       {
-        type: 'article',
+        type: "article",
         id: product.id,
         thumbnail_url: img_url,
         title: product.title,
-        description: product.description || '',
+        description: product.description || "",
         input_message_content: {
-          message_text: product.description || '',
+          message_text: product.description || "",
           link_preview_options: {
             url: img_url
           }
@@ -65,35 +65,35 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     # log_info("Payload: #{payload}")
     p "================================"
 
-#     user_telegram_id = payload.dig("from", "id")
-#     if user_telegram_id.is_a?(Integer)
-#       User.where(telegram_id: user_telegram_id, bot_blocked: true).update_all(bot_blocked: false)
-#     end
-#
-#     url = ReferralImage.random_image
-#     caption = "
-# <b>Mutant Gifts</b> - The first game with integrated AI and telegram gifts.
-# Join the game to:
-# 🧬 Mutate your unique characters with NFT.
-# 🔥 Fight in epic arenas.
-# 🎁 Win new gifts every season!"
-#
-#     respond_with :photo, photo: url, parse_mode: "HTML", caption:, reply_markup: {
-#       inline_keyboard: [
-#         [
-#           { text: "🎮 Play game", url: "https://t.me/mutant_gifts_bot?startapp" },
-#           { text: "📱Community", url: "https://t.me/mutant_gifts" }
-#         ]
-#       ]
-#     }
-#
-#   rescue StandardError => e
-#     if e.message.include? "bot was blocked by the user"
-#       log_info("Bot was blocked by the user with telegram ID: #{user_telegram_id}")
-#       User.where  (telegram_id: user_telegram_id).update_all(bot_blocked: true)
-#     else
-#       raise e
-#     end
+    #     user_telegram_id = payload.dig("from", "id")
+    #     if user_telegram_id.is_a?(Integer)
+    #       User.where(telegram_id: user_telegram_id, bot_blocked: true).update_all(bot_blocked: false)
+    #     end
+    #
+    #     url = ReferralImage.random_image
+    #     caption = "
+    # <b>Mutant Gifts</b> - The first game with integrated AI and telegram gifts.
+    # Join the game to:
+    # 🧬 Mutate your unique characters with NFT.
+    # 🔥 Fight in epic arenas.
+    # 🎁 Win new gifts every season!"
+    #
+    #     respond_with :photo, photo: url, parse_mode: "HTML", caption:, reply_markup: {
+    #       inline_keyboard: [
+    #         [
+    #           { text: "🎮 Play game", url: "https://t.me/mutant_gifts_bot?startapp" },
+    #           { text: "📱Community", url: "https://t.me/mutant_gifts" }
+    #         ]
+    #       ]
+    #     }
+    #
+    #   rescue StandardError => e
+    #     if e.message.include? "bot was blocked by the user"
+    #       log_info("Bot was blocked by the user with telegram ID: #{user_telegram_id}")
+    #       User.where  (telegram_id: user_telegram_id).update_all(bot_blocked: true)
+    #     else
+    #       raise e
+    #     end
   end
 
   private

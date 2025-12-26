@@ -11,8 +11,8 @@ class CreateTransactions < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :transactions, [:user_id, :available_at]
-    add_index :transactions, [:user_id, :processed]
+    add_index :transactions, [ :user_id, :available_at ]
+    add_index :transactions, [ :user_id, :processed ]
     add_index :transactions, :transaction_type
   end
 end

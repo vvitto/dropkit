@@ -5,7 +5,7 @@ Rails.application.routes.draw do
       resource :session, only: [ :show ]
 
       resources :products, only: [ :index, :create, :show, :update, :destroy ]
-      post 'products/:id/create_share_message', to: 'products#create_share_message'
+      post "products/:id/create_share_message", to: "products#create_share_message"
 
       resources :product_intents, only: [ :create ]
 

@@ -63,8 +63,8 @@ class User < ApplicationRecord
     available = balance_transactions.available.sum(:amount)
     pending = balance_transactions.pending.sum(:amount)
     update!(
-      cached_available_stars: [available, 0].max,
-      cached_pending_stars: [pending, 0].max
+      cached_available_stars: [ available, 0 ].max,
+      cached_pending_stars: [ pending, 0 ].max
     )
   end
 

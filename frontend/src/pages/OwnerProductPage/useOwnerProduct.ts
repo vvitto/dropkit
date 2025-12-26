@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getProduct, updateProduct } from '@/api/products';
+import { useNavigate, useParams } from 'react-router-dom';
+import { deleteProduct, getProduct, updateProduct } from '@/api/products';
 import type { Product } from '@/types/product';
 
 export interface FormData {
@@ -23,6 +23,7 @@ interface UseOwnerProductResult {
   error: string | null;
   isEditing: boolean;
   isSaving: boolean;
+  isDeleting: boolean;
   formData: FormData;
   errors: FieldErrors;
   coverInputRef: React.RefObject<HTMLInputElement>;
@@ -33,10 +34,12 @@ interface UseOwnerProductResult {
   startEditing: () => void;
   cancelEditing: () => void;
   handleSave: () => Promise<void>;
+  handleDelete: () => Promise<void>;
 }
 
 export function useOwnerProduct(): UseOwnerProductResult {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const coverInputRef = useRef<HTMLInputElement>(null);
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -44,6 +47,7 @@ export function useOwnerProduct(): UseOwnerProductResult {
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
 
   const [formData, setFormData] = useState<FormData>({
@@ -174,12 +178,28 @@ export function useOwnerProduct(): UseOwnerProductResult {
     }
   };
 
+  const handleDelete = async () => {
+    if (!product || isDeleting) return;
+
+    try {
+      setIsDeleting(true);
+      await deleteProduct(product.id);
+      navigate('/', { replace: true });
+    } catch (err) {
+      setErrors({
+        general: err instanceof Error ? err.message : 'Не удалось удалить товар',
+      });
+      setIsDeleting(false);
+    }
+  };
+
   return {
     product,
     isLoading,
     error,
     isEditing,
     isSaving,
+    isDeleting,
     formData,
     errors,
     coverInputRef,
@@ -190,5 +210,6 @@ export function useOwnerProduct(): UseOwnerProductResult {
     startEditing,
     cancelEditing,
     handleSave,
+    handleDelete,
   };
 }
