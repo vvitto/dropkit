@@ -7,6 +7,21 @@ module Api
         render json: @products.map { |p| product_json(p) }
       end
 
+      def show
+        @product = current_user.products.find(params[:id])
+        render json: product_json(@product)
+      end
+
+      def update
+        @product = current_user.products.find(params[:id])
+
+        if @product.update(update_params)
+          render json: product_json(@product)
+        else
+          render json: { error: @product.errors.full_messages.join(", ") }, status: :unprocessable_entity
+        end
+      end
+
       def create
         current_user.with_lock do
           @product = current_user.products.build(product_params)
@@ -68,6 +83,10 @@ module Api
 
       def product_params
         params.require(:product).permit(:title, :description, :price_stars, :tg_file_id, :cover)
+      end
+
+      def update_params
+        params.require(:product).permit(:title, :description, :price_stars, :cover)
       end
 
       def product_json(product)

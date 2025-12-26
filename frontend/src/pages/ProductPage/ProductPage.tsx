@@ -1,3 +1,4 @@
+import { OwnerProductPage } from '@/pages/OwnerProductPage';
 import { useProduct } from './useProduct';
 import { ProductHeader } from './ProductHeader';
 import { ProductCard } from './ProductCard';
@@ -25,6 +26,10 @@ export function ProductPage() {
 
   if (error || !product) {
     return <ProductError error={error} />;
+  }
+
+  if (isOwner) {
+    return <OwnerProductPage />;
   }
 
   return (

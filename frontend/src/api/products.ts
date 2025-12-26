@@ -13,6 +13,33 @@ export async function getProducts(): Promise<Product[]> {
   return api.get<Product[]>(`/products`);
 }
 
+export async function getProduct(productId: number): Promise<Product> {
+  return api.get<Product>(`/products/${productId}`);
+}
+
+export interface UpdateProductRequest {
+  title: string;
+  description?: string;
+  price_stars: number;
+  cover?: File;
+}
+
+export async function updateProduct(productId: number, data: UpdateProductRequest): Promise<Product> {
+  const formData = new FormData();
+  formData.append('product[title]', data.title);
+  formData.append('product[price_stars]', data.price_stars.toString());
+
+  if (data.description) {
+    formData.append('product[description]', data.description);
+  }
+
+  if (data.cover) {
+    formData.append('product[cover]', data.cover);
+  }
+
+  return api.patch<Product>(`/products/${productId}`, formData);
+}
+
 export async function createProduct(data: CreateProductRequest): Promise<Product> {
   const formData = new FormData();
   formData.append('product[title]', data.title);
