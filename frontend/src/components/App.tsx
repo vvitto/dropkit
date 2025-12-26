@@ -5,7 +5,7 @@ import {useLaunchParams} from '@tma.js/sdk-react';
 import {routes} from '@/navigation/routes.tsx';
 import {IndexPage} from "@/pages/IndexPage";
 import {CreatePage} from "@/pages/CreatePage";
-import {ProductPage} from "@/pages/ProductPage.tsx";
+import {ProductPage} from "@/pages/ProductPage";
 import {IncomePage} from "@/pages/IncomePage";
 
 function StartParamRouter() {
