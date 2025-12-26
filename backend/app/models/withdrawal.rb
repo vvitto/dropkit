@@ -2,31 +2,31 @@
 #
 # Table name: withdrawals
 #
-#  id               :integer          not null, primary key
-#  admin_notes      :text
-#  amount_stars     :integer          not null
-#  net_amount_stars :integer          not null
-#  payment_details  :string
-#  payment_method   :string
-#  processed_at     :datetime
-#  status           :string           default("pending"), not null
-#  usd_equivalent   :decimal(10, 2)
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  user_id          :integer          not null
+#  id             :integer          not null, primary key
+#  amount_stars   :integer          not null
+#  processed_at   :datetime
+#  tx_hash        :string
+#  wallet_address :string           not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  status_id      :integer          default(10), not null
+#  user_id        :integer          not null
 #
 # Indexes
 #
-#  index_withdrawals_on_status              (status)
-#  index_withdrawals_on_user_id             (user_id)
-#  index_withdrawals_on_user_id_and_status  (user_id,status)
+#  index_withdrawals_on_user_id  (user_id)
 #
 # Foreign Keys
 #
 #  user_id  (user_id => users.id)
 #
 class Withdrawal < ApplicationRecord
-  STATUSES = %w[pending completed rejected].freeze
+  STATUSES = {
+    pending: 10,
+    completed: 20,
+    rejected: 30
+  }.freeze
+
   COMMISSION_RATE = 0.05
   STAR_TO_USD = 0.013
 
@@ -34,65 +34,54 @@ class Withdrawal < ApplicationRecord
   has_one :balance_transaction, as: :source, class_name: "BalanceTransaction"
 
   validates :amount_stars, presence: true, numericality: { greater_than: 0, only_integer: true }
-  validates :net_amount_stars, presence: true, numericality: { greater_than: 0, only_integer: true }
-  validates :status, presence: true, inclusion: { in: STATUSES }
+  validates :wallet_address, presence: true
 
-  scope :pending, -> { where(status: "pending") }
-  scope :completed, -> { where(status: "completed") }
-  scope :rejected, -> { where(status: "rejected") }
+  scope :pending, -> { where(status_id: STATUSES[:pending]) }
+  scope :completed, -> { where(status_id: STATUSES[:completed]) }
+  scope :rejected, -> { where(status_id: STATUSES[:rejected]) }
 
-  before_validation :calculate_net_amount, on: :create
-  before_validation :calculate_usd_equivalent, on: :create
+  def status
+    STATUSES.key(status_id)
+  end
 
   def pending?
-    status == "pending"
+    status_id == STATUSES[:pending]
   end
 
   def completed?
-    status == "completed"
+    status_id == STATUSES[:completed]
   end
 
   def rejected?
-    status == "rejected"
+    status_id == STATUSES[:rejected]
   end
 
-  def mark_completed!(notes: nil)
+  def mark_completed!(tx_hash:)
     ActiveRecord::Base.transaction do
       update!(
-        status: "completed",
+        status_id: STATUSES[:completed],
         processed_at: Time.current,
-        admin_notes: notes
+        tx_hash: tx_hash
       )
       create_withdrawal_transaction!
-      user.decrement!(:cached_available_stars, net_amount_stars)
+      user.decrement!(:cached_available_stars, amount_stars)
     end
   end
 
-  def mark_rejected!(notes: nil)
+  def mark_rejected!
     update!(
-      status: "rejected",
-      processed_at: Time.current,
-      admin_notes: notes
+      status_id: STATUSES[:rejected],
+      processed_at: Time.current
     )
   end
 
   private
 
-  def calculate_net_amount
-    return if amount_stars.blank?
-    self.net_amount_stars = (amount_stars * (1 - COMMISSION_RATE)).floor
-  end
-
-  def calculate_usd_equivalent
-    return if net_amount_stars.blank?
-    self.usd_equivalent = net_amount_stars * STAR_TO_USD
-  end
-
   def create_withdrawal_transaction!
     BalanceTransaction.create!(
       user: user,
       transaction_type: "withdrawal",
-      amount: -net_amount_stars,
+      amount: -amount_stars,
       available_at: nil,
       processed: true,
       source: self

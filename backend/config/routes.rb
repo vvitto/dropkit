@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       end
 
       resource :income, only: [ :show ], controller: :income
+      resources :sales, only: [ :index ]
       get "wallet/payload", to: "wallet#payload"
       post "wallet/validate", to: "wallet#validate"
 
@@ -42,5 +43,6 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  telegram_webhook Telegram::WebhookController
+  telegram_webhook Telegram::ChatWebhookController, :chat
+  telegram_webhook Telegram::GroupWebhookController, :group
 end

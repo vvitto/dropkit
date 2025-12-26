@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { HeaderTabs } from '@/components/layout/HeaderTabs';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Wallet, Loader2, Star, TrendingUp } from 'lucide-react';
-import { getIncome, createWithdrawal } from '@/api/income';
-import type { IncomeData } from '@/api/income';
-import { WithdrawalModal } from './WithdrawalModal';
+import {useEffect, useState} from 'react';
+import {HeaderTabs} from '@/components/layout/HeaderTabs';
+import {Card, CardContent} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {ChevronRight, Loader2, Star, TrendingUp, Wallet} from 'lucide-react';
+import type {IncomeData} from '@/api/income';
+import {createWithdrawal, getIncome} from '@/api/income';
+import {WithdrawalModal} from './WithdrawalModal';
+import {SalesList} from './SalesList';
 
 export function IncomePage() {
   const [data, setData] = useState<IncomeData | null>(null);
@@ -36,15 +37,18 @@ export function IncomePage() {
 
     try {
       setIsSubmitting(true);
-      await createWithdrawal({
-        amount_stars: data.summary.available_stars,
-        payment_method: 'ton_wallet',
-      });
+      await createWithdrawal();
       setIsWithdrawalModalOpen(false);
       await loadData();
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleWithdrawalClick = () => {
+    if (!data) return;
+    if (data.summary.available_stars <= 0 || data.has_pending_withdrawal) return;
+    setIsWithdrawalModalOpen(true);
   };
 
   if (isLoading) {
@@ -73,12 +77,13 @@ export function IncomePage() {
   }
 
   const { summary, has_pending_withdrawal } = data;
+  const canWithdraw = summary.available_stars > 0 && !has_pending_withdrawal;
 
   return (
     <div className="flex flex-col min-h-screen">
       <HeaderTabs />
 
-      <div className="flex-1 overflow-auto p-4 pb-24">
+      <div className="flex-1 overflow-auto p-4">
         <Card>
           <CardContent className="p-4 space-y-4">
             {/* Total Earnings */}
@@ -98,11 +103,23 @@ export function IncomePage() {
 
             <div className="border-t" />
 
-            {/* Available for Withdrawal */}
-            <div className="flex items-center justify-between">
+            {/* Available for Withdrawal - Clickable */}
+            <button
+              onClick={handleWithdrawalClick}
+              disabled={!canWithdraw}
+              className={`w-full flex items-center justify-between -mx-4 px-4 py-2 transition-colors ${
+                canWithdraw
+                  ? 'hover:bg-muted/50 active:bg-muted cursor-pointer'
+                  : 'cursor-default opacity-70'
+              }`}
+            >
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Wallet className="w-4 h-4" />
-                <span>Доступно для вывода</span>
+                <span>
+                  {has_pending_withdrawal
+                    ? 'Заявка в обработке'
+                    : 'Доступно для вывода'}
+                </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Star className="w-4 h-4 text-amber-500" />
@@ -110,32 +127,24 @@ export function IncomePage() {
                 <span className="text-sm text-muted-foreground">
                   (~${summary.available_usd.toFixed(2)})
                 </span>
+                {canWithdraw && (
+                  <ChevronRight className="w-4 h-4 text-muted-foreground ml-1" />
+                )}
               </div>
-            </div>
+            </button>
           </CardContent>
         </Card>
 
         {/* Info */}
-        <p className="text-xs text-muted-foreground text-center mt-4">
+        <p className="text-xs text-muted-foreground text-center mt-4 mb-6">
           Комиссия: {summary.commission_rate}% • Звёзды разблокируются через {summary.lockup_days} дней
         </p>
-      </div>
 
-      {/* Fixed Bottom Button */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t">
-        <Button
-          className="w-full h-12 text-base"
-          size="lg"
-          disabled={summary.available_stars <= 0 || has_pending_withdrawal}
-          onClick={() => setIsWithdrawalModalOpen(true)}
-        >
-          <Wallet className="w-5 h-5 mr-2" />
-          {has_pending_withdrawal
-            ? 'Заявка в обработке'
-            : summary.available_stars > 0
-              ? `Вывести ${summary.available_stars} звёзд`
-              : 'Нет доступных средств'}
-        </Button>
+        {/* Sales History */}
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold mb-3">История продаж</h2>
+          <SalesList />
+        </div>
       </div>
 
       <WithdrawalModal

@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { Star, AlertCircle, Loader2, Clock, Wallet } from 'lucide-react';
-import { useWalletConnect } from '@/hooks/useWalletConnect';
+import {Button} from '@/components/ui/button';
+import {Clock, Loader2, Star, Wallet} from 'lucide-react';
+import {useWalletConnect} from '@/hooks/useWalletConnect';
 
 interface WithdrawalModalProps {
   isOpen: boolean;

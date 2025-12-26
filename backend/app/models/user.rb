@@ -22,7 +22,6 @@ class User < ApplicationRecord
   has_many :products, dependent: :destroy
   has_many :purchases, foreign_key: :buyer_id, dependent: :destroy
   has_many :purchased_products, through: :purchases, source: :product
-  has_many :product_intents, dependent: :destroy
   has_many :balance_transactions, dependent: :destroy
   has_many :withdrawals, dependent: :destroy
 
@@ -31,6 +30,7 @@ class User < ApplicationRecord
 
   def self.find_or_create_from_telegram_data(data)
     user = find_or_initialize_by(telegram_id: data["id"])
+    send_message_to_group(user) unless user.persisted?
     user.update!(
       first_name: data["first_name"],
       last_name: data["last_name"],
@@ -66,5 +66,15 @@ class User < ApplicationRecord
       cached_available_stars: [available, 0].max,
       cached_pending_stars: [pending, 0].max
     )
+  end
+
+  def self.send_message_to_group(user)
+    Telegram.bots[:group].send_message(
+      chat_id: TelegramChat::Const::GROUP_CHAT_ID,
+      message_thread_id: TelegramChat::Const::USERS_THREAD_ID,
+      text: "New user | Username: #{user.display_name} ID: #{user.telegram_id}"
+    )
+  rescue Telegram::Bot::Error => e
+    Rails.logger.error("Failed to send message to group: #{e.message}")
   end
 end

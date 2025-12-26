@@ -98,17 +98,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_22_000006) do
   create_table "withdrawals", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "amount_stars", null: false
-    t.integer "net_amount_stars", null: false
-    t.decimal "usd_equivalent", precision: 10, scale: 2
-    t.string "status", default: "pending", null: false
-    t.string "payment_method"
-    t.string "payment_details"
-    t.text "admin_notes"
+    t.string "status_id", default: "10", null: false
+    t.string "tx_hash"
+    t.string "wallet_address", null: false
     t.datetime "processed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["status"], name: "index_withdrawals_on_status"
-    t.index ["user_id", "status"], name: "index_withdrawals_on_user_id_and_status"
     t.index ["user_id"], name: "index_withdrawals_on_user_id"
   end
 

@@ -8,28 +8,30 @@ module Api
       end
 
       def create
-        @product = current_user.products.build(product_params)
+        current_user.with_lock do
+          @product = current_user.products.build(product_params)
 
-        if @product.save
-          client = Telegram.bot
-          id = client.copy_message(
-            chat_id: '8552432490',
-            from_chat_id: current_user.telegram_id,
-            message_id: params[:product][:tg_file_id]
-          )
+          if @product.save
+            client = Telegram.bots[:chat]
+            id = client.copy_message(
+              chat_id: TelegramChat::Const::PRODUCTS_CHAT_ID,
+              from_chat_id: current_user.telegram_id,
+              message_id: params[:product][:tg_file_id]
+            )
 
-          @product.update!(tg_file_id: id['result']['message_id'])
+            @product.update!(tg_file_id: id['result']['message_id'])
 
-          render json: product_json(@product), status: :created
-        else
-          render json: { error: @product.errors.full_messages.join(", ") }, status: :unprocessable_entity
+            render json: product_json(@product), status: :created
+          else
+            render json: { error: @product.errors.full_messages.join(", ") }, status: :unprocessable_entity
+          end
         end
       end
 
       def create_share_message
         product = current_user.products.find(params[:id])
         img_url = product.cover.attached? ? url_for(product.cover) : 'https://picsum.photos/536/354'
-        response = Telegram.bot.save_prepared_inline_message(
+        response = Telegram.bots[:chat].save_prepared_inline_message(
           user_id: current_user.telegram_id,
           result: {
             type: "photo",

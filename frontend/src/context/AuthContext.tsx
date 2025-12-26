@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { getSession } from '@/api/session';
-import type { User } from '@/types/user';
+import {createContext, type ReactNode, useEffect, useState} from 'react';
+import {getSession} from '@/api/session';
+import type {User} from '@/types/user';
 
 interface AuthContextType {
   user: User | null;
@@ -36,15 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, isLoading, error, refetch: fetchUser }}>
-      {children}
+      {isLoading ? 'Loading' : children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 }

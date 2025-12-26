@@ -1,5 +1,4 @@
-class Telegram::WebhookController < Telegram::Bot::UpdatesController
-
+class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
   def message(message)
     if message["successful_payment"].present?
       process_successful_payment(message["successful_payment"])
@@ -121,9 +120,21 @@ class Telegram::WebhookController < Telegram::Bot::UpdatesController
       telegram_payment_charge_id: payment["telegram_payment_charge_id"]
     )
 
+    send_message_to_group!(payment, buyer, product)
+
     Rails.logger.info "[Telegram Webhook] Purchase created for product #{product.id} by user #{buyer.id}"
   rescue StandardError => e
     Rails.logger.error "[Telegram Webhook] Error processing payment: #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
+  end
+
+  def send_message_to_group!(payment, buyer, product)
+    Telegram.bots[:group].send_message(
+      chat_id: TelegramChat::Const::GROUP_CHAT_ID,
+      message_thread_id: TelegramChat::Const::PURCHASES_THREAD_ID,
+      text: "New purchase:\nUser ID: #{buyer.id}\nAmount: #{payment['total_amount']} stars\nProduct ID: #{product.id}\nTransaction ID: #{payment['telegram_payment_charge_id']}"
+    )
+  rescue StandardError => e
+    Rails.logger.error("Failed to send withdrawal notification: #{e.message}")
   end
 end

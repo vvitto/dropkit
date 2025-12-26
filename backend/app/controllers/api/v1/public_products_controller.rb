@@ -86,7 +86,7 @@ module Api
         end
 
         begin
-          client = Telegram.bot
+          client = Telegram.bots[:chat]
           client.copy_message(
             chat_id: current_user.telegram_id,
             from_chat_id: '8552432490',

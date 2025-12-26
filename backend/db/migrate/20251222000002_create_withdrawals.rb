@@ -3,18 +3,12 @@ class CreateWithdrawals < ActiveRecord::Migration[8.0]
     create_table :withdrawals do |t|
       t.references :user, null: false, foreign_key: true
       t.integer :amount_stars, null: false
-      t.integer :net_amount_stars, null: false
-      t.decimal :usd_equivalent, precision: 10, scale: 2
-      t.string :status, default: 'pending', null: false
-      t.string :payment_method
-      t.string :payment_details
-      t.text :admin_notes
+      t.string :status_id, default: 10, null: false
+      t.string :tx_hash
+      t.string :wallet_address, null: false
       t.datetime :processed_at
 
       t.timestamps
     end
-
-    add_index :withdrawals, [:user_id, :status]
-    add_index :withdrawals, :status
   end
 end

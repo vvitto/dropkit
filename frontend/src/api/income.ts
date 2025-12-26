@@ -1,4 +1,4 @@
-import { api } from './client';
+import {api} from './client';
 
 export interface IncomeSummary {
   total_earned_stars: number;
@@ -14,25 +14,35 @@ export interface IncomeData {
   has_pending_withdrawal: boolean;
 }
 
-export interface CreateWithdrawalRequest {
+export interface Sale {
+  id: number;
+  product_title: string;
   amount_stars: number;
-  payment_method?: string;
-  payment_details?: string;
+  buyer: {
+    username: string | null;
+    first_name: string;
+  };
+  payment_method: string;
+  available_at: string | null;
+  is_available: boolean;
+  created_at: string;
 }
 
-export interface Withdrawal {
-  id: number;
-  amount_stars: number;
-  net_amount_stars: number;
-  usd_equivalent: number;
-  status: 'pending' | 'completed' | 'rejected';
-  created_at: string;
+export interface SalesResponse {
+  sales: Sale[];
+  has_more: boolean;
 }
 
 export async function getIncome(): Promise<IncomeData> {
   return api.get<IncomeData>('/income');
 }
 
-export async function createWithdrawal(data: CreateWithdrawalRequest): Promise<Withdrawal> {
-  return api.post<Withdrawal>('/withdrawals', data);
+export async function getSales(page: number = 1, query?: string): Promise<SalesResponse> {
+  const params = new URLSearchParams({ page: String(page) });
+  if (query) params.set('q', query);
+  return api.get<SalesResponse>(`/sales?${params}`);
+}
+
+export async function createWithdrawal(): Promise<void> {
+  return api.post<void>('/withdrawals');
 }

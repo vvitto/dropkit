@@ -9,7 +9,7 @@ module TelegramChat
     end
 
     def call
-      client = Telegram.bot
+      client = Telegram.bots[:chat]
       client.send_message(chat_id: @user.telegram_id, text: message_text, parse_mode: "HTML")
     end
 
