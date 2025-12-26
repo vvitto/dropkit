@@ -68,3 +68,23 @@ export async function confirmPayment(
 export async function deliverContent(productId: number): Promise<{ success: boolean }> {
   return api.post<{ success: boolean }>(`/public_products/${productId}/deliver_content`);
 }
+
+export interface PurchasedProduct {
+  id: number;
+  purchased_at: string;
+  product: {
+    id: number;
+    title: string;
+    description?: string;
+    price_stars: number;
+    cover_url?: string;
+  };
+  seller: {
+    first_name: string;
+    username?: string;
+  };
+}
+
+export async function getPurchases(): Promise<PurchasedProduct[]> {
+  return api.get<PurchasedProduct[]>('/purchases');
+}

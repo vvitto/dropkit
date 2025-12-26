@@ -21,6 +21,7 @@ Rails.application.routes.draw do
 
       resource :income, only: [ :show ], controller: :income
       resources :sales, only: [ :index ]
+      resources :purchases, only: [ :index ]
       get "wallet/payload", to: "wallet#payload"
       post "wallet/validate", to: "wallet#validate"
 
