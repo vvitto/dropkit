@@ -1,6 +1,7 @@
-import {createContext, type ReactNode, useEffect, useState} from 'react';
-import {getSession} from '@/api/session';
-import type {User} from '@/types/user';
+import { createContext, type ReactNode, useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { getSession } from '@/api/session';
+import type { User } from '@/types/user';
 
 interface AuthContextType {
   user: User | null;
@@ -10,6 +11,19 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+function AuthLoading() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen gradient-subtle">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+          <Loader2 className="size-8 animate-spin text-primary" />
+        </div>
+        <p className="text-muted-foreground font-medium">Загрузка...</p>
+      </div>
+    </div>
+  );
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -36,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, isLoading, error, refetch: fetchUser }}>
-      {isLoading ? 'Loading' : children}
+      {isLoading ? <AuthLoading /> : children}
     </AuthContext.Provider>
   );
 }

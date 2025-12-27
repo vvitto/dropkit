@@ -1,12 +1,50 @@
 import {useEffect, useState} from 'react';
 import {HeaderTabs} from '@/components/layout/HeaderTabs';
-import {Card, CardContent} from '@/components/ui/card';
+import {CardGlass} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
-import {ChevronRight, Loader2, Star, TrendingUp, Wallet} from 'lucide-react';
+import {AlertTriangle, ChevronRight, RefreshCw, Star, TrendingUp, Wallet,} from 'lucide-react';
 import type {IncomeData} from '@/api/income';
 import {createWithdrawal, getIncome} from '@/api/income';
 import {WithdrawalModal} from './WithdrawalModal';
 import {SalesList} from './SalesList';
+
+function LoadingSkeleton() {
+  return (
+    <div className="flex flex-col min-h-screen gradient-subtle">
+      <HeaderTabs />
+      <div className="flex-1 p-4 space-y-4">
+        {/* Stats Card Skeleton */}
+        <CardGlass className="p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="h-5 skeleton rounded-lg w-40" />
+            <div className="h-6 skeleton rounded-lg w-24" />
+          </div>
+          <div className="border-t border-border/50" />
+          <div className="flex items-center justify-between">
+            <div className="h-5 skeleton rounded-lg w-36" />
+            <div className="h-6 skeleton rounded-lg w-28" />
+          </div>
+        </CardGlass>
+
+        {/* Info Skeleton */}
+        <div className="flex justify-center">
+          <div className="h-4 skeleton rounded-lg w-64" />
+        </div>
+
+        {/* Sales Header Skeleton */}
+        <div className="h-6 skeleton rounded-lg w-32 mt-4" />
+
+        {/* Search Skeleton */}
+        <div className="h-12 skeleton rounded-xl w-full" />
+
+        {/* Sale Cards Skeleton */}
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-20 skeleton rounded-2xl w-full" />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function IncomePage() {
   const [data, setData] = useState<IncomeData | null>(null);
@@ -52,23 +90,23 @@ export function IncomePage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <HeaderTabs />
-        <div className="flex-1 flex items-center justify-center p-4">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
   if (error || !data) {
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen gradient-subtle">
         <HeaderTabs />
-        <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
-          <p className="text-destructive mb-4">{error || 'Не удалось загрузить данные'}</p>
-          <Button variant="outline" onClick={loadData}>
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
+            <AlertTriangle className="size-8 text-destructive" />
+          </div>
+          <h3 className="text-lg font-semibold mb-2">Ошибка загрузки</h3>
+          <p className="text-muted-foreground mb-6 max-w-[280px]">
+            {error || 'Не удалось загрузить данные о доходах'}
+          </p>
+          <Button onClick={loadData} size="lg">
+            <RefreshCw className="size-5" />
             Повторить
           </Button>
         </div>
@@ -80,69 +118,74 @@ export function IncomePage() {
   const canWithdraw = summary.available_stars > 0 && !has_pending_withdrawal;
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen gradient-subtle">
       <HeaderTabs />
 
-      <div className="flex-1 overflow-auto p-4">
-        <Card>
-          <CardContent className="p-4 space-y-4">
-            {/* Total Earnings */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <TrendingUp className="w-4 h-4" />
-                <span>Прибыль за всё время</span>
+      <div className="flex-1 overflow-auto p-4 space-y-4">
+        {/* Stats Card */}
+        <CardGlass className="p-5 space-y-4">
+          {/* Total Earnings */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5 text-muted-foreground">
+              <div className="w-9 h-9 rounded-xl bg-success/10 flex items-center justify-center">
+                <TrendingUp className="size-5 text-success" />
               </div>
-              <div className="flex items-center gap-1.5">
-                <Star className="w-4 h-4 text-amber-500" />
-                <span className="font-semibold">{summary.total_earned_stars.toLocaleString()}</span>
-                <span className="text-sm text-muted-foreground">
-                  (~${summary.total_earned_usd.toFixed(2)})
-                </span>
-              </div>
+              <span className="font-medium">Всего заработано</span>
             </div>
+            <div className="flex items-center gap-1.5">
+              <Star className="size-5 text-warning fill-warning" />
+              <span className="text-lg font-bold">{summary.total_earned_stars.toLocaleString()}</span>
+              <span className="text-sm text-muted-foreground ml-1">
+                ≈${summary.total_earned_usd.toFixed(2)}
+              </span>
+            </div>
+          </div>
 
-            <div className="border-t" />
+          <div className="border-t border-border/50" />
 
-            {/* Available for Withdrawal - Clickable */}
-            <button
-              onClick={handleWithdrawalClick}
-              disabled={!canWithdraw}
-              className={`w-full flex items-center justify-between -mx-4 px-4 py-2 transition-colors ${
-                canWithdraw
-                  ? 'hover:bg-muted/50 active:bg-muted cursor-pointer'
-                  : 'cursor-default opacity-70'
-              }`}
-            >
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Wallet className="w-4 h-4" />
-                <span>
-                  {has_pending_withdrawal
-                    ? 'Заявка в обработке'
-                    : 'Доступно для вывода'}
-                </span>
+          {/* Available for Withdrawal - Clickable */}
+          <button
+            onClick={handleWithdrawalClick}
+            disabled={!canWithdraw}
+            className={`w-full flex items-center justify-between -mx-1 px-1 py-1 rounded-xl transition-all duration-200 ${
+              canWithdraw
+                ? 'hover:bg-primary/5 active:scale-[0.99] cursor-pointer'
+                : 'cursor-default opacity-70'
+            }`}
+          >
+            <div className="flex items-center gap-2.5 text-muted-foreground">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Wallet className="size-5 text-primary" />
               </div>
-              <div className="flex items-center gap-1.5">
-                <Star className="w-4 h-4 text-amber-500" />
-                <span className="font-semibold text-primary">{summary.available_stars.toLocaleString()}</span>
-                <span className="text-sm text-muted-foreground">
-                  (~${summary.available_usd.toFixed(2)})
-                </span>
-                {canWithdraw && (
-                  <ChevronRight className="w-4 h-4 text-muted-foreground ml-1" />
-                )}
-              </div>
-            </button>
-          </CardContent>
-        </Card>
+              <span className="font-medium">
+                {has_pending_withdrawal
+                  ? 'Заявка обрабатывается'
+                  : 'Доступно к выводу'}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Star className="size-5 text-warning fill-warning" />
+              <span className="text-lg font-bold text-primary">
+                {summary.available_stars.toLocaleString()}
+              </span>
+              <span className="text-sm text-muted-foreground ml-1">
+                ≈${summary.available_usd.toFixed(2)}
+              </span>
+              {canWithdraw && (
+                <ChevronRight className="size-5 text-primary ml-1" />
+              )}
+            </div>
+          </button>
+        </CardGlass>
 
         {/* Info */}
-        <p className="text-xs text-muted-foreground text-center mt-4 mb-6">
-          Комиссия: {summary.commission_rate}% • Звёзды разблокируются через {summary.lockup_days} дней
+        <p className="text-xs text-muted-foreground text-center px-4">
+          Комиссия сервиса: {summary.commission_rate}% • Звёзды разблокируются через {summary.lockup_days} дней после продажи
         </p>
 
         {/* Sales History */}
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold mb-3">История продаж</h2>
+        <div className="pt-2">
+          <h2 className="text-lg font-semibold mb-4">История продаж</h2>
           <SalesList />
         </div>
       </div>

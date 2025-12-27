@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Pencil, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface OwnerProductHeaderProps {
   title: string;
@@ -20,7 +21,7 @@ export function OwnerProductHeader({
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+    <header className="sticky top-0 z-10 glass-subtle border-b border-border/50 safe-area-top">
       <div className="flex items-center gap-3 p-4">
         <Button
           variant="ghost"
@@ -28,14 +29,23 @@ export function OwnerProductHeader({
           onClick={() => navigate(-1)}
           className="shrink-0"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="size-5" />
         </Button>
-        <div className="flex-1">
-          <h1 className="text-lg font-semibold truncate">{title}</h1>
-          <p className="text-xs text-muted-foreground">
-            {isEditing ? 'Редактирование' : 'Ваш товар'}
-          </p>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-semibold truncate">{title}</h1>
+            {isEditing && (
+              <Badge variant="warning" size="sm">
+                Редактирование
+              </Badge>
+            )}
+          </div>
+          {!isEditing && (
+            <p className="text-sm text-muted-foreground">Ваш товар</p>
+          )}
         </div>
+
         {isEditing ? (
           <Button
             variant="ghost"
@@ -43,7 +53,7 @@ export function OwnerProductHeader({
             onClick={onCancelEditing}
             className="shrink-0"
           >
-            <X className="w-5 h-5" />
+            <X className="size-5" />
           </Button>
         ) : (
           <div className="flex items-center gap-1">
@@ -53,7 +63,7 @@ export function OwnerProductHeader({
               onClick={onDeleteClick}
               className="shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
             >
-              <Trash2 className="w-5 h-5" />
+              <Trash2 className="size-5" />
             </Button>
             <Button
               variant="ghost"
@@ -61,7 +71,7 @@ export function OwnerProductHeader({
               onClick={onStartEditing}
               className="shrink-0"
             >
-              <Pencil className="w-5 h-5" />
+              <Pencil className="size-5" />
             </Button>
           </div>
         )}

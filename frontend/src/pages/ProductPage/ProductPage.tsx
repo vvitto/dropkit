@@ -33,10 +33,10 @@ export function ProductPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen gradient-subtle">
       <ProductHeader />
 
-      <div className="flex-1 p-4 pb-28">
+      <div className="flex-1 p-4 pb-24">
         <ProductCard
           product={product}
           hasAccess={hasAccess}

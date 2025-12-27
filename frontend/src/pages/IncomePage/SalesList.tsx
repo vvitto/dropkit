@@ -1,8 +1,19 @@
-import {useEffect, useState, useCallback, useRef} from 'react';
-import {Card, CardContent} from '@/components/ui/card';
-import {Input} from '@/components/ui/input';
-import {Lock, LockOpen, Loader2, Search, Star} from 'lucide-react';
-import {getSales, type Sale} from '@/api/income';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { CardGlass } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Clock,
+  Loader2,
+  LockOpen,
+  Lock,
+  Search,
+  ShoppingBag,
+  Star,
+  User,
+} from 'lucide-react';
+import { getSales, type Sale } from '@/api/income';
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
@@ -14,36 +25,103 @@ function formatDate(dateString: string): string {
   });
 }
 
-function SaleCard({sale}: {sale: Sale}) {
+function SaleCard({ sale }: { sale: Sale }) {
   const buyerName = sale.buyer.username
     ? `@${sale.buyer.username}`
     : sale.buyer.first_name;
 
   return (
-    <Card>
-      <CardContent className="p-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 min-w-0">
-            <p className="font-medium truncate">{sale.product_title}</p>
-            <p className="text-sm text-muted-foreground truncate">{buyerName}</p>
-          </div>
-          <div className="flex flex-col items-end shrink-0">
-            <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 text-amber-500" />
-              <span className="font-semibold">{sale.amount_stars}</span>
-            </div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              {sale.is_available ? (
-                <LockOpen className="w-3 h-3 text-green-500" />
-              ) : (
-                <Lock className="w-3 h-3 text-orange-500" />
-              )}
-              <span>{formatDate(sale.created_at)}</span>
-            </div>
+    <CardGlass className="p-4">
+      <div className="flex items-start gap-3">
+        {/* Product Icon */}
+        <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+          <ShoppingBag className="size-5 text-primary" />
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold truncate">{sale.product_title}</p>
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-0.5">
+            <User className="size-3.5" />
+            <span className="truncate">{buyerName}</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Price and Status */}
+        <div className="flex flex-col items-end gap-1.5 shrink-0">
+          <div className="flex items-center gap-1">
+            <Star className="size-4 text-warning fill-warning" />
+            <span className="font-bold">{sale.amount_stars}</span>
+          </div>
+          <Badge
+            variant={sale.is_available ? 'success' : 'warning'}
+            size="sm"
+            className="flex items-center gap-1"
+          >
+            {sale.is_available ? (
+              <>
+                <LockOpen className="size-3" />
+                Доступны
+              </>
+            ) : (
+              <>
+                <Lock className="size-3" />
+                Заблокированы
+              </>
+            )}
+          </Badge>
+        </div>
+      </div>
+
+      {/* Date */}
+      <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3 pt-3 border-t border-border/50">
+        <Clock className="size-3.5" />
+        <span>{formatDate(sale.created_at)}</span>
+      </div>
+    </CardGlass>
+  );
+}
+
+function SalesSkeleton() {
+  return (
+    <div className="space-y-3">
+      {[1, 2, 3].map((i) => (
+        <CardGlass key={i} className="p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-11 h-11 rounded-xl skeleton shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="h-5 skeleton rounded-lg w-3/4" />
+              <div className="h-4 skeleton rounded-lg w-1/2" />
+            </div>
+            <div className="flex flex-col items-end gap-1.5">
+              <div className="h-5 skeleton rounded-lg w-16" />
+              <div className="h-5 skeleton rounded-full w-20" />
+            </div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-border/50">
+            <div className="h-4 skeleton rounded-lg w-32" />
+          </div>
+        </CardGlass>
+      ))}
+    </div>
+  );
+}
+
+function EmptyState({ hasSearch }: { hasSearch: boolean }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+        <ShoppingBag className="size-8 text-muted-foreground" />
+      </div>
+      <h3 className="font-semibold mb-1">
+        {hasSearch ? 'Ничего не найдено' : 'Пока нет продаж'}
+      </h3>
+      <p className="text-sm text-muted-foreground max-w-[200px]">
+        {hasSearch
+          ? 'Попробуйте изменить поисковый запрос'
+          : 'Ваши продажи появятся здесь'}
+      </p>
+    </div>
   );
 }
 
@@ -57,27 +135,30 @@ export function SalesList() {
   const [searchInput, setSearchInput] = useState('');
   const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
 
-  const loadSales = useCallback(async (pageNum: number, searchQuery: string, append: boolean = false) => {
-    try {
-      if (append) {
-        setIsLoadingMore(true);
-      } else {
-        setIsLoading(true);
-      }
+  const loadSales = useCallback(
+    async (pageNum: number, searchQuery: string, append: boolean = false) => {
+      try {
+        if (append) {
+          setIsLoadingMore(true);
+        } else {
+          setIsLoading(true);
+        }
 
-      const response = await getSales(pageNum, searchQuery || undefined);
+        const response = await getSales(pageNum, searchQuery || undefined);
 
-      if (append) {
-        setSales(prev => [...prev, ...response.sales]);
-      } else {
-        setSales(response.sales);
+        if (append) {
+          setSales((prev) => [...prev, ...response.sales]);
+        } else {
+          setSales(response.sales);
+        }
+        setHasMore(response.has_more);
+      } finally {
+        setIsLoading(false);
+        setIsLoadingMore(false);
       }
-      setHasMore(response.has_more);
-    } finally {
-      setIsLoading(false);
-      setIsLoadingMore(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     loadSales(1, query, false);
@@ -105,45 +186,44 @@ export function SalesList() {
 
   return (
     <div className="space-y-4">
+      {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground pointer-events-none" />
         <Input
           placeholder="Поиск по username или ID"
           value={searchInput}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-9"
+          className="pl-11"
         />
       </div>
 
+      {/* Content */}
       {isLoading ? (
-        <div className="flex justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-primary" />
-        </div>
+        <SalesSkeleton />
       ) : sales.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground">
-          {query ? 'Ничего не найдено' : 'Пока нет продаж'}
-        </div>
+        <EmptyState hasSearch={!!query} />
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {sales.map((sale) => (
             <SaleCard key={sale.id} sale={sale} />
           ))}
 
           {hasMore && (
-            <button
+            <Button
+              variant="ghost"
               onClick={handleLoadMore}
               disabled={isLoadingMore}
-              className="w-full py-3 text-sm text-primary hover:underline disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full"
             >
               {isLoadingMore ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   Загрузка...
                 </>
               ) : (
                 'Загрузить ещё'
               )}
-            </button>
+            </Button>
           )}
         </div>
       )}

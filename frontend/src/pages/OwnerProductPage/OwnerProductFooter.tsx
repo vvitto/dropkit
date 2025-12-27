@@ -15,34 +15,34 @@ export function OwnerProductFooter({
   onSave,
 }: OwnerProductFooterProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t">
+    <div className="fixed bottom-0 left-0 right-0 p-4 glass border-t border-border/50 safe-area-bottom">
       {isEditing ? (
         <Button
           onClick={onSave}
           disabled={isSaving}
-          className="w-full h-12 text-base"
+          className="w-full shadow-lg"
           size="lg"
         >
           {isSaving ? (
             <>
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="size-5 animate-spin" />
               Сохранение...
             </>
           ) : (
             <>
-              <Save className="w-5 h-5" />
-              Сохранить
+              <Save className="size-5" />
+              Сохранить изменения
             </>
           )}
         </Button>
       ) : (
         <Button
           onClick={onShare}
-          className="w-full h-12 text-base"
+          className="w-full shadow-lg"
           size="lg"
         >
-          <Share2 className="w-5 h-5" />
-          Поделиться
+          <Share2 className="size-5" />
+          Поделиться товаром
         </Button>
       )}
     </div>

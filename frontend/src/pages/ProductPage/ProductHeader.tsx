@@ -6,7 +6,7 @@ export function ProductHeader() {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+    <header className="sticky top-0 z-10 glass-subtle border-b border-border/50 safe-area-top">
       <div className="flex items-center gap-3 p-4">
         <Button
           variant="ghost"
@@ -14,7 +14,7 @@ export function ProductHeader() {
           onClick={() => navigate(-1)}
           className="shrink-0"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="size-5" />
         </Button>
         <h1 className="text-lg font-semibold truncate">Товар</h1>
       </div>

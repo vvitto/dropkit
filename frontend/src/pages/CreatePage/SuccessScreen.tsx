@@ -1,5 +1,6 @@
-import { CheckCircle2, Star, Share2, Home } from 'lucide-react';
+import { CheckCircle2, Star, Share2, Home, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import type { Product } from '@/types/product';
 
 interface SuccessScreenProps {
@@ -10,35 +11,52 @@ interface SuccessScreenProps {
 
 export function SuccessScreen({ product, onShare, onGoHome }: SuccessScreenProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-      <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mb-6">
-        <CheckCircle2 className="w-10 h-10 text-green-500" />
+    <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center gradient-subtle">
+      <div className="relative mb-8">
+        <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-success/20 to-success/5 flex items-center justify-center animate-fade-in-up">
+          <CheckCircle2 className="size-12 text-success" />
+        </div>
+        <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-warning flex items-center justify-center shadow-lg animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+          <Sparkles className="size-5 text-white" />
+        </div>
       </div>
 
-      <h2 className="text-xl font-semibold mb-2">Товар создан!</h2>
-      <p className="text-muted-foreground mb-2">{product.title}</p>
-      <p className="text-sm text-muted-foreground mb-8 flex items-center gap-1">
-        <Star className="w-4 h-4 text-amber-500" />
-        {product.price_stars} звёзд
-      </p>
+      <h2 className="text-2xl font-bold mb-2 animate-fade-in-up" style={{ animationDelay: '150ms' }}>
+        Товар создан!
+      </h2>
 
-      <div className="w-full max-w-xs space-y-3">
+      <Card className="w-full max-w-sm p-4 mb-8 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+        {product.cover_url && (
+          <img
+            src={product.cover_url}
+            alt={product.title}
+            className="w-full aspect-video rounded-xl object-cover mb-4"
+          />
+        )}
+        <h3 className="font-semibold text-lg mb-2">{product.title}</h3>
+        <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-warning/10 w-fit mx-auto">
+          <Star className="size-5 text-warning fill-warning" />
+          <span className="font-semibold text-warning">{product.price_stars} звёзд</span>
+        </div>
+      </Card>
+
+      <div className="w-full max-w-sm space-y-3 animate-fade-in-up" style={{ animationDelay: '250ms' }}>
         <Button
           onClick={onShare}
-          className="w-full h-12 text-base"
+          className="w-full shadow-lg"
           size="lg"
         >
-          <Share2 className="w-5 h-5" />
+          <Share2 className="size-5" />
           Поделиться товаром
         </Button>
 
         <Button
           variant="outline"
           onClick={onGoHome}
-          className="w-full h-12 text-base"
+          className="w-full"
           size="lg"
         >
-          <Home className="w-5 h-5" />
+          <Home className="size-5" />
           На главную
         </Button>
       </div>

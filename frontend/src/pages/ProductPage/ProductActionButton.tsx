@@ -21,7 +21,7 @@ export function ProductActionButton({
   onDownload,
 }: ProductActionButtonProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t">
+    <div className="fixed bottom-0 left-0 right-0 p-4 glass border-t border-border/50 safe-area-bottom">
       {hasAccess ? (
         <DownloadButton
           isDelivering={isDelivering}
@@ -46,26 +46,34 @@ interface DownloadButtonProps {
 }
 
 function DownloadButton({ isDelivering, delivered, onClick }: DownloadButtonProps) {
+  if (delivered) {
+    return (
+      <Button
+        disabled
+        className="w-full bg-success hover:bg-success shadow-lg"
+        size="lg"
+      >
+        <CheckCircle2 className="size-5" />
+        Отправлено в чат
+      </Button>
+    );
+  }
+
   return (
     <Button
       onClick={onClick}
-      disabled={isDelivering || delivered}
-      className="w-full h-12 text-base"
+      disabled={isDelivering}
+      className="w-full shadow-lg"
       size="lg"
     >
       {isDelivering ? (
         <>
-          <Loader2 className="w-5 h-5 animate-spin" />
+          <Loader2 className="size-5 animate-spin" />
           Отправка...
-        </>
-      ) : delivered ? (
-        <>
-          <CheckCircle2 className="w-5 h-5" />
-          Сообщение отправлено в чат
         </>
       ) : (
         <>
-          <Download className="w-5 h-5" />
+          <Download className="size-5" />
           Получить товар
         </>
       )}
@@ -84,19 +92,19 @@ function BuyButton({ priceStars, isPurchasing, onClick }: BuyButtonProps) {
     <Button
       onClick={onClick}
       disabled={isPurchasing}
-      className="w-full h-12 text-base"
+      className="w-full shadow-lg animate-pulse-glow"
       size="lg"
     >
       {isPurchasing ? (
         <>
-          <Loader2 className="w-5 h-5 animate-spin" />
+          <Loader2 className="size-5 animate-spin" />
           Оплата...
         </>
       ) : (
         <>
-          <ShoppingCart className="w-5 h-5" />
+          <ShoppingCart className="size-5" />
           Купить за {priceStars}
-          <Star className="w-4 h-4 ml-1 text-amber-300" />
+          <Star className="size-4 text-warning fill-warning" />
         </>
       )}
     </Button>

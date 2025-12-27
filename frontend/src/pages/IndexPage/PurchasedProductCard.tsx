@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { FileImage, Star, User } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { FileImage, Star, User, ChevronRight } from 'lucide-react';
+import { CardInteractive } from '@/components/ui/card';
 import type { PurchasedProduct } from '@/api/products';
 
 interface PurchasedProductCardProps {
@@ -12,46 +12,46 @@ export function PurchasedProductCard({ purchase }: PurchasedProductCardProps) {
   const { product, seller } = purchase;
 
   return (
-    <Card
-      className="cursor-pointer hover:bg-accent/50 transition-colors"
+    <CardInteractive
       onClick={() => navigate(`/p/${product.id}`)}
+      className="p-4"
     >
-      <CardContent className="p-3">
-        <div className="flex gap-3">
-          {product.cover_url ? (
-            <img
-              src={product.cover_url}
-              alt={product.title}
-              className="w-16 h-16 rounded-lg object-cover shrink-0"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
-              <FileImage className="w-6 h-6 text-primary/50" />
-            </div>
-          )}
+      <div className="flex items-center gap-4">
+        {product.cover_url ? (
+          <img
+            src={product.cover_url}
+            alt={product.title}
+            className="w-16 h-16 rounded-xl object-cover shrink-0 shadow-sm"
+          />
+        ) : (
+          <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
+            <FileImage className="size-7 text-primary/60" />
+          </div>
+        )}
 
-          <div className="flex-1 min-w-0">
-            <h3 className="font-medium truncate">{product.title}</h3>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-base truncate mb-1.5">{product.title}</h3>
 
-            <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-              <User className="w-3.5 h-3.5" />
-              <span className="truncate">
-                {seller.first_name}
-                {seller.username && (
-                  <span className="text-primary ml-1">@{seller.username}</span>
-                )}
-              </span>
-            </div>
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-1.5">
+            <User className="size-4" />
+            <span className="truncate">
+              {seller.first_name}
+              {seller.username && (
+                <span className="text-primary ml-1">@{seller.username}</span>
+              )}
+            </span>
+          </div>
 
-            <div className="flex items-center gap-1 mt-1.5">
-              <Star className="w-4 h-4 text-amber-500" />
-              <span className="text-sm font-medium text-amber-600">
-                {product.price_stars}
-              </span>
-            </div>
+          <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-warning/10 w-fit">
+            <Star className="size-4 text-warning fill-warning" />
+            <span className="text-sm font-semibold text-warning">
+              {product.price_stars}
+            </span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        <ChevronRight className="size-5 text-muted-foreground shrink-0" />
+      </div>
+    </CardInteractive>
   );
 }

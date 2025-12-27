@@ -1,18 +1,19 @@
-import {useEffect, useState} from 'react';
-import {Navigate} from 'react-router-dom';
-import {miniApp, useLaunchParams} from '@tma.js/sdk-react';
-import {Plus, ShoppingBag} from 'lucide-react';
-import {Button} from '@/components/ui/button';
-import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
-import {HeaderTabs} from '@/components/layout/HeaderTabs';
-import {getProducts, getPurchases, type PurchasedProduct} from '@/api/products';
-import {createProductIntent} from '@/api/product_intents';
-import {routes} from '@/navigation/routes';
-import type {Product} from '@/types/product';
-import {ProductCard} from './ProductCard';
-import {PurchasedProductCard} from './PurchasedProductCard';
-import {EmptyState} from './EmptyState';
-import {LoadingState} from './LoadingState';
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { miniApp, useLaunchParams } from '@tma.js/sdk-react';
+import { Plus, Package, ShoppingBag, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { HeaderTabs } from '@/components/layout/HeaderTabs';
+import { Badge } from '@/components/ui/badge';
+import { getProducts, getPurchases, type PurchasedProduct } from '@/api/products';
+import { createProductIntent } from '@/api/product_intents';
+import { routes } from '@/navigation/routes';
+import type { Product } from '@/types/product';
+import { ProductCard } from './ProductCard';
+import { PurchasedProductCard } from './PurchasedProductCard';
+import { EmptyState } from './EmptyState';
+import { LoadingState } from './LoadingState';
 
 export function IndexPage() {
   const [activeProducts, setActiveProducts] = useState<Product[]>([]);
@@ -53,9 +54,14 @@ export function IndexPage() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-        <p className="text-destructive mb-4">{error}</p>
-        <Button variant="outline" onClick={() => window.location.reload()}>
+      <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center gradient-subtle">
+        <div className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
+          <RefreshCw className="size-8 text-destructive" />
+        </div>
+        <h3 className="text-lg font-semibold mb-2">Что-то пошло не так</h3>
+        <p className="text-muted-foreground mb-6 max-w-[280px]">{error}</p>
+        <Button onClick={() => window.location.reload()}>
+          <RefreshCw className="size-5" />
           Повторить
         </Button>
       </div>
@@ -63,27 +69,28 @@ export function IndexPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen gradient-subtle">
       <HeaderTabs />
 
       <div className="flex-1 overflow-auto p-4 pb-24">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-4 w-full">
-            <TabsTrigger value="products" className="flex-1">
+          <TabsList className="mb-4">
+            <TabsTrigger value="products" className="gap-2">
+              <Package className="size-4" />
               Мои товары
               {activeProducts.length > 0 && (
-                <span className="ml-1.5 text-xs bg-primary/10 px-1.5 py-0.5 rounded">
+                <Badge variant="secondary" size="sm">
                   {activeProducts.length}
-                </span>
+                </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="purchases" className="flex-1">
-              <ShoppingBag className="w-4 h-4 mr-1.5" />
-              Мои покупки
+            <TabsTrigger value="purchases" className="gap-2">
+              <ShoppingBag className="size-4" />
+              Покупки
               {purchases.length > 0 && (
-                <span className="ml-1.5 text-xs bg-primary/10 px-1.5 py-0.5 rounded">
+                <Badge variant="secondary" size="sm">
                   {purchases.length}
-                </span>
+                </Badge>
               )}
             </TabsTrigger>
           </TabsList>
@@ -118,13 +125,13 @@ export function IndexPage() {
         </Tabs>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t">
+      <div className="fixed bottom-0 left-0 right-0 p-4 glass border-t border-border/50 safe-area-bottom">
         <Button
-          className="w-full h-12 text-base"
+          className="w-full shadow-lg animate-pulse-glow"
           size="lg"
           onClick={handleProductCreate}
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="size-5" />
           Создать новый товар
         </Button>
       </div>

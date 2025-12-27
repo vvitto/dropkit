@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { shareMessage } from '@tma.js/sdk-react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertTriangle } from 'lucide-react';
 import { createProductShareMessage } from '@/api/products';
 import {
   AlertDialog,
@@ -53,8 +53,8 @@ export function OwnerProductPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+      <div className="flex flex-col items-center justify-center min-h-screen gradient-subtle">
+        <Loader2 className="size-8 animate-spin text-primary mb-4" />
         <p className="text-muted-foreground">Загрузка...</p>
       </div>
     );
@@ -62,14 +62,17 @@ export function OwnerProductPage() {
 
   if (error || !product) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-        <p className="text-destructive mb-4">{error || 'Product not found'}</p>
+      <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center gradient-subtle">
+        <div className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
+          <AlertTriangle className="size-8 text-destructive" />
+        </div>
+        <p className="text-destructive">{error || 'Product not found'}</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen gradient-subtle">
       <OwnerProductHeader
         title={product.title}
         isEditing={isEditing}
@@ -106,7 +109,9 @@ export function OwnerProductPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting} onClick={() => setShowDeleteDialog(false)}>Отмена</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting} onClick={() => setShowDeleteDialog(false)}>
+              Отмена
+            </AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={onConfirmDelete}
@@ -114,7 +119,7 @@ export function OwnerProductPage() {
             >
               {isDeleting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   Удаление...
                 </>
               ) : (

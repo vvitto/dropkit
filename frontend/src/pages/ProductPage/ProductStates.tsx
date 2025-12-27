@@ -1,12 +1,32 @@
 import { useNavigate } from 'react-router-dom';
-import { FileImage, Loader2 } from 'lucide-react';
+import { FileImage, Home, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 export function ProductLoading() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-      <p className="text-muted-foreground">Загрузка...</p>
+    <div className="flex flex-col min-h-screen gradient-subtle">
+      <div className="p-4 space-y-4">
+        <Card className="overflow-hidden">
+          <div className="aspect-video skeleton" />
+          <div className="p-4 space-y-3">
+            <div className="h-6 skeleton rounded-lg w-3/4" />
+            <div className="h-4 skeleton rounded-lg w-full" />
+            <div className="h-4 skeleton rounded-lg w-2/3" />
+            <div className="flex gap-2 mt-4">
+              <div className="h-8 skeleton rounded-full w-20" />
+              <div className="h-8 skeleton rounded-full w-24" />
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <div className="flex-1 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="size-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Загрузка товара...</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -19,15 +39,18 @@ export function ProductError({ error }: ProductErrorProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-      <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-        <FileImage className="w-8 h-8 text-muted-foreground" />
+    <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center gradient-subtle">
+      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-6">
+        <FileImage className="size-10 text-muted-foreground" />
       </div>
-      <h3 className="text-lg font-medium mb-2">Товар не найден</h3>
-      <p className="text-sm text-muted-foreground mb-6">
+
+      <h3 className="text-xl font-semibold mb-2">Товар не найден</h3>
+      <p className="text-muted-foreground mb-8 max-w-[280px] leading-relaxed">
         {error || 'Возможно, он был удалён или ссылка неверна'}
       </p>
-      <Button variant="outline" onClick={() => navigate('/')}>
+
+      <Button onClick={() => navigate('/')} size="lg">
+        <Home className="size-5" />
         На главную
       </Button>
     </div>
