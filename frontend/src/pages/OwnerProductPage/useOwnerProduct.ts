@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteProduct, getProduct, updateProduct } from '@/api/products';
 import type { Product } from '@/types/product';
 
@@ -40,16 +41,11 @@ interface UseOwnerProductResult {
 export function useOwnerProduct(): UseOwnerProductResult {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const coverInputRef = useRef<HTMLInputElement>(null);
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
-
   const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
@@ -58,30 +54,23 @@ export function useOwnerProduct(): UseOwnerProductResult {
     coverPreview: null,
   });
 
+  const { data: product, isLoading, error: queryError } = useQuery({
+    queryKey: ['ownerProduct', id],
+    queryFn: () => getProduct(parseInt(id!, 10)),
+    enabled: !!id,
+  });
+
   useEffect(() => {
-    async function loadProduct() {
-      if (!id) return;
-
-      try {
-        setIsLoading(true);
-        const data = await getProduct(parseInt(id, 10));
-        setProduct(data);
-        setFormData({
-          title: data.title,
-          description: data.description || '',
-          priceStars: data.price_stars.toString(),
-          cover: null,
-          coverPreview: data.cover_url || null,
-        });
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Product not found');
-      } finally {
-        setIsLoading(false);
-      }
+    if (product) {
+      setFormData({
+        title: product.title,
+        description: product.description || '',
+        priceStars: product.price_stars.toString(),
+        cover: null,
+        coverPreview: product.cover_url || null,
+      });
     }
-
-    loadProduct();
-  }, [id]);
+  }, [product]);
 
   const setTitle = (value: string) => {
     setFormData((prev) => ({ ...prev, title: value }));
@@ -147,59 +136,64 @@ export function useOwnerProduct(): UseOwnerProductResult {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = async () => {
-    if (!product || isSaving) return;
-    if (!validate()) return;
-
-    try {
-      setIsSaving(true);
-      setErrors({});
-
-      const updatedProduct = await updateProduct(product.id, {
+  const updateMutation = useMutation({
+    mutationFn: () =>
+      updateProduct(product!.id, {
         title: formData.title.trim(),
         description: formData.description.trim() || undefined,
         price_stars: parseInt(formData.priceStars, 10),
         cover: formData.cover || undefined,
-      });
-
-      setProduct(updatedProduct);
+      }),
+    onSuccess: (updatedProduct) => {
+      queryClient.setQueryData(['ownerProduct', id], updatedProduct);
       setFormData((prev) => ({
         ...prev,
         cover: null,
         coverPreview: updatedProduct.cover_url || null,
       }));
       setIsEditing(false);
-    } catch (err) {
+    },
+    onError: (err) => {
       setErrors({
         general: err instanceof Error ? err.message : 'Не удалось сохранить изменения',
       });
-    } finally {
-      setIsSaving(false);
-    }
-  };
+    },
+  });
 
-  const handleDelete = async () => {
-    if (!product || isDeleting) return;
-
-    try {
-      setIsDeleting(true);
-      await deleteProduct(product.id);
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteProduct(product!.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
       navigate('/', { replace: true });
-    } catch (err) {
+    },
+    onError: (err) => {
       setErrors({
         general: err instanceof Error ? err.message : 'Не удалось удалить товар',
       });
-      setIsDeleting(false);
-    }
+    },
+  });
+
+  const handleSave = async () => {
+    if (!product || updateMutation.isPending) return;
+    if (!validate()) return;
+    setErrors({});
+    updateMutation.mutate();
   };
 
+  const handleDelete = async () => {
+    if (!product || deleteMutation.isPending) return;
+    deleteMutation.mutate();
+  };
+
+  const error = queryError instanceof Error ? queryError.message : queryError ? 'Product not found' : null;
+
   return {
-    product,
+    product: product ?? null,
     isLoading,
     error,
     isEditing,
-    isSaving,
-    isDeleting,
+    isSaving: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
     formData,
     errors,
     coverInputRef,

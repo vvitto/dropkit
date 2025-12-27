@@ -1,9 +1,9 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 import {HeaderTabs} from '@/components/layout/HeaderTabs';
 import {CardGlass} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
 import {AlertTriangle, ChevronRight, RefreshCw, Star, TrendingUp, Wallet,} from 'lucide-react';
-import type {IncomeData} from '@/api/income';
 import {createWithdrawal, getIncome} from '@/api/income';
 import {WithdrawalModal} from './WithdrawalModal';
 import {SalesList} from './SalesList';
@@ -47,40 +47,24 @@ function LoadingSkeleton() {
 }
 
 export function IncomePage() {
-  const [data, setData] = useState<IncomeData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isWithdrawalModalOpen, setIsWithdrawalModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
-  const loadData = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const income = await getIncome();
-      setData(income);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не удалось загрузить данные');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['income'],
+    queryFn: getIncome,
+  });
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const handleWithdraw = async () => {
-    if (!data) return;
-
-    try {
-      setIsSubmitting(true);
-      await createWithdrawal();
+  const withdrawalMutation = useMutation({
+    mutationFn: createWithdrawal,
+    onSuccess: () => {
       setIsWithdrawalModalOpen(false);
-      await loadData();
-    } finally {
-      setIsSubmitting(false);
-    }
+      queryClient.invalidateQueries({ queryKey: ['income'] });
+    },
+  });
+
+  const handleWithdraw = () => {
+    withdrawalMutation.mutate();
   };
 
   const handleWithdrawalClick = () => {
@@ -94,6 +78,7 @@ export function IncomePage() {
   }
 
   if (error || !data) {
+    const errorMessage = error instanceof Error ? error.message : 'Не удалось загрузить данные о доходах';
     return (
       <div className="flex flex-col min-h-screen gradient-subtle">
         <HeaderTabs />
@@ -103,9 +88,9 @@ export function IncomePage() {
           </div>
           <h3 className="text-lg font-semibold mb-2">Ошибка загрузки</h3>
           <p className="text-muted-foreground mb-6 max-w-[280px]">
-            {error || 'Не удалось загрузить данные о доходах'}
+            {errorMessage}
           </p>
-          <Button onClick={loadData} size="lg">
+          <Button onClick={() => refetch()} size="lg">
             <RefreshCw className="size-5" />
             Повторить
           </Button>
@@ -196,7 +181,7 @@ export function IncomePage() {
         onSubmit={handleWithdraw}
         amount={summary.available_stars}
         commissionRate={summary.commission_rate}
-        isSubmitting={isSubmitting}
+        isSubmitting={withdrawalMutation.isPending}
       />
     </div>
   );

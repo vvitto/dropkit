@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useState, useRef } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { CardGlass } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -126,44 +127,25 @@ function EmptyState({ hasSearch }: { hasSearch: boolean }) {
 }
 
 export function SalesList() {
-  const [sales, setSales] = useState<Sale[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [page, setPage] = useState(1);
   const [query, setQuery] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
 
-  const loadSales = useCallback(
-    async (pageNum: number, searchQuery: string, append: boolean = false) => {
-      try {
-        if (append) {
-          setIsLoadingMore(true);
-        } else {
-          setIsLoading(true);
-        }
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['sales', query],
+    queryFn: ({ pageParam }) => getSales(pageParam, query || undefined),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, lastPageParam) =>
+      lastPage.has_more ? lastPageParam + 1 : undefined,
+  });
 
-        const response = await getSales(pageNum, searchQuery || undefined);
-
-        if (append) {
-          setSales((prev) => [...prev, ...response.sales]);
-        } else {
-          setSales(response.sales);
-        }
-        setHasMore(response.has_more);
-      } finally {
-        setIsLoading(false);
-        setIsLoadingMore(false);
-      }
-    },
-    []
-  );
-
-  useEffect(() => {
-    loadSales(1, query, false);
-    setPage(1);
-  }, [query, loadSales]);
+  const sales = data?.pages.flatMap((page) => page.sales) ?? [];
 
   const handleSearchChange = (value: string) => {
     setSearchInput(value);
@@ -178,10 +160,8 @@ export function SalesList() {
   };
 
   const handleLoadMore = () => {
-    if (!hasMore || isLoadingMore) return;
-    const nextPage = page + 1;
-    setPage(nextPage);
-    loadSales(nextPage, query, true);
+    if (!hasNextPage || isFetchingNextPage) return;
+    fetchNextPage();
   };
 
   return (
@@ -208,14 +188,14 @@ export function SalesList() {
             <SaleCard key={sale.id} sale={sale} />
           ))}
 
-          {hasMore && (
+          {hasNextPage && (
             <Button
               variant="ghost"
               onClick={handleLoadMore}
-              disabled={isLoadingMore}
+              disabled={isFetchingNextPage}
               className="w-full"
             >
-              {isLoadingMore ? (
+              {isFetchingNextPage ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
                   Загрузка...

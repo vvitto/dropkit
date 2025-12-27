@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { invoice, openTelegramLink } from '@tma.js/sdk-react';
 import { createInvoice, deliverContent, getPublicProduct, type PublicProduct } from '@/api/products';
 
@@ -18,80 +19,71 @@ interface UseProductResult {
 
 export function useProduct(): UseProductResult {
   const { id } = useParams<{ id: string }>();
-
-  const [product, setProduct] = useState<PublicProduct | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isDelivering, setIsDelivering] = useState(false);
+  const queryClient = useQueryClient();
   const [delivered, setDelivered] = useState(false);
-  const [isPurchasing, setIsPurchasing] = useState(false);
+  const [purchaseError, setPurchaseError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function loadProduct() {
-      if (!id) return;
+  const { data: product, isLoading, error: queryError } = useQuery({
+    queryKey: ['product', id],
+    queryFn: () => getPublicProduct(parseInt(id!, 10)),
+    enabled: !!id,
+  });
 
-      try {
-        setIsLoading(true);
-        const data = await getPublicProduct(parseInt(id, 10));
-        setProduct(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Product not found');
-      } finally {
-        setIsLoading(false);
+  const purchaseMutation = useMutation({
+    mutationFn: async () => {
+      const { invoice_url } = await createInvoice(parseInt(id!, 10));
+      const status = await invoice.openUrl(invoice_url);
+      return status;
+    },
+    onSuccess: (status) => {
+      if (status === 'paid') {
+        queryClient.setQueryData<PublicProduct>(['product', id], (old) =>
+          old ? { ...old, is_purchased: true } : old
+        );
+      } else if (status === 'failed') {
+        setPurchaseError('Payment failed. Please try again.');
       }
-    }
+    },
+    onError: (err) => {
+      setPurchaseError(err instanceof Error ? err.message : 'Could not create the payment');
+    },
+  });
 
-    loadProduct();
-  }, [id]);
+  const deliverMutation = useMutation({
+    mutationFn: () => deliverContent(parseInt(id!, 10)),
+    onSuccess: () => {
+      openTelegramLink('https://t.me/dropkit_bot');
+      setDelivered(true);
+    },
+  });
 
   const handleBuy = async () => {
-    if (!product || isPurchasing) return;
-
-    try {
-      setIsPurchasing(true);
-      setError(null);
-
-      const { invoice_url } = await createInvoice(product.id);
-      const status = await invoice.openUrl(invoice_url);
-
-      if (status === 'paid') {
-        setProduct({ ...product, is_purchased: true });
-      } else if (status === 'failed') {
-        setError('Payment failed. Please try again.');
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not create the payment');
-    } finally {
-      setIsPurchasing(false);
-    }
+    if (!product || purchaseMutation.isPending) return;
+    setPurchaseError(null);
+    purchaseMutation.mutate();
   };
 
   const handleDownload = async () => {
-    if (!product || isDelivering) return;
-
-    try {
-      setIsDelivering(true);
-      await deliverContent(product.id);
-      openTelegramLink('https://t.me/dropkit_bot');
-      setDelivered(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не удалось отправить файл');
-    } finally {
-      setIsDelivering(false);
-    }
+    if (!product || deliverMutation.isPending) return;
+    deliverMutation.mutate();
   };
 
   const isOwner = product?.is_owner ?? false;
   const isPurchased = product?.is_purchased ?? false;
   const hasAccess = isPurchased || isOwner;
 
+  const error = queryError
+    ? (queryError instanceof Error ? queryError.message : 'Product not found')
+    : purchaseError
+    ?? (deliverMutation.error instanceof Error ? deliverMutation.error.message : null);
+
   return {
-    product,
+    product: product ?? null,
     isLoading,
     error,
-    isDelivering,
+    isDelivering: deliverMutation.isPending,
     delivered,
-    isPurchasing,
+    isPurchasing: purchaseMutation.isPending,
     hasAccess,
     isOwner,
     handleBuy,

@@ -1,65 +1,59 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { miniApp, useLaunchParams } from '@tma.js/sdk-react';
 import { Plus, Package, ShoppingBag, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HeaderTabs } from '@/components/layout/HeaderTabs';
 import { Badge } from '@/components/ui/badge';
-import { getProducts, getPurchases, type PurchasedProduct } from '@/api/products';
+import { getProducts, getPurchases } from '@/api/products';
 import { createProductIntent } from '@/api/product_intents';
 import { routes } from '@/navigation/routes';
-import type { Product } from '@/types/product';
 import { ProductCard } from './ProductCard';
 import { PurchasedProductCard } from './PurchasedProductCard';
 import { EmptyState } from './EmptyState';
 import { LoadingState } from './LoadingState';
 
 export function IndexPage() {
-  const [activeProducts, setActiveProducts] = useState<Product[]>([]);
-  const [purchases, setPurchases] = useState<PurchasedProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('products');
-
   const launchParams = useLaunchParams();
 
-  const handleProductCreate = async () => {
-    await createProductIntent();
-    miniApp.close();
+  const { data: activeProducts = [], isLoading: isLoadingProducts, error: productsError } = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts,
+  });
+
+  const { data: purchases = [], isLoading: isLoadingPurchases, error: purchasesError } = useQuery({
+    queryKey: ['purchases'],
+    queryFn: getPurchases,
+  });
+
+  const createIntentMutation = useMutation({
+    mutationFn: createProductIntent,
+    onSuccess: () => miniApp.close(),
+  });
+
+  const handleProductCreate = () => {
+    createIntentMutation.mutate();
   };
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        setIsLoading(true);
-        const [products, purchasedItems] = await Promise.all([
-          getProducts(),
-          getPurchases()
-        ]);
-        setActiveProducts(products);
-        setPurchases(purchasedItems);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Ошибка загрузки');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadData();
-  }, []);
+  const isLoading = isLoadingProducts || isLoadingPurchases;
+  const error = productsError || purchasesError;
 
   if (launchParams.tgWebAppStartParam) {
     return <Navigate to={routes.createProduct} />;
   }
 
   if (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Ошибка загрузки';
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center gradient-subtle">
         <div className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
           <RefreshCw className="size-8 text-destructive" />
         </div>
         <h3 className="text-lg font-semibold mb-2">Что-то пошло не так</h3>
-        <p className="text-muted-foreground mb-6 max-w-[280px]">{error}</p>
+        <p className="text-muted-foreground mb-6 max-w-[280px]">{errorMessage}</p>
         <Button onClick={() => window.location.reload()}>
           <RefreshCw className="size-5" />
           Повторить

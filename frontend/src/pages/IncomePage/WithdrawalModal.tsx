@@ -14,7 +14,7 @@ import { useWalletConnect } from '@/hooks/useWalletConnect';
 interface WithdrawalModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: () => Promise<void>;
+  onSubmit: () => void;
   amount: number;
   commissionRate: number;
   isSubmitting: boolean;
@@ -33,12 +33,8 @@ export function WithdrawalModal({
   const commission = Math.floor(amount * (commissionRate / 100));
   const netAmount = amount - commission;
 
-  const handleSubmit = async () => {
-    try {
-      await onSubmit();
-    } catch (err) {
-      console.error('Withdrawal error:', err);
-    }
+  const handleSubmit = () => {
+    onSubmit();
   };
 
   return (

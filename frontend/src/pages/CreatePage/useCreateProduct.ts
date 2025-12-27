@@ -1,5 +1,6 @@
 import {useRef, useState} from 'react';
 import {useLaunchParams} from '@tma.js/sdk-react';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {createProduct} from '@/api/products';
 import type {Product} from '@/types/product';
 
@@ -33,20 +34,38 @@ export interface UseCreateProductReturn {
 
 export function useCreateProduct(): UseCreateProductReturn {
   const launchParams = useLaunchParams();
+  const queryClient = useQueryClient();
 
   const [title, setTitleState] = useState('');
   const [description, setDescription] = useState('');
   const [priceStars, setPriceStarsState] = useState('');
   const [cover, setCover] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
-  const [createdProduct, setCreatedProduct] = useState<Product | null>(null);
 
   const coverInputRef = useRef<HTMLInputElement>(null);
 
   const startParam = launchParams.tgWebAppStartParam;
   const fileId = startParam?.startsWith('r_') ? startParam.slice(2) : null;
+
+  const createMutation = useMutation({
+    mutationFn: () =>
+      createProduct({
+        title: title.trim(),
+        description: description.trim() || undefined,
+        price_stars: parseInt(priceStars, 10),
+        tg_file_id: fileId!,
+        cover: cover || undefined,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+    onError: (err) => {
+      setErrors({
+        general: err instanceof Error ? err.message : 'Ошибка при создании товара',
+      });
+    },
+  });
 
   const setTitle = (value: string) => {
     setTitleState(value);
@@ -106,26 +125,8 @@ export function useCreateProduct(): UseCreateProductReturn {
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-      setErrors({});
-
-      const product = await createProduct({
-        title: title.trim(),
-        description: description.trim() || undefined,
-        price_stars: parseInt(priceStars, 10),
-        tg_file_id: fileId!,
-        cover: cover || undefined,
-      });
-
-      setCreatedProduct(product);
-    } catch (err) {
-      setErrors({
-        general: err instanceof Error ? err.message : 'Ошибка при создании товара',
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    setErrors({});
+    createMutation.mutate();
   };
 
   return {
@@ -142,9 +143,9 @@ export function useCreateProduct(): UseCreateProductReturn {
     coverInputRef,
     handleCoverSelect,
     handleSubmit,
-    isSubmitting,
+    isSubmitting: createMutation.isPending,
     errors,
-    createdProduct,
+    createdProduct: createMutation.data ?? null,
     fileId,
   };
 }
