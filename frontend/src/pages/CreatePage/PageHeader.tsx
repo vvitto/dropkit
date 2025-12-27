@@ -1,6 +1,7 @@
-import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import {ArrowLeft} from 'lucide-react';
+import {useNavigate} from 'react-router-dom';
+import {Button} from '@/components/ui/button';
+import {routes} from "@/navigation/routes.tsx";
 
 interface PageHeaderProps {
   title: string;
@@ -16,7 +17,7 @@ export function PageHeader({ title, subtitle }: PageHeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(routes.root)}
           className="shrink-0"
         >
           <ArrowLeft className="size-5" />

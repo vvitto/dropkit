@@ -2,11 +2,12 @@
 #
 # Table name: products
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  deleted_at  :datetime
 #  description :string
 #  price_stars :integer          not null
 #  title       :string           not null
+#  uuid        :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  tg_file_id  :string           not null
@@ -16,10 +17,11 @@
 #
 #  index_products_on_deleted_at  (deleted_at)
 #  index_products_on_user_id     (user_id)
+#  index_products_on_uuid        (uuid) UNIQUE
 #
 # Foreign Keys
 #
-#  user_id  (user_id => users.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class Product < ApplicationRecord
   belongs_to :user

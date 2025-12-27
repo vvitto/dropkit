@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_26_000001) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_27_150440) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -65,8 +68,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_26_000001) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
+    t.string "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.index ["deleted_at"], name: "index_products_on_deleted_at"
     t.index ["user_id"], name: "index_products_on_user_id"
+    t.index ["uuid"], name: "index_products_on_uuid", unique: true
   end
 
   create_table "purchases", force: :cascade do |t|
@@ -77,10 +82,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_26_000001) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "payment_method", default: "stars", null: false
+    t.string "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.index ["buyer_id"], name: "index_purchases_on_buyer_id"
     t.index ["product_id", "buyer_id"], name: "index_purchases_on_product_id_and_buyer_id"
     t.index ["product_id"], name: "index_purchases_on_product_id"
     t.index ["telegram_payment_charge_id"], name: "index_purchases_on_telegram_payment_charge_id", unique: true
+    t.index ["uuid"], name: "index_purchases_on_uuid", unique: true
   end
 
   create_table "users", force: :cascade do |t|

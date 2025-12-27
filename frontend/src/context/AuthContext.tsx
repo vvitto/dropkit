@@ -1,13 +1,14 @@
-import { createContext, type ReactNode, useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
-import { getSession } from '@/api/session';
-import type { User } from '@/types/user';
+import {createContext, type ReactNode} from 'react';
+import {useQuery} from '@tanstack/react-query';
+import {Loader2} from 'lucide-react';
+import {getSession} from '@/api/session';
+import type {User} from '@/types/user';
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,30 +27,16 @@ function AuthLoading() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: user, isLoading, error, refetch } = useQuery({
+    queryKey: ['session'],
+    queryFn: getSession,
+    retry: false,
+  });
 
-  const fetchUser = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const userData = await getSession();
-      setUser(userData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load user');
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  const errorMessage = error instanceof Error ? error.message : error ? 'Failed to load user' : null;
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, error, refetch: fetchUser }}>
+    <AuthContext.Provider value={{ user: user ?? null, isLoading, error: errorMessage, refetch }}>
       {isLoading ? <AuthLoading /> : children}
     </AuthContext.Provider>
   );

@@ -1,7 +1,7 @@
-import { miniApp } from '@tma.js/sdk-react';
-import { Archive, Package, Plus, ShoppingBag, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { createProductIntent } from '@/api/product_intents';
+import {miniApp} from '@tma.js/sdk-react';
+import {Archive, Package, Plus, ShoppingBag, Sparkles} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {createProductIntent} from '@/api/product_intents';
 
 interface EmptyStateProps {
   isArchive?: boolean;
@@ -33,7 +33,7 @@ export function EmptyState({ isArchive = false, isPurchases = false }: EmptyStat
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+    <div className="flex flex-col items-center justify-center grow text-center">
       <div className="relative mb-6">
         <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
           {getIcon()}
@@ -46,7 +46,7 @@ export function EmptyState({ isArchive = false, isPurchases = false }: EmptyStat
       </div>
 
       <h3 className="text-xl font-semibold mb-2">{getTitle()}</h3>
-      <p className="text-muted-foreground mb-8 max-w-[280px] leading-relaxed">
+      <p className="text-muted-foreground mb-6 max-w-[280px] leading-relaxed">
         {getDescription()}
       </p>
 

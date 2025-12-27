@@ -11,7 +11,6 @@ Rails.application.routes.draw do
 
       resources :public_products, only: [ :show ] do
         member do
-          get :check_access
           post :create_invoice
           post :confirm_payment
           get :content

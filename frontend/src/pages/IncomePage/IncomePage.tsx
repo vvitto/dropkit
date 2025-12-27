@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {HeaderTabs} from '@/components/layout/HeaderTabs';
 import {CardGlass} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
@@ -16,13 +16,11 @@ function LoadingSkeleton() {
         {/* Stats Card Skeleton */}
         <CardGlass className="p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <div className="h-5 skeleton rounded-lg w-40" />
-            <div className="h-6 skeleton rounded-lg w-24" />
+            <div className="h-9 skeleton rounded-lg w-full" />
           </div>
           <div className="border-t border-border/50" />
           <div className="flex items-center justify-between">
-            <div className="h-5 skeleton rounded-lg w-36" />
-            <div className="h-6 skeleton rounded-lg w-28" />
+              <div className="h-9 skeleton rounded-lg w-full" />
           </div>
         </CardGlass>
 
@@ -32,7 +30,7 @@ function LoadingSkeleton() {
         </div>
 
         {/* Sales Header Skeleton */}
-        <div className="h-6 skeleton rounded-lg w-32 mt-4" />
+        <div className="h-8 skeleton rounded-lg w-32 mt-4" />
 
         {/* Search Skeleton */}
         <div className="h-12 skeleton rounded-xl w-full" />
@@ -132,7 +130,7 @@ export function IncomePage() {
           <button
             onClick={handleWithdrawalClick}
             disabled={!canWithdraw}
-            className={`w-full flex items-center justify-between -mx-1 px-1 py-1 rounded-xl transition-all duration-200 ${
+            className={`w-full flex items-center justify-between -mx-1 rounded-xl transition-all duration-200 ${
               canWithdraw
                 ? 'hover:bg-primary/5 active:scale-[0.99] cursor-pointer'
                 : 'cursor-default opacity-70'

@@ -2,7 +2,7 @@
 #
 # Table name: balance_transactions
 #
-#  id               :integer          not null, primary key
+#  id               :bigint           not null, primary key
 #  amount           :integer          not null
 #  available_at     :datetime
 #  processed        :boolean          default(FALSE), not null
@@ -23,7 +23,7 @@
 #
 # Foreign Keys
 #
-#  user_id  (user_id => users.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class BalanceTransaction < ApplicationRecord
   TYPES = %w[sale withdrawal refund fee].freeze

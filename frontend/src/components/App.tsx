@@ -14,7 +14,6 @@ function StartParamRouter() {
 
   useEffect(() => {
     const startParam = lp.tgWebAppStartParam;
-    console.log(startParam);
     if (startParam?.startsWith('p_')) {
       const productId = startParam.slice(2);
       navigate(`/p/${productId}`, { replace: true });
@@ -22,7 +21,7 @@ function StartParamRouter() {
       // r_ prefix means user wants to create a product with uploaded file
       navigate('/products/new', { replace: true });
     }
-  }, [lp.tgWebAppStartParam, navigate]);
+  }, [lp.tgWebAppStartParam]);
 
   return null;
 }
@@ -32,11 +31,11 @@ interface RoutePath {
     Component: ComponentType;
     title?: string;
     icon?: JSX.Element;
+    index?: boolean;
 }
 
-
 export const pageRoutesConfig: RoutePath[] = [
-    { path: routes.root, Component: IndexPage, title: 'My Products' },
+    { path: routes.root, Component: IndexPage, title: 'My Products'},
     { path: routes.income, Component: IncomePage, title: 'Income' },
     { path: routes.createProduct, Component: CreatePage, title: 'Create product' },
     { path: routes.product, Component: ProductPage, title: 'Product' },
@@ -45,11 +44,11 @@ export const pageRoutesConfig: RoutePath[] = [
 export function App() {
   return (
       <HashRouter>
-          <StartParamRouter />
           <Routes>
               {pageRoutesConfig.map((route) => <Route key={route.path} {...route} />)}
               <Route path="*" element={<Navigate to="/" />} />
           </Routes>
+          <StartParamRouter />
       </HashRouter>
   );
 }

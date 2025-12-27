@@ -1,7 +1,8 @@
-import { useNavigate } from 'react-router-dom';
-import { FileText, Star, ChevronRight } from 'lucide-react';
-import { CardInteractive } from '@/components/ui/card';
-import type { Product } from '@/types/product';
+import {generatePath, useNavigate} from 'react-router-dom';
+import {ChevronRight, FileText, Star} from 'lucide-react';
+import {CardInteractive} from '@/components/ui/card';
+import type {Product} from '@/types/product';
+import {routes} from "@/navigation/routes.tsx";
 
 interface ProductCardProps {
   product: Product;
@@ -12,7 +13,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <CardInteractive
-      onClick={() => navigate(`/p/${product.id}`)}
+      onClick={() => navigate(generatePath(routes.product, { id: product.id })) }
       className="p-4"
     >
       <div className="flex items-center gap-4">

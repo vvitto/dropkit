@@ -1,20 +1,11 @@
-import { useState, useRef } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { CardGlass } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import {
-  Clock,
-  Loader2,
-  LockOpen,
-  Lock,
-  Search,
-  ShoppingBag,
-  Star,
-  User,
-} from 'lucide-react';
-import { getSales, type Sale } from '@/api/income';
+import {useRef, useState} from 'react';
+import {useInfiniteQuery} from '@tanstack/react-query';
+import {CardGlass} from '@/components/ui/card';
+import {Input} from '@/components/ui/input';
+import {Button} from '@/components/ui/button';
+import {Badge} from '@/components/ui/badge';
+import {Clock, Loader2, Lock, LockOpen, Search, ShoppingBag, Star, User,} from 'lucide-react';
+import {getSales, type Sale} from '@/api/income';
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
@@ -110,8 +101,8 @@ function SalesSkeleton() {
 
 function EmptyState({ hasSearch }: { hasSearch: boolean }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+    <div className="flex flex-col items-center justify-center text-center">
+      <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
         <ShoppingBag className="size-8 text-muted-foreground" />
       </div>
       <h3 className="font-semibold mb-1">

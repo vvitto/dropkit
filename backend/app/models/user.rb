@@ -2,7 +2,7 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint           not null, primary key
 #  cached_available_stars :integer          default(0), not null
 #  cached_pending_stars   :integer          default(0), not null
 #  first_name             :string           not null

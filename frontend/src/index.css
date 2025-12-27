@@ -229,6 +229,7 @@ button, a, [role="button"] {
   html {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
+      overflow-y: scroll;
   }
 
   /* Focus styles for accessibility */
@@ -446,5 +447,51 @@ input[type="number"]::-webkit-outer-spin-button {
 @supports (padding: env(safe-area-inset-bottom)) {
   .fixed-bottom-safe {
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ========================================
+   CUSTOM SCROLLBAR
+   ======================================== */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Chrome, Safari, Edge */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+  transition: background 150ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--primary);
+}
+
+/* Hide scrollbar on small/touch screens */
+@media (hover: none) and (pointer: coarse) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    scrollbar-width: none;
   }
 }

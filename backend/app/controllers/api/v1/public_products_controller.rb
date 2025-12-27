@@ -19,12 +19,6 @@ module Api
         }
       end
 
-      def check_access
-        has_access = @product.purchased_by?(current_user)
-
-        render json: { has_access: has_access }
-      end
-
       def create_invoice
         if @product.deleted?
           render json: { error: "Product is no longer available" }, status: :gone

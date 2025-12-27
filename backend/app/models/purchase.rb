@@ -2,9 +2,10 @@
 #
 # Table name: purchases
 #
-#  id                         :integer          not null, primary key
+#  id                         :bigint           not null, primary key
 #  amount_stars               :integer          not null
 #  payment_method             :string           default("stars"), not null
+#  uuid                       :string           not null
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #  buyer_id                   :integer          not null
@@ -17,11 +18,12 @@
 #  index_purchases_on_product_id                  (product_id)
 #  index_purchases_on_product_id_and_buyer_id     (product_id,buyer_id)
 #  index_purchases_on_telegram_payment_charge_id  (telegram_payment_charge_id) UNIQUE
+#  index_purchases_on_uuid                        (uuid) UNIQUE
 #
 # Foreign Keys
 #
-#  buyer_id    (buyer_id => users.id)
-#  product_id  (product_id => products.id)
+#  fk_rails_...  (buyer_id => users.id)
+#  fk_rails_...  (product_id => products.id)
 #
 class Purchase < ApplicationRecord
   LOCKUP_PERIODS = {

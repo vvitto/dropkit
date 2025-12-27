@@ -1,23 +1,20 @@
-import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { miniApp, useLaunchParams } from '@tma.js/sdk-react';
-import { Plus, Package, ShoppingBag, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { HeaderTabs } from '@/components/layout/HeaderTabs';
-import { Badge } from '@/components/ui/badge';
-import { getProducts, getPurchases } from '@/api/products';
-import { createProductIntent } from '@/api/product_intents';
-import { routes } from '@/navigation/routes';
-import { ProductCard } from './ProductCard';
-import { PurchasedProductCard } from './PurchasedProductCard';
-import { EmptyState } from './EmptyState';
-import { LoadingState } from './LoadingState';
+import {useState} from 'react';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {miniApp} from '@tma.js/sdk-react';
+import {Package, Plus, RefreshCw, ShoppingBag} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
+import {HeaderTabs} from '@/components/layout/HeaderTabs';
+import {Badge} from '@/components/ui/badge';
+import {getProducts, getPurchases} from '@/api/products';
+import {createProductIntent} from '@/api/product_intents';
+import {ProductCard} from './ProductCard';
+import {PurchasedProductCard} from './PurchasedProductCard';
+import {EmptyState} from './EmptyState';
+import {LoadingState} from './LoadingState';
 
 export function IndexPage() {
   const [activeTab, setActiveTab] = useState('products');
-  const launchParams = useLaunchParams();
 
   const { data: activeProducts = [], isLoading: isLoadingProducts, error: productsError } = useQuery({
     queryKey: ['products'],
@@ -40,10 +37,6 @@ export function IndexPage() {
 
   const isLoading = isLoadingProducts || isLoadingPurchases;
   const error = productsError || purchasesError;
-
-  if (launchParams.tgWebAppStartParam) {
-    return <Navigate to={routes.createProduct} />;
-  }
 
   if (error) {
     const errorMessage = error instanceof Error ? error.message : 'Ошибка загрузки';
@@ -72,20 +65,16 @@ export function IndexPage() {
             <TabsTrigger value="products" className="gap-2">
               <Package className="size-4" />
               Мои товары
-              {activeProducts.length > 0 && (
                 <Badge variant="secondary" size="sm">
-                  {activeProducts.length}
+                    {activeProducts.length}
                 </Badge>
-              )}
             </TabsTrigger>
             <TabsTrigger value="purchases" className="gap-2">
               <ShoppingBag className="size-4" />
               Покупки
-              {purchases.length > 0 && (
                 <Badge variant="secondary" size="sm">
-                  {purchases.length}
+                    {purchases.length}
                 </Badge>
-              )}
             </TabsTrigger>
           </TabsList>
 
@@ -119,16 +108,16 @@ export function IndexPage() {
         </Tabs>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 glass border-t border-border/50 safe-area-bottom">
-        <Button
-          className="w-full shadow-lg animate-pulse-glow"
-          size="lg"
-          onClick={handleProductCreate}
-        >
-          <Plus className="size-5" />
-          Создать новый товар
-        </Button>
-      </div>
+        {activeProducts.length > 0 ? <div className="fixed bottom-0 left-0 right-0 p-4 glass border-t border-border/50 safe-area-bottom">
+            <Button
+              className="w-full shadow-lg animate-pulse-glow"
+              size="lg"
+              onClick={handleProductCreate}
+            >
+              <Plus className="size-5" />
+              Создать новый товар
+            </Button>
+      </div> : null}
     </div>
   );
 }

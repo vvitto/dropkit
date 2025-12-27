@@ -2,7 +2,7 @@
 #
 # Table name: withdrawals
 #
-#  id             :integer          not null, primary key
+#  id             :bigint           not null, primary key
 #  amount_stars   :integer          not null
 #  processed_at   :datetime
 #  tx_hash        :string
@@ -18,7 +18,7 @@
 #
 # Foreign Keys
 #
-#  user_id  (user_id => users.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class Withdrawal < ApplicationRecord
   STATUSES = {
