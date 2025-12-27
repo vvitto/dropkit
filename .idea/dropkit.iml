@@ -38,6 +38,7 @@
     <orderEntry type="library" scope="PROVIDED" name="msgpack (v1.6.0, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="nio4r (v2.5.9, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="nokogiri (v1.15.4, asdf: 2.7.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="pg (v1.5.4, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="public_suffix (v5.0.3, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="puma (v5.6.5, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="racc (v1.7.1, asdf: 2.7.3) [gem]" level="application" />
