@@ -1,15 +1,25 @@
-import {ArrowLeft} from 'lucide-react';
-import {useNavigate} from 'react-router-dom';
-import {Button} from '@/components/ui/button';
-import {routes} from "@/navigation/routes.tsx";
+import { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface PageHeaderProps {
   title: string;
   subtitle?: string;
+  onBack?: () => void;
+  actions?: ReactNode;
 }
 
-export function PageHeader({ title, subtitle }: PageHeaderProps) {
+export function PageHeader({ title, subtitle, onBack, actions }: PageHeaderProps) {
   const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-10 glass-subtle border-b border-border/50 safe-area-top">
@@ -17,17 +27,20 @@ export function PageHeader({ title, subtitle }: PageHeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate(routes.root)}
+          onClick={handleBack}
           className="shrink-0"
         >
           <ArrowLeft className="size-5" />
         </Button>
-        <div>
-          <h1 className="text-lg font-semibold">{title}</h1>
+
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg font-semibold truncate">{title}</h1>
           {subtitle && (
             <p className="text-sm text-muted-foreground">{subtitle}</p>
           )}
         </div>
+
+        {actions}
       </div>
     </header>
   );

@@ -1,5 +1,20 @@
-import { api } from './client';
-import type { Product } from '@/types/product';
+import {api} from './client';
+
+export interface Product {
+  id: number;
+  title: string;
+  description?: string;
+  price_stars: number;
+  tg_file_id?: string;
+  cover_url?: string;
+  created_at?: string;
+  is_owner?: boolean;
+  is_purchased?: boolean;
+  seller?: {
+    first_name: string;
+    username?: string;
+  };
+}
 
 export interface CreateProductRequest {
   title: string;
@@ -65,39 +80,12 @@ export async function createProductShareMessage(productId: number): Promise<{ me
   return api.post<{ message_id: string }>(`/products/${productId}/create_share_message`);
 }
 
-export interface PublicProduct {
-  id: number;
-  title: string;
-  description?: string;
-  price_stars: number;
-  cover_url?: string;
-  is_purchased: boolean;
-  is_owner: boolean;
-  seller: {
-    first_name: string;
-    username?: string;
-  };
-}
-
-export async function getPublicProduct(productId: number): Promise<PublicProduct> {
-  return api.get<PublicProduct>(`/public_products/${productId}`);
-}
-
 export async function createInvoice(productId: number): Promise<{ invoice_url: string }> {
-  return api.post<{ invoice_url: string }>(`/public_products/${productId}/create_invoice`);
-}
-
-export async function confirmPayment(
-  productId: number,
-  chargeId: string
-): Promise<{ success: boolean; purchase_id: number }> {
-  return api.post(`/public_products/${productId}/confirm_payment`, {
-    telegram_payment_charge_id: chargeId,
-  });
+  return api.post<{ invoice_url: string }>(`/products/${productId}/create_invoice`);
 }
 
 export async function deliverContent(productId: number): Promise<{ success: boolean }> {
-  return api.post<{ success: boolean }>(`/public_products/${productId}/deliver_content`);
+  return api.post<{ success: boolean }>(`/products/${productId}/deliver_content`);
 }
 
 export interface PurchasedProduct {

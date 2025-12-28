@@ -2,22 +2,21 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { invoice, openTelegramLink } from '@tma.js/sdk-react';
-import { createInvoice, deliverContent, getPublicProduct, type PublicProduct } from '@/api/products';
+import { createInvoice, deliverContent, getProduct, type Product } from '@/api/products';
 
-interface UseProductResult {
-  product: PublicProduct | null;
+interface UseProductOverviewResult {
+  product: Product | null;
   isLoading: boolean;
   error: string | null;
   isDelivering: boolean;
   delivered: boolean;
   isPurchasing: boolean;
   hasAccess: boolean;
-  isOwner: boolean;
   handleBuy: () => Promise<void>;
   handleDownload: () => Promise<void>;
 }
 
-export function useProduct(): UseProductResult {
+export function useProductOverview(): UseProductOverviewResult {
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const [delivered, setDelivered] = useState(false);
@@ -25,7 +24,7 @@ export function useProduct(): UseProductResult {
 
   const { data: product, isLoading, error: queryError } = useQuery({
     queryKey: ['product', id],
-    queryFn: () => getPublicProduct(parseInt(id!, 10)),
+    queryFn: () => getProduct(parseInt(id!, 10)),
     enabled: !!id,
   });
 
@@ -37,7 +36,7 @@ export function useProduct(): UseProductResult {
     },
     onSuccess: (status) => {
       if (status === 'paid') {
-        queryClient.setQueryData<PublicProduct>(['product', id], (old) =>
+        queryClient.setQueryData<Product>(['product', id], (old) =>
           old ? { ...old, is_purchased: true } : old
         );
       } else if (status === 'failed') {
@@ -68,9 +67,8 @@ export function useProduct(): UseProductResult {
     deliverMutation.mutate();
   };
 
-  const isOwner = product?.is_owner ?? false;
   const isPurchased = product?.is_purchased ?? false;
-  const hasAccess = isPurchased || isOwner;
+  const hasAccess = isPurchased;
 
   const error = queryError
     ? (queryError instanceof Error ? queryError.message : 'Product not found')
@@ -85,7 +83,6 @@ export function useProduct(): UseProductResult {
     delivered,
     isPurchasing: purchaseMutation.isPending,
     hasAccess,
-    isOwner,
     handleBuy,
     handleDownload,
   };

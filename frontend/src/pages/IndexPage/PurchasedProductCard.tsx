@@ -14,7 +14,7 @@ export function PurchasedProductCard({ purchase }: PurchasedProductCardProps) {
 
   return (
     <CardInteractive
-        onClick={() => navigate(generatePath(routes.product, { id: product.id })) }
+        onClick={() => navigate(generatePath(routes.productOverview, { id: product.id })) }
       className="p-4"
     >
       <div className="flex items-center gap-4">

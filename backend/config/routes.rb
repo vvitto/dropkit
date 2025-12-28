@@ -4,19 +4,16 @@ Rails.application.routes.draw do
     namespace :v1 do
       resource :session, only: [ :show ]
 
-      resources :products, only: [ :index, :create, :show, :update, :destroy ]
-      post "products/:id/create_share_message", to: "products#create_share_message"
-
-      resources :product_intents, only: [ :create ]
-
-      resources :public_products, only: [ :show ] do
+      resources :products, only: [ :index, :create, :show, :update, :destroy ] do
         member do
+          post :create_share_message
           post :create_invoice
-          post :confirm_payment
           get :content
           post :deliver_content
         end
       end
+
+      resources :product_intents, only: [ :create ]
 
       resource :income, only: [ :show ], controller: :income
       resources :sales, only: [ :index ]

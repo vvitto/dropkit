@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export function ProductHeader() {
+export function ProductOverviewHeader() {
   const navigate = useNavigate();
 
   return (

@@ -1,15 +1,14 @@
 import { CheckCircle2, FileImage, Star, User } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import type { PublicProduct } from '@/api/products';
+import type { Product } from '@/api/products';
 
-interface ProductCardProps {
-  product: PublicProduct;
+interface ProductOverviewCardProps {
+  product: Product;
   hasAccess: boolean;
-  isOwner: boolean;
 }
 
-export function ProductCard({ product, hasAccess, isOwner }: ProductCardProps) {
+export function ProductOverviewCard({ product, hasAccess }: ProductOverviewCardProps) {
   return (
     <Card className="mb-4 overflow-hidden">
       <ProductImage coverUrl={product.cover_url} title={product.title} />
@@ -26,10 +25,10 @@ export function ProductCard({ product, hasAccess, isOwner }: ProductCardProps) {
 
         <div className="flex flex-wrap items-center gap-2">
           <ProductPrice priceStars={product.price_stars} />
-          {hasAccess && <AccessBadge isOwner={isOwner} />}
+          {hasAccess && <AccessBadge />}
         </div>
 
-        <ProductSeller seller={product.seller} />
+        {product.seller && <ProductSeller seller={product.seller} />}
       </div>
     </Card>
   );
@@ -67,11 +66,11 @@ function ProductPrice({ priceStars }: { priceStars: number }) {
   );
 }
 
-function AccessBadge({ isOwner }: { isOwner: boolean }) {
+function AccessBadge() {
   return (
     <Badge variant="success" size="lg" className="gap-1.5">
       <CheckCircle2 className="size-4" />
-      {isOwner ? 'Ваш товар' : 'Куплено'}
+      Куплено
     </Badge>
   );
 }

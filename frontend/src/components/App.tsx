@@ -4,8 +4,8 @@ import {useLaunchParams} from '@tma.js/sdk-react';
 
 import {routes} from '@/navigation/routes.tsx';
 import {IndexPage} from "@/pages/IndexPage";
-import {CreatePage} from "@/pages/CreatePage";
 import {ProductPage} from "@/pages/ProductPage";
+import {ProductOverviewPage} from "@/pages/ProductOverviewPage";
 import {IncomePage} from "@/pages/IncomePage";
 
 function StartParamRouter() {
@@ -37,8 +37,9 @@ interface RoutePath {
 export const pageRoutesConfig: RoutePath[] = [
     { path: routes.root, Component: IndexPage, title: 'My Products'},
     { path: routes.income, Component: IncomePage, title: 'Income' },
-    { path: routes.createProduct, Component: CreatePage, title: 'Create product' },
-    { path: routes.product, Component: ProductPage, title: 'Product' },
+    { path: routes.productNew, Component: ProductPage, title: 'New product' },
+    { path: routes.product, Component: ProductPage, title: 'Your product' },
+    { path: routes.productOverview, Component: ProductOverviewPage, title: 'Product' },
 ];
 
 export function App() {

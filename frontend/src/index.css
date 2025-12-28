@@ -264,7 +264,7 @@ button, a, [role="button"] {
 
   /* Gradient backgrounds */
   .gradient-primary {
-    background: linear-gradient(135deg, #0088cc 0%, #006699 100%);
+    background: linear-gradient(135deg, #0088cc 0%, #0088cc 100%);
   }
 
   .gradient-subtle {

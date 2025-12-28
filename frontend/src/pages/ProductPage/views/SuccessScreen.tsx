@@ -1,7 +1,7 @@
-import { CheckCircle2, Star, Share2, Home, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import type { Product } from '@/types/product';
+import {CheckCircle2, Home, Share2, Sparkles, Star} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Card} from '@/components/ui/card';
+import type {Product} from '@/types/product';
 
 interface SuccessScreenProps {
   product: Product;

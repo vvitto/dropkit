@@ -1,0 +1,204 @@
+import { useParams } from 'react-router-dom';
+import { useRef, useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { X, Loader2, Save } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { getProduct, updateProduct } from '@/api/products';
+import {
+  PageHeader,
+  FixedFooter,
+  CoverUpload,
+  TitleField,
+  DescriptionField,
+  PriceField,
+  GeneralError,
+  LoadingState,
+  ErrorState,
+  type FieldErrors,
+} from '../components';
+
+interface ProductUpdateViewProps {
+  onCancel: () => void;
+  onSuccess: () => void;
+}
+
+export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProps) {
+  const { id } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [priceStars, setPriceStars] = useState('');
+  const [cover, setCover] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+
+  const { data: product, isLoading, error: queryError } = useQuery({
+    queryKey: ['product', id],
+    queryFn: () => getProduct(parseInt(id!, 10)),
+    enabled: !!id,
+  });
+
+  useEffect(() => {
+    if (product) {
+      setTitle(product.title);
+      setDescription(product.description || '');
+      setPriceStars(product.price_stars.toString());
+      setCoverPreview(product.cover_url || null);
+    }
+  }, [product]);
+
+  const handleTitleChange = (value: string) => {
+    setTitle(value);
+    if (errors.title && value.trim()) {
+      setErrors((prev) => ({ ...prev, title: undefined }));
+    }
+  };
+
+  const handlePriceChange = (value: string) => {
+    setPriceStars(value);
+    if (errors.priceStars) {
+      const price = parseInt(value, 10);
+      if (price && price >= 1) {
+        setErrors((prev) => ({ ...prev, priceStars: undefined }));
+      }
+    }
+  };
+
+  const handleCoverSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setCover(file);
+      setCoverPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const validate = (): boolean => {
+    const newErrors: FieldErrors = {};
+
+    if (!title.trim()) {
+      newErrors.title = 'Введите название товара';
+    }
+
+    const price = parseInt(priceStars, 10);
+    if (!priceStars) {
+      newErrors.priceStars = 'Укажите цену';
+    } else if (!price || price < 1) {
+      newErrors.priceStars = 'Минимальная цена — 1 звезда';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const updateMutation = useMutation({
+    mutationFn: () =>
+      updateProduct(product!.id, {
+        title: title.trim(),
+        description: description.trim() || undefined,
+        price_stars: parseInt(priceStars, 10),
+        cover: cover || undefined,
+      }),
+    onSuccess: (updatedProduct) => {
+      queryClient.setQueryData(['product', id], updatedProduct);
+      onSuccess();
+    },
+    onError: (err) => {
+      setErrors({
+        general: err instanceof Error ? err.message : 'Не удалось сохранить изменения',
+      });
+    },
+  });
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!product || updateMutation.isPending) return;
+    if (!validate()) return;
+    setErrors({});
+    updateMutation.mutate();
+  };
+
+  if (isLoading) {
+    return <LoadingState />;
+  }
+
+  const error = queryError instanceof Error ? queryError.message : queryError ? 'Product not found' : null;
+
+  if (error || !product) {
+    return <ErrorState message={error || undefined} />;
+  }
+
+  return (
+    <div className="flex flex-col min-h-screen gradient-subtle">
+      <PageHeader
+        title={product.title}
+        actions={
+          <div className="flex items-center gap-2">
+            <Badge variant="warning" size="sm">
+              Редактирование
+            </Badge>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onCancel}
+              className="shrink-0"
+            >
+              <X className="size-5" />
+            </Button>
+          </div>
+        }
+      />
+
+      <form onSubmit={handleSubmit} className="flex-1 p-4 pb-24 space-y-4">
+        <CoverUpload
+          coverPreview={coverPreview}
+          inputRef={coverInputRef}
+          onSelect={handleCoverSelect}
+        />
+
+        <TitleField
+          value={title}
+          onChange={handleTitleChange}
+          error={errors.title}
+        />
+
+        <DescriptionField
+          value={description}
+          onChange={setDescription}
+        />
+
+        <PriceField
+          value={priceStars}
+          onChange={handlePriceChange}
+          error={errors.priceStars}
+        />
+
+        <GeneralError error={errors.general} />
+      </form>
+
+      <FixedFooter>
+        <Button
+          type="submit"
+          onClick={handleSubmit}
+          disabled={updateMutation.isPending}
+          className="w-full shadow-lg"
+          size="lg"
+        >
+          {updateMutation.isPending ? (
+            <>
+              <Loader2 className="size-5 animate-spin" />
+              Сохранение...
+            </>
+          ) : (
+            <>
+              <Save className="size-5" />
+              Сохранить изменения
+            </>
+          )}
+        </Button>
+      </FixedFooter>
+    </div>
+  );
+}
