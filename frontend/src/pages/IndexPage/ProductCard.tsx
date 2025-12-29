@@ -1,8 +1,8 @@
 import {generatePath, useNavigate} from 'react-router-dom';
 import {ChevronRight, FileText, Star} from 'lucide-react';
-import {CardInteractive} from '@/components/ui/card';
 import type {Product} from '@/types/product';
 import {routes} from "@/navigation/routes.tsx";
+import {CardGlass} from "@/components/ui/card.tsx";
 
 interface ProductCardProps {
   product: Product;
@@ -12,7 +12,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const navigate = useNavigate();
 
   return (
-    <CardInteractive
+    <CardGlass
       onClick={() => navigate(generatePath(routes.product, { id: product.id })) }
       className="p-4"
     >
@@ -43,6 +43,6 @@ export function ProductCard({ product }: ProductCardProps) {
 
         <ChevronRight className="size-5 text-muted-foreground shrink-0" />
       </div>
-    </CardInteractive>
+    </CardGlass>
   );
 }

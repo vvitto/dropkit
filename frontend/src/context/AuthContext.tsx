@@ -3,6 +3,7 @@ import {useQuery} from '@tanstack/react-query';
 import {Loader2} from 'lucide-react';
 import {getSession} from '@/api/session';
 import type {User} from '@/types/user';
+import {useTranslation} from "react-i18next";
 
 interface AuthContextType {
   user: User | null;
@@ -14,13 +15,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 function AuthLoading() {
+    const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gradient-subtle">
       <div className="flex flex-col items-center gap-4">
         <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
           <Loader2 className="size-8 animate-spin text-primary" />
         </div>
-        <p className="text-muted-foreground font-medium">Загрузка...</p>
+        <p className="text-muted-foreground font-medium">{t('loading')}</p>
       </div>
     </div>
   );

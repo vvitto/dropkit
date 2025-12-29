@@ -1,8 +1,8 @@
 import {generatePath, useNavigate} from 'react-router-dom';
 import {ChevronRight, FileImage, Star, User} from 'lucide-react';
-import {CardInteractive} from '@/components/ui/card';
 import type {PurchasedProduct} from '@/api/products';
 import {routes} from "@/navigation/routes.tsx";
+import {CardGlass} from "@/components/ui/card.tsx";
 
 interface PurchasedProductCardProps {
   purchase: PurchasedProduct;
@@ -13,7 +13,7 @@ export function PurchasedProductCard({ purchase }: PurchasedProductCardProps) {
   const { product, seller } = purchase;
 
   return (
-    <CardInteractive
+    <CardGlass
         onClick={() => navigate(generatePath(routes.productOverview, { id: product.id })) }
       className="p-4"
     >
@@ -53,6 +53,6 @@ export function PurchasedProductCard({ purchase }: PurchasedProductCardProps) {
 
         <ChevronRight className="size-5 text-muted-foreground shrink-0" />
       </div>
-    </CardInteractive>
+    </CardGlass>
   );
 }

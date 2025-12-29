@@ -1,8 +1,8 @@
-import { useTranslation } from 'react-i18next';
-import { CheckCircle2, FileImage, Star, User } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import type { Product } from '@/api/products';
+import {useTranslation} from 'react-i18next';
+import {CheckCircle2, FileImage, Star, User} from 'lucide-react';
+import {CardGlass} from '@/components/ui/card';
+import {Badge} from '@/components/ui/badge';
+import type {Product} from '@/api/products';
 
 interface ProductOverviewCardProps {
   product: Product;
@@ -13,7 +13,7 @@ export function ProductOverviewCard({ product, hasAccess }: ProductOverviewCardP
   const { t } = useTranslation();
 
   return (
-    <Card className="mb-4 overflow-hidden">
+    <CardGlass className="mb-4 overflow-hidden">
       <ProductImage coverUrl={product.cover_url} title={product.title} />
       <div className="p-4 space-y-4">
         <div>
@@ -33,7 +33,7 @@ export function ProductOverviewCard({ product, hasAccess }: ProductOverviewCardP
 
         {product.seller && <ProductSeller seller={product.seller} t={t} />}
       </div>
-    </Card>
+    </CardGlass>
   );
 }
 

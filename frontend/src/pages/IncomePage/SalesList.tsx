@@ -191,7 +191,7 @@ export function SalesList() {
               {isFetchingNextPage ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
-                  {t('salesList.loading')}
+                  {t('loading')}
                 </>
               ) : (
                 t('salesList.loadMore')
