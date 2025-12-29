@@ -10,7 +10,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     reply_with :message, text: text, parse_mode: "HTML", reply_markup: {
       inline_keyboard: [
         [
-          { text: "Создать цифровой товар", url: "https://t.me/dropkit_bot?startapp=r_#{message[:message_id]}" }
+          { text: "Создать цифровой товар", url: "https://t.me/dropkitbot?startapp=r_#{message[:message_id]}" }
         ]
       ]
     }
