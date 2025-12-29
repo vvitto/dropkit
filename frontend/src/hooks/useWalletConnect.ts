@@ -22,7 +22,7 @@ export const useWalletConnect = () => {
           await validateWallet({
             address: w.account.address,
             network: w.account.chain,
-            public_key: w.account.publicKey,
+            public_key: w.account.publicKey!,
             proof: {
               ...w.connectItems.tonProof.proof,
               payload: cachedPayload || w.connectItems.tonProof.proof.payload,

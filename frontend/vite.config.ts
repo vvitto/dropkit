@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react-swc';
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 import mkcert from 'vite-plugin-mkcert';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from "@tailwindcss/vite"
@@ -7,7 +7,7 @@ import path from "path"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: 'https://f8101d86a0.tapps.global/latest',
+  base: 'https://drop-kit.xyz/',
   css: {
     preprocessorOptions: {
       scss: {
@@ -41,6 +41,6 @@ export default defineConfig({
   server: {
     // Exposes your dev server and makes it accessible for the devices in the same network.
     host: true,
-    allowedHosts: ['gemifi.ngrok.dev']
+    allowedHosts: ['drop-kit.xyz']
   },
 });

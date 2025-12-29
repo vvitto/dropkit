@@ -15,7 +15,7 @@ import {
 import {deleteProduct} from '@/api/products';
 
 interface DeleteProductDialogProps {
-  productId: number;
+  productId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;

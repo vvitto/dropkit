@@ -29,7 +29,7 @@ export function ProductShowView({ onEdit }: ProductShowViewProps) {
 
   const { data: product, isLoading, error: queryError } = useQuery({
     queryKey: ['product', id],
-    queryFn: () => getProduct(id),
+    queryFn: () => getProduct(id!),
     enabled: !!id,
   });
 

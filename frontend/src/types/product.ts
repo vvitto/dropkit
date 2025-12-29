@@ -1,7 +1,7 @@
 export type ContentType = 'file' | 'link' | 'text';
 
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   description?: string;
   price_stars: number;
