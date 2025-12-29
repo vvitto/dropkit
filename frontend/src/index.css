@@ -268,9 +268,7 @@ button, a, [role="button"] {
   }
 
   .gradient-subtle {
-    /*background: linear-gradient(180deg, #f8fafc 0%, #e8f4fc 100%);*/
-
-      background-color: rgba(232, 244, 252, 0.5);
+      background-color: #F2F9FD;
   }
 
   .dark .gradient-subtle {

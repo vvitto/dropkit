@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/drawer';
 import {Clock, Loader2, Star, Wallet} from 'lucide-react';
 import {useWalletConnect} from '@/hooks/useWalletConnect';
+import {useTonConnectModal} from "@tonconnect/ui-react";
 
 interface WithdrawalModalProps {
   isOpen: boolean;
@@ -31,14 +32,18 @@ export function WithdrawalModal({
 }: WithdrawalModalProps) {
   const { t } = useTranslation();
   const { isConnected, shortAddress, connect, disconnect } = useWalletConnect();
+   const { state } = useTonConnectModal()
 
   const handleSubmit = () => {
     onSubmit();
   };
 
+   const isWalletModalOpen = state.status === 'opened';
+  console.log(isWalletModalOpen);
+
   return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent>
+    <Drawer open={isOpen && !isWalletModalOpen} onOpenChange={(open) => !open && onClose()}>
+      <DrawerContent >
         <DrawerHeader className="text-left">
           <DrawerTitle>{t('withdrawalModal.title')}</DrawerTitle>
           <DrawerDescription>
@@ -46,18 +51,16 @@ export function WithdrawalModal({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="px-6 space-y-5">
+        <div className="px-6 space-y-4">
           {/* Amount */}
-          <CardGlass className="p-4">
+          <CardGlass className="p-3">
             <div className="flex justify-between items-center">
-              <span className="font-semibold">{t('withdrawalModal.youWillReceive')}</span>
-              <div className="flex flex-col items-end gap-0.5">
-                <span className="flex items-center gap-1.5 text-lg font-bold text-primary">
-                  <Star className="size-5 text-warning fill-warning" />
-                  {amount.toLocaleString()}
-                </span>
+              <span className="text-sm font-medium">{t('withdrawalModal.youWillReceive')}</span>
+              <div className="flex items-center gap-1">
+                <Star className="size-4 text-warning fill-warning" />
+                <span className="font-bold text-primary">{amount.toLocaleString()}</span>
                 {amountTon !== null && (
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs text-muted-foreground">
                     ≈ {amountTon} TON
                   </span>
                 )}
@@ -69,14 +72,14 @@ export function WithdrawalModal({
           <div className="space-y-2">
             <p className="text-sm font-medium">{t('withdrawalModal.walletLabel')}</p>
             {isConnected ? (
-              <CardGlass className="p-4">
+              <CardGlass className="p-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <Wallet className="size-5 text-primary" />
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Wallet className="size-4 text-primary" />
                     </div>
                     <div>
-                      <p className="font-semibold">{shortAddress}</p>
+                      <p className="text-sm font-semibold">{shortAddress}</p>
                       <p className="text-xs text-muted-foreground">TON Wallet</p>
                     </div>
                   </div>
@@ -86,28 +89,27 @@ export function WithdrawalModal({
                 </div>
               </CardGlass>
             ) : (
-              <Button variant="outline" className="w-full" size="lg" onClick={connect}>
-                <Wallet className="size-5" />
+              <Button variant="outline" className="w-full" onClick={connect}>
+                <Wallet className="size-4" />
                 {t('withdrawalModal.connectWallet')}
               </Button>
             )}
           </div>
 
           {/* Processing time notice */}
-          <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-xl">
-            <Clock className="size-5 text-muted-foreground shrink-0 mt-0.5" />
-            <p className="text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-xl">
+            <Clock className="size-4 text-muted-foreground shrink-0" />
+            <p className="text-xs text-muted-foreground">
               {t('withdrawalModal.processingNotice')}
             </p>
           </div>
         </div>
 
-        <DrawerFooter>
+        <DrawerFooter className="pt-4">
           <div className="flex gap-3 w-full">
             <Button
               variant="outline"
               className="flex-1"
-              size="lg"
               onClick={onClose}
               disabled={isSubmitting}
             >
@@ -115,13 +117,12 @@ export function WithdrawalModal({
             </Button>
             <Button
               className="flex-1"
-              size="lg"
               onClick={handleSubmit}
               disabled={isSubmitting || amount <= 0 || !isConnected}
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="size-5 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                   {t('withdrawalModal.sending')}
                 </>
               ) : (

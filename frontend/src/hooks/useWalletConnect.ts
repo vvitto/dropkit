@@ -79,6 +79,6 @@ export const useWalletConnect = () => {
     isConnectionRestored,
     isConnected: !!wallet,
     connect,
-    disconnect,
+    disconnect
   };
 };

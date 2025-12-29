@@ -32,14 +32,14 @@ function ErrorBoundaryError({ error }: { error: unknown }) {
 
 export function Root() {
   return (
-    <ErrorBoundary fallback={ErrorBoundaryError}>
-      <QueryClientProvider client={queryClient}>
-        <TonConnectUIProvider manifestUrl={`${window.location.origin}/latest/tonconnect-manifest.json`}>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </TonConnectUIProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+    <TonConnectUIProvider manifestUrl={`${window.location.origin}/latest/tonconnect-manifest.json`}>
+        <ErrorBoundary fallback={ErrorBoundaryError}>
+          <QueryClientProvider client={queryClient}>
+              <AuthProvider>
+                <App />
+              </AuthProvider>
+          </QueryClientProvider>
+        </ErrorBoundary>
+    </TonConnectUIProvider>
   );
 }
