@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useRef, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { X, Loader2, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,7 @@ interface ProductUpdateViewProps {
 }
 
 export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProps) {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const coverInputRef = useRef<HTMLInputElement>(null);
@@ -79,14 +81,14 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
     const newErrors: FieldErrors = {};
 
     if (!title.trim()) {
-      newErrors.title = 'Введите название товара';
+      newErrors.title = t('productPage.validation.titleRequired');
     }
 
     const price = parseInt(priceStars, 10);
     if (!priceStars) {
-      newErrors.priceStars = 'Укажите цену';
+      newErrors.priceStars = t('productPage.validation.priceRequired');
     } else if (!price || price < 1) {
-      newErrors.priceStars = 'Минимальная цена — 1 звезда';
+      newErrors.priceStars = t('productPage.validation.priceMinimum');
     }
 
     setErrors(newErrors);
@@ -107,7 +109,7 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
     },
     onError: (err) => {
       setErrors({
-        general: err instanceof Error ? err.message : 'Не удалось сохранить изменения',
+        general: err instanceof Error ? err.message : t('productPage.update.saveError'),
       });
     },
   });
@@ -124,7 +126,7 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
     return <LoadingState />;
   }
 
-  const error = queryError instanceof Error ? queryError.message : queryError ? 'Product not found' : null;
+  const error = queryError instanceof Error ? queryError.message : queryError ? t('productPage.productNotFound') : null;
 
   if (error || !product) {
     return <ErrorState message={error || undefined} />;
@@ -137,7 +139,7 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
         actions={
           <div className="flex items-center gap-2">
             <Badge variant="warning" size="sm">
-              Редактирование
+              {t('productPage.editing')}
             </Badge>
             <Button
               variant="ghost"
@@ -189,12 +191,12 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
           {updateMutation.isPending ? (
             <>
               <Loader2 className="size-5 animate-spin" />
-              Сохранение...
+              {t('productPage.update.saving')}
             </>
           ) : (
             <>
               <Save className="size-5" />
-              Сохранить изменения
+              {t('productPage.update.saveChanges')}
             </>
           )}
         </Button>

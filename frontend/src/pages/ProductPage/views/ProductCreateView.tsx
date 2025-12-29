@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useLaunchParams, shareMessage } from '@tma.js/sdk-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -20,6 +21,7 @@ import { SuccessScreen } from './SuccessScreen';
 import { NoFileScreen } from './NoFileScreen';
 
 export function ProductCreateView() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const launchParams = useLaunchParams();
@@ -64,18 +66,18 @@ export function ProductCreateView() {
     const newErrors: FieldErrors = {};
 
     if (!title.trim()) {
-      newErrors.title = 'Введите название товара';
+      newErrors.title = t('productPage.validation.titleRequired');
     }
 
     const price = parseInt(priceStars, 10);
     if (!priceStars) {
-      newErrors.priceStars = 'Укажите цену';
+      newErrors.priceStars = t('productPage.validation.priceRequired');
     } else if (!price || price < 1) {
-      newErrors.priceStars = 'Минимальная цена — 1 звезда';
+      newErrors.priceStars = t('productPage.validation.priceMinimum');
     }
 
     if (!fileId) {
-      newErrors.general = 'Файл не найден. Попробуйте отправить файл боту заново';
+      newErrors.general = t('productPage.validation.fileNotFound');
     }
 
     setErrors(newErrors);
@@ -96,7 +98,7 @@ export function ProductCreateView() {
     },
     onError: (err) => {
       setErrors({
-        general: err instanceof Error ? err.message : 'Ошибка при создании товара',
+        general: err instanceof Error ? err.message : t('productPage.validation.createError'),
       });
     },
   });
@@ -135,8 +137,8 @@ export function ProductCreateView() {
   return (
     <div className="flex flex-col min-h-screen gradient-subtle">
       <PageHeader
-        title="Новый товар"
-        subtitle="Заполните информацию о товаре"
+        title={t('productPage.newProduct')}
+        subtitle={t('productPage.newProductSubtitle')}
         onBack={handleGoHome}
       />
 
@@ -178,12 +180,12 @@ export function ProductCreateView() {
           {createMutation.isPending ? (
             <>
               <Loader2 className="size-5 animate-spin" />
-              Создание...
+              {t('productPage.create.creating')}
             </>
           ) : (
             <>
               <Sparkles className="size-5" />
-              Создать товар
+              {t('productPage.create.createProduct')}
             </>
           )}
         </Button>

@@ -1,4 +1,5 @@
 import {useRef, useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {useInfiniteQuery} from '@tanstack/react-query';
 import {CardGlass} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
@@ -17,7 +18,7 @@ function formatDate(dateString: string): string {
   });
 }
 
-function SaleCard({ sale }: { sale: Sale }) {
+function SaleCard({ sale, t }: { sale: Sale; t: (key: string) => string }) {
   const buyerName = sale.buyer.username
     ? `@${sale.buyer.username}`
     : sale.buyer.first_name;
@@ -53,12 +54,12 @@ function SaleCard({ sale }: { sale: Sale }) {
             {sale.is_available ? (
               <>
                 <LockOpen className="size-3" />
-                Доступны
+                {t('salesList.status.available')}
               </>
             ) : (
               <>
                 <Lock className="size-3" />
-                Заблокированы
+                {t('salesList.status.locked')}
               </>
             )}
           </Badge>
@@ -99,25 +100,26 @@ function SalesSkeleton() {
   );
 }
 
-function EmptyState({ hasSearch }: { hasSearch: boolean }) {
+function EmptyState({ hasSearch, t }: { hasSearch: boolean; t: (key: string) => string }) {
   return (
     <div className="flex flex-col items-center justify-center text-center">
       <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
         <ShoppingBag className="size-8 text-muted-foreground" />
       </div>
       <h3 className="font-semibold mb-1">
-        {hasSearch ? 'Ничего не найдено' : 'Пока нет продаж'}
+        {hasSearch ? t('salesList.empty.noResults') : t('salesList.empty.noSales')}
       </h3>
       <p className="text-sm text-muted-foreground max-w-[200px]">
         {hasSearch
-          ? 'Попробуйте изменить поисковый запрос'
-          : 'Ваши продажи появятся здесь'}
+          ? t('salesList.empty.noResultsHint')
+          : t('salesList.empty.noSalesHint')}
       </p>
     </div>
   );
 }
 
 export function SalesList() {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
@@ -161,7 +163,7 @@ export function SalesList() {
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-muted-foreground pointer-events-none" />
         <Input
-          placeholder="Поиск по username или ID"
+          placeholder={t('salesList.searchPlaceholder')}
           value={searchInput}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="pl-11"
@@ -172,11 +174,11 @@ export function SalesList() {
       {isLoading ? (
         <SalesSkeleton />
       ) : sales.length === 0 ? (
-        <EmptyState hasSearch={!!query} />
+        <EmptyState hasSearch={!!query} t={t} />
       ) : (
         <div className="space-y-3">
           {sales.map((sale) => (
-            <SaleCard key={sale.id} sale={sale} />
+            <SaleCard key={sale.id} sale={sale} t={t} />
           ))}
 
           {hasNextPage && (
@@ -189,10 +191,10 @@ export function SalesList() {
               {isFetchingNextPage ? (
                 <>
                   <Loader2 className="size-4 animate-spin" />
-                  Загрузка...
+                  {t('salesList.loading')}
                 </>
               ) : (
-                'Загрузить ещё'
+                t('salesList.loadMore')
               )}
             </Button>
           )}

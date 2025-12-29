@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ImageIcon, Upload, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -10,6 +11,8 @@ interface CoverUploadProps {
 }
 
 export function CoverUpload({ coverPreview, inputRef, onSelect, disabled = false }: CoverUploadProps) {
+  const { t } = useTranslation();
+
   const handleClick = () => {
     if (!disabled) {
       inputRef.current?.click();
@@ -20,7 +23,7 @@ export function CoverUpload({ coverPreview, inputRef, onSelect, disabled = false
 
   return (
     <div className="space-y-3">
-      <Label className="text-sm font-medium">Обложка товара</Label>
+      <Label className="text-sm font-medium">{t('formFields.cover.label')}</Label>
       <div
         className={`relative w-full aspect-video rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-dashed transition-all duration-200 group ${
           isEditable
@@ -50,7 +53,7 @@ export function CoverUpload({ coverPreview, inputRef, onSelect, disabled = false
               <ImageIcon className="size-8 text-primary/60" />
             </div>
             {isEditable && (
-              <p className="text-sm text-muted-foreground">Нажмите, чтобы загрузить</p>
+              <p className="text-sm text-muted-foreground">{t('formFields.cover.clickToUpload')}</p>
             )}
           </div>
         )}
@@ -71,7 +74,7 @@ export function CoverUpload({ coverPreview, inputRef, onSelect, disabled = false
           onClick={handleClick}
         >
           <Upload className="size-5" />
-          {coverPreview ? 'Изменить обложку' : 'Загрузить обложку'}
+          {coverPreview ? t('formFields.cover.changeCover') : t('formFields.cover.uploadCover')}
         </Button>
       )}
     </div>

@@ -1,3 +1,4 @@
+import {useTranslation} from 'react-i18next';
 import {CheckCircle2, Home, Share2, Sparkles, Star} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Card} from '@/components/ui/card';
@@ -10,6 +11,8 @@ interface SuccessScreenProps {
 }
 
 export function SuccessScreen({ product, onShare, onGoHome }: SuccessScreenProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center gradient-subtle">
       <div className="relative mb-8">
@@ -22,7 +25,7 @@ export function SuccessScreen({ product, onShare, onGoHome }: SuccessScreenProps
       </div>
 
       <h2 className="text-2xl font-bold mb-2 animate-fade-in-up" style={{ animationDelay: '150ms' }}>
-        Товар создан!
+        {t('productPage.success.title')}
       </h2>
 
       <Card className="w-full max-w-sm p-4 mb-8 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
@@ -36,7 +39,7 @@ export function SuccessScreen({ product, onShare, onGoHome }: SuccessScreenProps
         <h3 className="font-semibold text-lg mb-2">{product.title}</h3>
         <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-warning/10 w-fit mx-auto">
           <Star className="size-5 text-warning fill-warning" />
-          <span className="font-semibold text-warning">{product.price_stars} звёзд</span>
+          <span className="font-semibold text-warning">{product.price_stars} {t('productPage.success.stars')}</span>
         </div>
       </Card>
 
@@ -47,7 +50,7 @@ export function SuccessScreen({ product, onShare, onGoHome }: SuccessScreenProps
           size="lg"
         >
           <Share2 className="size-5" />
-          Поделиться товаром
+          {t('productPage.success.shareProduct')}
         </Button>
 
         <Button
@@ -57,7 +60,7 @@ export function SuccessScreen({ product, onShare, onGoHome }: SuccessScreenProps
           size="lg"
         >
           <Home className="size-5" />
-          На главную
+          {t('productPage.success.goHome')}
         </Button>
       </div>
     </div>

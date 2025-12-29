@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {HeaderTabs} from '@/components/layout/HeaderTabs';
 import {CardGlass} from '@/components/ui/card';
@@ -45,6 +46,7 @@ function LoadingSkeleton() {
 }
 
 export function IncomePage() {
+  const { t } = useTranslation();
   const [isWithdrawalModalOpen, setIsWithdrawalModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -76,7 +78,7 @@ export function IncomePage() {
   }
 
   if (error || !data) {
-    const errorMessage = error instanceof Error ? error.message : 'Не удалось загрузить данные о доходах';
+    const errorMessage = error instanceof Error ? error.message : t('incomePage.error.defaultMessage');
     return (
       <div className="flex flex-col min-h-screen gradient-subtle">
         <HeaderTabs />
@@ -84,13 +86,13 @@ export function IncomePage() {
           <div className="w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
             <AlertTriangle className="size-8 text-destructive" />
           </div>
-          <h3 className="text-lg font-semibold mb-2">Ошибка загрузки</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('incomePage.error.title')}</h3>
           <p className="text-muted-foreground mb-6 max-w-[280px]">
             {errorMessage}
           </p>
           <Button onClick={() => refetch()} size="lg">
             <RefreshCw className="size-5" />
-            Повторить
+            {t('incomePage.error.retry')}
           </Button>
         </div>
       </div>
@@ -113,7 +115,7 @@ export function IncomePage() {
               <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
                 <TrendingUp className="size-4 text-success" />
               </div>
-              <span className="text-sm font-medium">Всего заработано</span>
+              <span className="text-sm font-medium">{t('incomePage.stats.totalEarned')}</span>
             </div>
             <div className="flex items-center gap-1">
               <Star className="size-4 text-warning fill-warning" />
@@ -131,7 +133,7 @@ export function IncomePage() {
                 <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center">
                   <Lock className="size-4 text-warning" />
                 </div>
-                <span className="text-sm font-medium">Заморожено</span>
+                <span className="text-sm font-medium">{t('incomePage.stats.totalLocked')}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Star className="size-4 text-warning fill-warning" />
@@ -159,8 +161,8 @@ export function IncomePage() {
               </div>
               <span className="text-sm font-medium text-left">
                 {has_pending_withdrawal
-                  ? 'Заявка обрабатывается'
-                  : 'Доступно к выводу'}
+                  ? t('incomePage.stats.pendingRequest')
+                  : t('incomePage.stats.availableForWithdrawal')}
               </span>
             </div>
             <div className="flex items-center gap-1">
@@ -180,12 +182,12 @@ export function IncomePage() {
 
         {/* Info */}
         <p className="text-xs text-muted-foreground text-center px-4">
-          Звёзды разблокируются через {summary.lockup_days} дней после продажи
+          {t('incomePage.lockupInfo', { days: summary.lockup_days })}
         </p>
 
         {/* Sales History */}
         <div className="pt-2">
-          <h2 className="text-lg font-semibold mb-4">История продаж</h2>
+          <h2 className="text-lg font-semibold mb-4">{t('incomePage.salesHistory')}</h2>
           <SalesList />
         </div>
       </div>

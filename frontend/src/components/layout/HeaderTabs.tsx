@@ -1,16 +1,18 @@
+import {useTranslation} from 'react-i18next';
 import {routes} from '@/navigation/routes';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {cn} from '@/lib/utils';
 import {Package, Wallet} from 'lucide-react';
 
-const tabs = [
-  { path: routes.root, label: 'My Products', icon: Package },
-  { path: routes.income, label: 'Income', icon: Wallet },
-];
-
 export function HeaderTabs() {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const tabs = [
+    { path: routes.root, label: t('header.myProducts'), icon: Package },
+    { path: routes.income, label: t('header.income'), icon: Wallet },
+  ];
 
   return (
     <header className="sticky top-0 z-10 glass-subtle border-b border-border/50 safe-area-top">

@@ -1,3 +1,4 @@
+import {useTranslation} from 'react-i18next';
 import {Button} from '@/components/ui/button';
 import {CardGlass} from '@/components/ui/card';
 import {
@@ -28,6 +29,7 @@ export function WithdrawalModal({
   amountTon,
   isSubmitting,
 }: WithdrawalModalProps) {
+  const { t } = useTranslation();
   const { isConnected, shortAddress, connect, disconnect } = useWalletConnect();
 
   const handleSubmit = () => {
@@ -38,9 +40,9 @@ export function WithdrawalModal({
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Заявка на вывод</DrawerTitle>
+          <DrawerTitle>{t('withdrawalModal.title')}</DrawerTitle>
           <DrawerDescription>
-            Подтвердите вывод средств на ваш TON кошелёк
+            {t('withdrawalModal.description')}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -48,7 +50,7 @@ export function WithdrawalModal({
           {/* Amount */}
           <CardGlass className="p-4">
             <div className="flex justify-between items-center">
-              <span className="font-semibold">Вы получите</span>
+              <span className="font-semibold">{t('withdrawalModal.youWillReceive')}</span>
               <div className="flex flex-col items-end gap-0.5">
                 <span className="flex items-center gap-1.5 text-lg font-bold text-primary">
                   <Star className="size-5 text-warning fill-warning" />
@@ -65,7 +67,7 @@ export function WithdrawalModal({
 
           {/* Wallet Connection */}
           <div className="space-y-2">
-            <p className="text-sm font-medium">Кошелёк для вывода</p>
+            <p className="text-sm font-medium">{t('withdrawalModal.walletLabel')}</p>
             {isConnected ? (
               <CardGlass className="p-4">
                 <div className="flex items-center justify-between">
@@ -79,14 +81,14 @@ export function WithdrawalModal({
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={disconnect}>
-                    Отключить
+                    {t('withdrawalModal.disconnect')}
                   </Button>
                 </div>
               </CardGlass>
             ) : (
               <Button variant="outline" className="w-full" size="lg" onClick={connect}>
                 <Wallet className="size-5" />
-                Подключить кошелёк
+                {t('withdrawalModal.connectWallet')}
               </Button>
             )}
           </div>
@@ -95,7 +97,7 @@ export function WithdrawalModal({
           <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-xl">
             <Clock className="size-5 text-muted-foreground shrink-0 mt-0.5" />
             <p className="text-sm text-muted-foreground">
-              Перевод средств может занять до 24 часов после подтверждения
+              {t('withdrawalModal.processingNotice')}
             </p>
           </div>
         </div>
@@ -109,7 +111,7 @@ export function WithdrawalModal({
               onClick={onClose}
               disabled={isSubmitting}
             >
-              Отмена
+              {t('withdrawalModal.cancel')}
             </Button>
             <Button
               className="flex-1"
@@ -120,10 +122,10 @@ export function WithdrawalModal({
               {isSubmitting ? (
                 <>
                   <Loader2 className="size-5 animate-spin" />
-                  Отправка...
+                  {t('withdrawalModal.sending')}
                 </>
               ) : (
-                'Подтвердить'
+                t('withdrawalModal.confirm')
               )}
             </Button>
           </div>

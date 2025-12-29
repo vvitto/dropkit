@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { shareMessage } from '@tma.js/sdk-react';
 import { useQuery } from '@tanstack/react-query';
 import { Pencil, Trash2, Share2 } from 'lucide-react';
@@ -22,6 +23,7 @@ interface ProductShowViewProps {
 }
 
 export function ProductShowView({ onEdit }: ProductShowViewProps) {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -41,7 +43,7 @@ export function ProductShowView({ onEdit }: ProductShowViewProps) {
     return <LoadingState />;
   }
 
-  const error = queryError instanceof Error ? queryError.message : queryError ? 'Product not found' : null;
+  const error = queryError instanceof Error ? queryError.message : queryError ? t('productPage.productNotFound') : null;
 
   if (error || !product) {
     return <ErrorState message={error || undefined} />;
@@ -51,7 +53,7 @@ export function ProductShowView({ onEdit }: ProductShowViewProps) {
     <div className="flex flex-col min-h-screen gradient-subtle">
       <PageHeader
         title={product.title}
-        subtitle="Ваш товар"
+        subtitle={t('productPage.yourProduct')}
         actions={
           <div className="flex items-center gap-1">
             <Button
@@ -111,7 +113,7 @@ export function ProductShowView({ onEdit }: ProductShowViewProps) {
           size="lg"
         >
           <Share2 className="size-5" />
-          Поделиться товаром
+          {t('productPage.share')}
         </Button>
       </FixedFooter>
 

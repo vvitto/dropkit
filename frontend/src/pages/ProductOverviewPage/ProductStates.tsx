@@ -1,9 +1,12 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FileImage, Home, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 export function ProductLoading() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col min-h-screen gradient-subtle">
       <div className="p-4 space-y-4">
@@ -24,7 +27,7 @@ export function ProductLoading() {
       <div className="flex-1 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="size-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Загрузка товара...</p>
+          <p className="text-muted-foreground">{t('productOverview.loading')}</p>
         </div>
       </div>
     </div>
@@ -36,6 +39,7 @@ interface ProductErrorProps {
 }
 
 export function ProductError({ error }: ProductErrorProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -44,14 +48,14 @@ export function ProductError({ error }: ProductErrorProps) {
         <FileImage className="size-10 text-muted-foreground" />
       </div>
 
-      <h3 className="text-xl font-semibold mb-2">Товар не найден</h3>
+      <h3 className="text-xl font-semibold mb-2">{t('productOverview.error.title')}</h3>
       <p className="text-muted-foreground mb-8 max-w-[280px] leading-relaxed">
-        {error || 'Возможно, он был удалён или ссылка неверна'}
+        {error || t('productOverview.error.description')}
       </p>
 
       <Button onClick={() => navigate('/')} size="lg">
         <Home className="size-5" />
-        На главную
+        {t('productOverview.goHome')}
       </Button>
     </div>
   );

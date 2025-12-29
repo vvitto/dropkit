@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { CheckCircle2, Download, Loader2, ShoppingCart, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -20,6 +21,8 @@ export function ProductActionButton({
   onBuy,
   onDownload,
 }: ProductActionButtonProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="fixed bottom-0 left-0 right-0 p-4 glass border-t border-border/50 safe-area-bottom">
       {hasAccess ? (
@@ -27,12 +30,14 @@ export function ProductActionButton({
           isDelivering={isDelivering}
           delivered={delivered}
           onClick={onDownload}
+          t={t}
         />
       ) : (
         <BuyButton
           priceStars={priceStars}
           isPurchasing={isPurchasing}
           onClick={onBuy}
+          t={t}
         />
       )}
     </div>
@@ -43,9 +48,10 @@ interface DownloadButtonProps {
   isDelivering: boolean;
   delivered: boolean;
   onClick: () => void;
+  t: (key: string) => string;
 }
 
-function DownloadButton({ isDelivering, delivered, onClick }: DownloadButtonProps) {
+function DownloadButton({ isDelivering, delivered, onClick, t }: DownloadButtonProps) {
   if (delivered) {
     return (
       <Button
@@ -54,7 +60,7 @@ function DownloadButton({ isDelivering, delivered, onClick }: DownloadButtonProp
         size="lg"
       >
         <CheckCircle2 className="size-5" />
-        Отправлено в чат
+        {t('productOverview.button.sentToChat')}
       </Button>
     );
   }
@@ -69,12 +75,12 @@ function DownloadButton({ isDelivering, delivered, onClick }: DownloadButtonProp
       {isDelivering ? (
         <>
           <Loader2 className="size-5 animate-spin" />
-          Отправка...
+          {t('productOverview.button.sending')}
         </>
       ) : (
         <>
           <Download className="size-5" />
-          Получить товар
+          {t('productOverview.button.getProduct')}
         </>
       )}
     </Button>
@@ -85,9 +91,10 @@ interface BuyButtonProps {
   priceStars: number;
   isPurchasing: boolean;
   onClick: () => void;
+  t: (key: string) => string;
 }
 
-function BuyButton({ priceStars, isPurchasing, onClick }: BuyButtonProps) {
+function BuyButton({ priceStars, isPurchasing, onClick, t }: BuyButtonProps) {
   return (
     <Button
       onClick={onClick}
@@ -98,12 +105,12 @@ function BuyButton({ priceStars, isPurchasing, onClick }: BuyButtonProps) {
       {isPurchasing ? (
         <>
           <Loader2 className="size-5 animate-spin" />
-          Оплата...
+          {t('productOverview.button.paying')}
         </>
       ) : (
         <>
           <ShoppingCart className="size-5" />
-          Купить за {priceStars}
+          {t('productOverview.button.buyFor')} {priceStars}
           <Star className="size-4 text-warning fill-warning" />
         </>
       )}

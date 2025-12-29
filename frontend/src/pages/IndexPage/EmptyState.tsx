@@ -1,3 +1,4 @@
+import {useTranslation} from 'react-i18next';
 import {miniApp} from '@tma.js/sdk-react';
 import {Archive, Package, Plus, ShoppingBag, Sparkles} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -9,6 +10,8 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ isArchive = false, isPurchases = false }: EmptyStateProps) {
+  const { t } = useTranslation();
+
   const handleProductCreate = async () => {
     await createProductIntent();
     miniApp.close();
@@ -21,15 +24,15 @@ export function EmptyState({ isArchive = false, isPurchases = false }: EmptyStat
   };
 
   const getTitle = () => {
-    if (isArchive) return 'Архив пуст';
-    if (isPurchases) return 'Нет покупок';
-    return 'Создайте первый товар';
+    if (isArchive) return t('emptyState.archive.title');
+    if (isPurchases) return t('emptyState.purchases.title');
+    return t('emptyState.products.title');
   };
 
   const getDescription = () => {
-    if (isArchive) return 'Здесь будут отображаться архивные товары';
-    if (isPurchases) return 'Здесь будут отображаться товары, которые вы купили у других продавцов';
-    return 'Загрузите цифровой контент и начните продавать прямо в Telegram';
+    if (isArchive) return t('emptyState.archive.description');
+    if (isPurchases) return t('emptyState.purchases.description');
+    return t('emptyState.products.description');
   };
 
   return (
@@ -53,7 +56,7 @@ export function EmptyState({ isArchive = false, isPurchases = false }: EmptyStat
       {!isArchive && !isPurchases && (
         <Button size="lg" onClick={handleProductCreate} className="shadow-lg">
           <Plus className="size-5" />
-          Создать товар
+          {t('emptyState.createProduct')}
         </Button>
       )}
     </div>

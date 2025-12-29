@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function ProductOverviewHeader() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -16,7 +18,7 @@ export function ProductOverviewHeader() {
         >
           <ArrowLeft className="size-5" />
         </Button>
-        <h1 className="text-lg font-semibold truncate">Товар</h1>
+        <h1 className="text-lg font-semibold truncate">{t('productOverview.header')}</h1>
       </div>
     </header>
   );

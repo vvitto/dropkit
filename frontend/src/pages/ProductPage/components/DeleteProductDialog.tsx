@@ -1,4 +1,5 @@
 import {useNavigate} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {Loader2} from 'lucide-react';
 import {
@@ -28,6 +29,7 @@ export function DeleteProductDialog({
   onSuccess,
   onCancel,
 }: DeleteProductDialogProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -54,15 +56,14 @@ export function DeleteProductDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Удалить товар?</AlertDialogTitle>
+          <AlertDialogTitle>{t('productPage.delete.title')}</AlertDialogTitle>
           <AlertDialogDescription>
-            Товар будет удалён и больше не будет доступен для покупки.
-            Покупатели, которые уже приобрели товар, сохранят к нему доступ.
+            {t('productPage.delete.description')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={deleteMutation.isPending} onClick={handleCancel}>
-            Отмена
+            {t('productPage.delete.cancel')}
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
@@ -72,10 +73,10 @@ export function DeleteProductDialog({
             {deleteMutation.isPending ? (
               <>
                 <Loader2 className="size-4 animate-spin" />
-                Удаление...
+                {t('productPage.delete.deleting')}
               </>
             ) : (
-              'Удалить'
+              t('productPage.delete.delete')
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

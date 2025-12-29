@@ -6,6 +6,7 @@ import {retrieveLaunchParams} from '@tma.js/sdk-react';
 import {Root} from '@/components/Root.tsx';
 import {EnvUnsupported} from '@/components/EnvUnsupported.tsx';
 import {init} from '@/init.ts';
+import {initI18n} from '@/i18n.ts';
 
 import './index.css';
 
@@ -19,6 +20,10 @@ try {
   const { tgWebAppPlatform: platform } = launchParams;
   const debug = (launchParams.tgWebAppStartParam || '').includes('debug')
     || import.meta.env.DEV;
+
+  // Initialize i18n with user's language
+  const languageCode = launchParams.tgWebAppData?.user?.languageCode;
+  initI18n(typeof languageCode === 'string' ? languageCode : undefined);
 
   // Configure all application dependencies.
   await init({

@@ -1,3 +1,4 @@
+import {useTranslation} from 'react-i18next';
 import {AlertCircle, Star} from 'lucide-react';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
@@ -19,14 +20,16 @@ interface TitleFieldProps {
 }
 
 export function TitleField({ value, onChange, error, disabled = false, showHints = true }: TitleFieldProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
       <Label htmlFor="title" className="text-sm font-medium">
-        Название {!disabled && <span className="text-destructive">*</span>}
+        {t('formFields.title.label')} {!disabled && <span className="text-destructive">*</span>}
       </Label>
       <Input
         id="title"
-        placeholder="Например: Гайд по заработку"
+        placeholder={t('formFields.title.placeholder')}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         maxLength={100}
@@ -38,7 +41,7 @@ export function TitleField({ value, onChange, error, disabled = false, showHints
           {error ? (
             <p className="text-destructive">{error}</p>
           ) : (
-            <p className="text-muted-foreground">Придумайте привлекательное название</p>
+            <p className="text-muted-foreground">{t('formFields.title.hint')}</p>
           )}
           <span className="text-muted-foreground">{value.length}/100</span>
         </div>
@@ -55,14 +58,16 @@ interface DescriptionFieldProps {
 }
 
 export function DescriptionField({ value, onChange, disabled = false, showHints = true }: DescriptionFieldProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
       <Label htmlFor="description" className="text-sm font-medium">
-        Описание
+        {t('formFields.description.label')}
       </Label>
       <Textarea
         id="description"
-        placeholder="Расскажите покупателям, что они получат..."
+        placeholder={t('formFields.description.placeholder')}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={4}
@@ -70,7 +75,7 @@ export function DescriptionField({ value, onChange, disabled = false, showHints 
       />
       {showHints && (
         <p className="text-xs text-muted-foreground">
-          Опишите преимущества и содержимое товара
+          {t('formFields.description.hint')}
         </p>
       )}
     </div>
@@ -86,10 +91,12 @@ interface PriceFieldProps {
 }
 
 export function PriceField({ value, onChange, error, disabled = false, showHints = true }: PriceFieldProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
       <Label htmlFor="price" className="text-sm font-medium">
-        Цена {!disabled && <span className="text-destructive">*</span>}
+        {t('formFields.price.label')} {!disabled && <span className="text-destructive">*</span>}
       </Label>
       <div className="relative">
         <div className="absolute left-4 top-1/2 -translate-y-1/2">
@@ -120,9 +127,9 @@ export function PriceField({ value, onChange, error, disabled = false, showHints
           <div className="text-xs text-muted-foreground space-y-1">
             <p className="flex items-center gap-1.5">
               <Star className="size-3.5 text-warning fill-warning" />
-              1 звезда ≈ $0.013
+              {t('formFields.price.starRate')}
             </p>
-            <p>Комиссия сервиса — 5% с каждой продажи</p>
+            <p>{t('formFields.price.commission')}</p>
           </div>
         </Card>
       ) : null}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { CheckCircle2, FileImage, Star, User } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +10,8 @@ interface ProductOverviewCardProps {
 }
 
 export function ProductOverviewCard({ product, hasAccess }: ProductOverviewCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Card className="mb-4 overflow-hidden">
       <ProductImage coverUrl={product.cover_url} title={product.title} />
@@ -25,10 +28,10 @@ export function ProductOverviewCard({ product, hasAccess }: ProductOverviewCardP
 
         <div className="flex flex-wrap items-center gap-2">
           <ProductPrice priceStars={product.price_stars} />
-          {hasAccess && <AccessBadge />}
+          {hasAccess && <AccessBadge t={t} />}
         </div>
 
-        {product.seller && <ProductSeller seller={product.seller} />}
+        {product.seller && <ProductSeller seller={product.seller} t={t} />}
       </div>
     </Card>
   );
@@ -66,11 +69,11 @@ function ProductPrice({ priceStars }: { priceStars: number }) {
   );
 }
 
-function AccessBadge() {
+function AccessBadge({ t }: { t: (key: string) => string }) {
   return (
     <Badge variant="success" size="lg" className="gap-1.5">
       <CheckCircle2 className="size-4" />
-      Куплено
+      {t('productOverview.purchased')}
     </Badge>
   );
 }
@@ -80,16 +83,17 @@ interface ProductSellerProps {
     first_name: string;
     username?: string;
   };
+  t: (key: string) => string;
 }
 
-function ProductSeller({ seller }: ProductSellerProps) {
+function ProductSeller({ seller, t }: ProductSellerProps) {
   return (
     <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
         <User className="size-5 text-primary" />
       </div>
       <div>
-        <p className="text-xs text-muted-foreground">Продавец</p>
+        <p className="text-xs text-muted-foreground">{t('productOverview.seller')}</p>
         <p className="font-medium">
           {seller.first_name}
           {seller.username && (

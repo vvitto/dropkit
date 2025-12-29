@@ -1,0 +1,163 @@
+{
+  "header": {
+    "myProducts": "My Products",
+    "income": "Income"
+  },
+  "indexPage": {
+    "tabs": {
+      "myProducts": "My Products",
+      "purchases": "Purchases"
+    },
+    "error": {
+      "title": "Something went wrong",
+      "defaultMessage": "Loading error",
+      "retry": "Retry"
+    },
+    "createProduct": "Create new product"
+  },
+  "emptyState": {
+    "archive": {
+      "title": "Archive is empty",
+      "description": "Archived products will appear here"
+    },
+    "purchases": {
+      "title": "No purchases",
+      "description": "Products you've purchased from other sellers will appear here"
+    },
+    "products": {
+      "title": "Create your first product",
+      "description": "Upload digital content and start selling directly in Telegram"
+    },
+    "createProduct": "Create product"
+  },
+  "incomePage": {
+    "error": {
+      "title": "Loading error",
+      "defaultMessage": "Could not load income data",
+      "retry": "Retry"
+    },
+    "stats": {
+      "totalEarned": "Total earned",
+      "totalLocked": "Total locked",
+      "pendingRequest": "Request processing",
+      "availableForWithdrawal": "Available for withdrawal"
+    },
+    "lockupInfo": "Stars unlock after {{days}} days of sale",
+    "salesHistory": "Sales history"
+  },
+  "salesList": {
+    "searchPlaceholder": "Search by username or ID",
+    "status": {
+      "available": "Available",
+      "locked": "Locked"
+    },
+    "empty": {
+      "noResults": "Nothing found",
+      "noSales": "No sales yet",
+      "noResultsHint": "Try a different search query",
+      "noSalesHint": "Your sales will appear here"
+    },
+    "loadMore": "Load more",
+    "loading": "Loading..."
+  },
+  "withdrawalModal": {
+    "title": "Withdrawal request",
+    "description": "Confirm withdrawal to your TON wallet",
+    "youWillReceive": "You will receive",
+    "walletLabel": "Withdrawal wallet",
+    "disconnect": "Disconnect",
+    "connectWallet": "Connect wallet",
+    "processingNotice": "Transfer may take up to 24 hours after confirmation",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "sending": "Sending..."
+  },
+  "productPage": {
+    "newProduct": "New product",
+    "newProductSubtitle": "Fill in product information",
+    "yourProduct": "Your product",
+    "editing": "Editing",
+    "productNotFound": "Product not found",
+    "create": {
+      "creating": "Creating...",
+      "createProduct": "Create product"
+    },
+    "update": {
+      "saving": "Saving...",
+      "saveChanges": "Save changes",
+      "saveError": "Could not save changes"
+    },
+    "share": "Share product",
+    "validation": {
+      "titleRequired": "Enter product title",
+      "priceRequired": "Enter price",
+      "priceMinimum": "Minimum price is 1 star",
+      "fileNotFound": "File not found. Try sending the file to the bot again",
+      "createError": "Error creating product"
+    },
+    "success": {
+      "title": "Product created!",
+      "stars": "stars",
+      "shareProduct": "Share product",
+      "goHome": "Go to home"
+    },
+    "noFile": {
+      "title": "File not found",
+      "description": "To create a product, send a file or photo to the bot",
+      "openBot": "Open @dropkit_bot",
+      "close": "Close"
+    },
+    "delete": {
+      "title": "Delete product?",
+      "description": "The product will be deleted and will no longer be available for purchase. Buyers who have already purchased the product will retain access.",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "delete": "Delete"
+    }
+  },
+  "formFields": {
+    "title": {
+      "label": "Title",
+      "placeholder": "Example: Earning guide",
+      "hint": "Create an attractive title"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Tell buyers what they will get...",
+      "hint": "Describe the benefits and contents of the product"
+    },
+    "price": {
+      "label": "Price",
+      "starRate": "1 star ≈ $0.013",
+      "commission": "Service fee — 5% per sale"
+    },
+    "cover": {
+      "label": "Product cover",
+      "clickToUpload": "Click to upload",
+      "uploadCover": "Upload cover",
+      "changeCover": "Change cover"
+    }
+  },
+  "productOverview": {
+    "header": "Product",
+    "purchased": "Purchased",
+    "seller": "Seller",
+    "access": {
+      "title": "You have access",
+      "hint": "Click the button below to get the file"
+    },
+    "loading": "Loading product...",
+    "error": {
+      "title": "Product not found",
+      "description": "It may have been deleted or the link is incorrect"
+    },
+    "goHome": "Go to home",
+    "button": {
+      "sentToChat": "Sent to chat",
+      "sending": "Sending...",
+      "getProduct": "Get product",
+      "paying": "Paying...",
+      "buyFor": "Buy for"
+    }
+  }
+}
