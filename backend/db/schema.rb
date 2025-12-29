@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_27_150440) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_29_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -57,6 +57,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_27_150440) do
     t.index ["user_id", "available_at"], name: "index_balance_transactions_on_user_id_and_available_at"
     t.index ["user_id", "processed"], name: "index_balance_transactions_on_user_id_and_processed"
     t.index ["user_id"], name: "index_balance_transactions_on_user_id"
+  end
+
+  create_table "currency_rates", force: :cascade do |t|
+    t.string "from_currency", null: false
+    t.string "to_currency", null: false
+    t.decimal "rate", precision: 18, scale: 8, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["from_currency", "to_currency"], name: "index_currency_rates_on_from_currency_and_to_currency", unique: true
   end
 
   create_table "products", force: :cascade do |t|

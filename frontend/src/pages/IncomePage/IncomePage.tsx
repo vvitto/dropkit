@@ -3,7 +3,7 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {HeaderTabs} from '@/components/layout/HeaderTabs';
 import {CardGlass} from '@/components/ui/card';
 import {Button} from '@/components/ui/button';
-import {AlertTriangle, ChevronRight, RefreshCw, Star, TrendingUp, Wallet,} from 'lucide-react';
+import {AlertTriangle, ChevronRight, Lock, RefreshCw, Star, TrendingUp, Wallet,} from 'lucide-react';
 import {createWithdrawal, getIncome} from '@/api/income';
 import {WithdrawalModal} from './WithdrawalModal';
 import {SalesList} from './SalesList';
@@ -106,56 +106,73 @@ export function IncomePage() {
 
       <div className="flex-1 overflow-auto p-4 space-y-4">
         {/* Stats Card */}
-        <CardGlass className="p-5 space-y-4">
+        <CardGlass className="p-4 divide-y divide-border/50">
           {/* Total Earnings */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5 text-muted-foreground">
-              <div className="w-9 h-9 rounded-xl bg-success/10 flex items-center justify-center">
-                <TrendingUp className="size-5 text-success" />
+          <div className="flex items-center justify-between pb-3">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+                <TrendingUp className="size-4 text-success" />
               </div>
-              <span className="font-medium">Всего заработано</span>
+              <span className="text-sm font-medium">Всего заработано</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Star className="size-5 text-warning fill-warning" />
-              <span className="text-lg font-bold">{summary.total_earned_stars.toLocaleString()}</span>
-              <span className="text-sm text-muted-foreground ml-1">
+            <div className="flex items-center gap-1">
+              <Star className="size-4 text-warning fill-warning" />
+              <span className="font-bold">{summary.total_earned_stars.toLocaleString()}</span>
+              <span className="text-xs text-muted-foreground">
                 ≈${summary.total_earned_usd.toFixed(2)}
               </span>
             </div>
           </div>
 
-          <div className="border-t border-border/50" />
+          {/* Pending Stars */}
+          {summary.pending_stars > 0 && (
+            <div className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center">
+                  <Lock className="size-4 text-warning" />
+                </div>
+                <span className="text-sm font-medium">Заморожено</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Star className="size-4 text-warning fill-warning" />
+                <span className="font-bold text-warning">{summary.pending_stars.toLocaleString()}</span>
+                <span className="text-xs text-muted-foreground">
+                  ≈${summary.pending_usd.toFixed(2)}
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Available for Withdrawal - Clickable */}
           <button
             onClick={handleWithdrawalClick}
             disabled={!canWithdraw}
-            className={`w-full flex items-center justify-between -mx-1 rounded-xl transition-all duration-200 ${
+            className={`w-full flex items-center justify-between pt-3 transition-all duration-200 ${
               canWithdraw
-                ? 'hover:bg-primary/5 active:scale-[0.99] cursor-pointer'
+                ? 'active:scale-[0.99] cursor-pointer'
                 : 'cursor-default opacity-70'
             }`}
           >
-            <div className="flex items-center gap-2.5 text-muted-foreground">
-              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Wallet className="size-5 text-primary" />
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Wallet className="size-4 text-primary" />
               </div>
-              <span className="font-medium">
+              <span className="text-sm font-medium text-left">
                 {has_pending_withdrawal
                   ? 'Заявка обрабатывается'
                   : 'Доступно к выводу'}
               </span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Star className="size-5 text-warning fill-warning" />
-              <span className="text-lg font-bold text-primary">
+            <div className="flex items-center gap-1">
+              <Star className="size-4 text-warning fill-warning" />
+              <span className="font-bold text-primary">
                 {summary.available_stars.toLocaleString()}
               </span>
-              <span className="text-sm text-muted-foreground ml-1">
+              <span className="text-xs text-muted-foreground">
                 ≈${summary.available_usd.toFixed(2)}
               </span>
               {canWithdraw && (
-                <ChevronRight className="size-5 text-primary ml-1" />
+                <ChevronRight className="size-4 text-primary" />
               )}
             </div>
           </button>
@@ -163,7 +180,7 @@ export function IncomePage() {
 
         {/* Info */}
         <p className="text-xs text-muted-foreground text-center px-4">
-          Комиссия сервиса: {summary.commission_rate}% • Звёзды разблокируются через {summary.lockup_days} дней после продажи
+          Звёзды разблокируются через {summary.lockup_days} дней после продажи
         </p>
 
         {/* Sales History */}
@@ -178,7 +195,7 @@ export function IncomePage() {
         onClose={() => setIsWithdrawalModalOpen(false)}
         onSubmit={handleWithdraw}
         amount={summary.available_stars}
-        commissionRate={summary.commission_rate}
+        amountTon={summary.available_ton}
         isSubmitting={withdrawalMutation.isPending}
       />
     </div>

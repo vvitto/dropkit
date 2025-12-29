@@ -3,9 +3,11 @@ import {api} from './client';
 export interface IncomeSummary {
   total_earned_stars: number;
   available_stars: number;
+  pending_stars: number;
   total_earned_usd: number;
   available_usd: number;
-  commission_rate: number;
+  pending_usd: number;
+  available_ton: number | null;
   lockup_days: number;
 }
 

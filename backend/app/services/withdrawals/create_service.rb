@@ -33,10 +33,12 @@ module Withdrawals
     end
 
     def send_message_to_group!
+      amount_usd = (@withdraw.amount_stars * Withdrawal::STAR_TO_USD).round(2)
+
       Telegram.bots[:group].send_message(
         chat_id: TelegramChat::Const::GROUP_CHAT_ID,
         message_thread_id: TelegramChat::Const::WITHDRAWS_THREAD_ID,
-        text: "New withdrawal request:\nUser ID: #{@user.id}\nAmount: #{@withdraw.amount_stars} stars\nWallet: #{@withdraw.wallet_address}"
+        text: "New withdrawal request:\nUser ID: #{@user.id}\nAmount: #{@withdraw.amount_stars} stars (~$#{amount_usd})\nWallet: #{@withdraw.wallet_address}"
       )
     rescue StandardError => e
       Rails.logger.error("Failed to send withdrawal notification: #{e.message}")

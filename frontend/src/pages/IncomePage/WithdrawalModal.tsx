@@ -1,22 +1,22 @@
-import { Button } from '@/components/ui/button';
-import { CardGlass } from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {CardGlass} from '@/components/ui/card';
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
 } from '@/components/ui/drawer';
-import { Clock, Loader2, Star, Wallet } from 'lucide-react';
-import { useWalletConnect } from '@/hooks/useWalletConnect';
+import {Clock, Loader2, Star, Wallet} from 'lucide-react';
+import {useWalletConnect} from '@/hooks/useWalletConnect';
 
 interface WithdrawalModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: () => void;
   amount: number;
-  commissionRate: number;
+  amountTon: number | null;
   isSubmitting: boolean;
 }
 
@@ -25,13 +25,10 @@ export function WithdrawalModal({
   onClose,
   onSubmit,
   amount,
-  commissionRate,
+  amountTon,
   isSubmitting,
 }: WithdrawalModalProps) {
   const { isConnected, shortAddress, connect, disconnect } = useWalletConnect();
-
-  const commission = Math.floor(amount * (commissionRate / 100));
-  const netAmount = amount - commission;
 
   const handleSubmit = () => {
     onSubmit();
@@ -48,31 +45,21 @@ export function WithdrawalModal({
         </DrawerHeader>
 
         <div className="px-6 space-y-5">
-          {/* Amount Breakdown */}
-          <CardGlass className="p-4 space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">Сумма</span>
-              <span className="flex items-center gap-1.5 font-medium">
-                <Star className="size-4 text-warning fill-warning" />
-                {amount.toLocaleString()}
-              </span>
-            </div>
-            <div className="border-t border-border/50" />
-            <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">
-                Комиссия ({commissionRate}%)
-              </span>
-              <span className="text-muted-foreground">
-                -{commission.toLocaleString()}
-              </span>
-            </div>
-            <div className="border-t border-border/50" />
+          {/* Amount */}
+          <CardGlass className="p-4">
             <div className="flex justify-between items-center">
               <span className="font-semibold">Вы получите</span>
-              <span className="flex items-center gap-1.5 text-lg font-bold text-primary">
-                <Star className="size-5 text-warning fill-warning" />
-                {netAmount.toLocaleString()}
-              </span>
+              <div className="flex flex-col items-end gap-0.5">
+                <span className="flex items-center gap-1.5 text-lg font-bold text-primary">
+                  <Star className="size-5 text-warning fill-warning" />
+                  {amount.toLocaleString()}
+                </span>
+                {amountTon !== null && (
+                  <span className="text-sm text-muted-foreground">
+                    ≈ {amountTon} TON
+                  </span>
+                )}
+              </div>
             </div>
           </CardGlass>
 

@@ -27,7 +27,6 @@ class Withdrawal < ApplicationRecord
     rejected: 30
   }.freeze
 
-  COMMISSION_RATE = 0.05
   STAR_TO_USD = 0.013
 
   belongs_to :user
