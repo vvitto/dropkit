@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { cn } from "@/lib/utils"
+import {cn} from "@/lib/utils"
 
 interface TabsContextType {
   value: string
@@ -59,7 +59,7 @@ function TabsList({
     <div
       data-slot="tabs-list"
       className={cn(
-        "inline-flex h-12 items-center justify-center rounded-xl bg-muted p-1 text-muted-foreground w-full gap-1",
+        "inline-flex h-12 items-center justify-center rounded-xl bg-muted p-1 text-muted-foreground w-full gap-1 cursor-pointer",
         className
       )}
       {...props}
@@ -80,7 +80,7 @@ function TabsTrigger({ className, value, ...props }: TabsTriggerProps) {
       data-slot="tabs-trigger"
       data-state={isSelected ? "active" : "inactive"}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 flex-1 touch-manipulation active:scale-[0.98]",
+        "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 flex-1 touch-manipulation active:scale-[0.98] cursor-pointer",
         isSelected
           ? "bg-background text-foreground shadow-sm"
           : "text-muted-foreground hover:text-foreground hover:bg-background/50",

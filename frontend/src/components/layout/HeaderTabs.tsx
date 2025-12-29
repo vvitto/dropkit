@@ -1,7 +1,7 @@
-import { routes } from '@/navigation/routes';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
-import { Package, Wallet } from 'lucide-react';
+import {routes} from '@/navigation/routes';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {cn} from '@/lib/utils';
+import {Package, Wallet} from 'lucide-react';
 
 const tabs = [
   { path: routes.root, label: 'My Products', icon: Package },
@@ -24,7 +24,7 @@ export function HeaderTabs() {
               key={tab.path}
               onClick={() => navigate(tab.path)}
               className={cn(
-                'flex items-center gap-2 px-4 py-2.5 rounded-xl text-base font-semibold transition-all duration-200 touch-manipulation active:scale-[0.98]',
+                'flex items-center gap-2 px-4 py-2.5 rounded-xl text-base font-semibold transition-all duration-200 touch-manipulation active:scale-[0.98] cursor-pointer',
                 isActive
                   ? 'bg-primary text-primary-foreground shadow-md'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted'

@@ -1,8 +1,8 @@
-import { Star, AlertCircle } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
+import {AlertCircle, Star} from 'lucide-react';
+import {Input} from '@/components/ui/input';
+import {Textarea} from '@/components/ui/textarea';
+import {Label} from '@/components/ui/label';
+import {Card} from '@/components/ui/card';
 
 export interface FieldErrors {
   title?: string;
@@ -99,7 +99,7 @@ export function PriceField({ value, onChange, error, disabled = false, showHints
           id="price"
           type="number"
           inputMode="numeric"
-          placeholder="100"
+          placeholder="0"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           min={1}
