@@ -16,10 +16,10 @@ module Api
         seller = product.user
 
         {
-          id: purchase.id,
+          id: purchase.uuid,
           purchased_at: purchase.created_at.iso8601,
           product: {
-            id: product.id,
+            id: product.uuid,
             title: product.title,
             description: product.description,
             price_stars: product.price_stars,

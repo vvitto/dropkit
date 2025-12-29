@@ -1,22 +1,22 @@
-import { useParams } from 'react-router-dom';
-import { useRef, useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { X, Loader2, Save } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { getProduct, updateProduct } from '@/api/products';
+import {useParams} from 'react-router-dom';
+import {useEffect, useRef, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {Loader2, Save, X} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Badge} from '@/components/ui/badge';
+import {getProduct, updateProduct} from '@/api/products';
 import {
-  PageHeader,
-  FixedFooter,
-  CoverUpload,
-  TitleField,
-  DescriptionField,
-  PriceField,
-  GeneralError,
-  LoadingState,
-  ErrorState,
-  type FieldErrors,
+    CoverUpload,
+    DescriptionField,
+    ErrorState,
+    type FieldErrors,
+    FixedFooter,
+    GeneralError,
+    LoadingState,
+    PageHeader,
+    PriceField,
+    TitleField,
 } from '../components';
 
 interface ProductUpdateViewProps {
@@ -39,7 +39,7 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
 
   const { data: product, isLoading, error: queryError } = useQuery({
     queryKey: ['product', id],
-    queryFn: () => getProduct(parseInt(id!, 10)),
+    queryFn: () => getProduct(id!),
     enabled: !!id,
   });
 

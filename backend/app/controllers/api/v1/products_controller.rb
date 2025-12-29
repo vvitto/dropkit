@@ -64,7 +64,7 @@ module Api
             reply_markup: {
               inline_keyboard: [
                 [
-                  { text: "⭐ Purchase product", url: "https://t.me/dropkit_bot?startapp=p_#{@product.id}" }
+                  { text: "⭐ Purchase product", url: "https://t.me/dropkit_bot?startapp=p_#{@product.uuid}" }
                 ]
               ]
             }
@@ -146,11 +146,11 @@ module Api
       private
 
       def set_own_product
-        @product = current_user.products.active.find(params[:id])
+        @product = current_user.products.active.find_by!(uuid: params[:id])
       end
 
       def set_any_product
-        @product = Product.find(params[:id])
+        @product = Product.find_by!(uuid: params[:id])
 
         # Deleted products are only visible to buyers who already purchased them
         if @product.deleted? && !@product.purchased_by?(current_user)
@@ -168,7 +168,7 @@ module Api
 
       def owner_product_json(product)
         {
-          id: product.id,
+          id: product.uuid,
           title: product.title,
           description: product.description,
           price_stars: product.price_stars,
@@ -181,7 +181,7 @@ module Api
 
       def public_product_json(product)
         {
-          id: product.id,
+          id: product.uuid,
           title: product.title,
           description: product.description,
           price_stars: product.price_stars,

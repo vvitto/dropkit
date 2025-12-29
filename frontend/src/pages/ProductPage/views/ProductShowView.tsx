@@ -1,21 +1,21 @@
-import { useParams } from 'react-router-dom';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { shareMessage } from '@tma.js/sdk-react';
-import { useQuery } from '@tanstack/react-query';
-import { Pencil, Trash2, Share2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { getProduct, createProductShareMessage } from '@/api/products';
+import {useParams} from 'react-router-dom';
+import {useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {shareMessage} from '@tma.js/sdk-react';
+import {useQuery} from '@tanstack/react-query';
+import {Pencil, Share2, Trash2} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {createProductShareMessage, getProduct} from '@/api/products';
 import {
-  PageHeader,
-  FixedFooter,
-  CoverUpload,
-  TitleField,
-  DescriptionField,
-  PriceField,
-  LoadingState,
-  ErrorState,
-  DeleteProductDialog,
+    CoverUpload,
+    DeleteProductDialog,
+    DescriptionField,
+    ErrorState,
+    FixedFooter,
+    LoadingState,
+    PageHeader,
+    PriceField,
+    TitleField,
 } from '../components';
 
 interface ProductShowViewProps {
@@ -29,7 +29,7 @@ export function ProductShowView({ onEdit }: ProductShowViewProps) {
 
   const { data: product, isLoading, error: queryError } = useQuery({
     queryKey: ['product', id],
-    queryFn: () => getProduct(parseInt(id!, 10)),
+    queryFn: () => getProduct(id),
     enabled: !!id,
   });
 

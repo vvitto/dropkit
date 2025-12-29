@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { invoice, openTelegramLink } from '@tma.js/sdk-react';
-import { createInvoice, deliverContent, getProduct, type Product } from '@/api/products';
+import {useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {invoice, openTelegramLink} from '@tma.js/sdk-react';
+import {createInvoice, deliverContent, getProduct, type Product} from '@/api/products';
 
 interface UseProductOverviewResult {
   product: Product | null;
@@ -24,13 +24,13 @@ export function useProductOverview(): UseProductOverviewResult {
 
   const { data: product, isLoading, error: queryError } = useQuery({
     queryKey: ['product', id],
-    queryFn: () => getProduct(parseInt(id!, 10)),
+    queryFn: () => getProduct(id!),
     enabled: !!id,
   });
 
   const purchaseMutation = useMutation({
     mutationFn: async () => {
-      const { invoice_url } = await createInvoice(parseInt(id!, 10));
+      const { invoice_url } = await createInvoice(id!);
       const status = await invoice.openUrl(invoice_url);
       return status;
     },
@@ -49,7 +49,7 @@ export function useProductOverview(): UseProductOverviewResult {
   });
 
   const deliverMutation = useMutation({
-    mutationFn: () => deliverContent(parseInt(id!, 10)),
+    mutationFn: () => deliverContent(id!),
     onSuccess: () => {
       openTelegramLink('https://t.me/dropkit_bot');
       setDelivered(true);

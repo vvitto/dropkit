@@ -1,7 +1,7 @@
 import {api} from './client';
 
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   description?: string;
   price_stars: number;
@@ -28,7 +28,7 @@ export async function getProducts(): Promise<Product[]> {
   return api.get<Product[]>(`/products`);
 }
 
-export async function getProduct(productId: number): Promise<Product> {
+export async function getProduct(productId: string): Promise<Product> {
   return api.get<Product>(`/products/${productId}`);
 }
 
@@ -39,7 +39,7 @@ export interface UpdateProductRequest {
   cover?: File;
 }
 
-export async function updateProduct(productId: number, data: UpdateProductRequest): Promise<Product> {
+export async function updateProduct(productId: string, data: UpdateProductRequest): Promise<Product> {
   const formData = new FormData();
   formData.append('product[title]', data.title);
   formData.append('product[price_stars]', data.price_stars.toString());
@@ -55,7 +55,7 @@ export async function updateProduct(productId: number, data: UpdateProductReques
   return api.patch<Product>(`/products/${productId}`, formData);
 }
 
-export async function deleteProduct(productId: number): Promise<void> {
+export async function deleteProduct(productId: string): Promise<void> {
   return api.delete(`/products/${productId}`);
 }
 
@@ -76,15 +76,15 @@ export async function createProduct(data: CreateProductRequest): Promise<Product
   return api.post<Product>('/products', formData);
 }
 
-export async function createProductShareMessage(productId: number): Promise<{ message_id: string }> {
+export async function createProductShareMessage(productId: string): Promise<{ message_id: string }> {
   return api.post<{ message_id: string }>(`/products/${productId}/create_share_message`);
 }
 
-export async function createInvoice(productId: number): Promise<{ invoice_url: string }> {
+export async function createInvoice(productId: string): Promise<{ invoice_url: string }> {
   return api.post<{ invoice_url: string }>(`/products/${productId}/create_invoice`);
 }
 
-export async function deliverContent(productId: number): Promise<{ success: boolean }> {
+export async function deliverContent(productId: string): Promise<{ success: boolean }> {
   return api.post<{ success: boolean }>(`/products/${productId}/deliver_content`);
 }
 

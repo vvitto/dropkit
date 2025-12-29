@@ -26,6 +26,8 @@
 #  fk_rails_...  (product_id => products.id)
 #
 class Purchase < ApplicationRecord
+  include HasUuid
+
   LOCKUP_PERIODS = {
     "stars" => 21.days,
     "ton" => 0.days,

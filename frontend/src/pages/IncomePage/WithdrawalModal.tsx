@@ -39,7 +39,6 @@ export function WithdrawalModal({
   };
 
    const isWalletModalOpen = state.status === 'opened';
-  console.log(isWalletModalOpen);
 
   return (
     <Drawer open={isOpen && !isWalletModalOpen} onOpenChange={(open) => !open && onClose()}>

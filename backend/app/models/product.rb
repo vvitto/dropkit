@@ -24,6 +24,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Product < ApplicationRecord
+  include HasUuid
+
   belongs_to :user
   has_many :purchases, dependent: :destroy
   has_one_attached :cover

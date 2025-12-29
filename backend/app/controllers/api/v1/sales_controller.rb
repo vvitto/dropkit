@@ -30,9 +30,9 @@ module Api
       def apply_search(scope)
         query = params[:q].to_s.strip
 
-        # Search by purchase ID
-        if query.match?(/^\d+$/)
-          return scope.where(id: query.to_i)
+        # Search by purchase UUID
+        if query.match?(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)
+          return scope.where(uuid: query)
         end
 
         # Search by username (with or without @)
@@ -46,7 +46,7 @@ module Api
 
       def sale_json(purchase)
         {
-          id: purchase.id,
+          id: purchase.uuid,
           product_title: purchase.product.title,
           amount_stars: purchase.amount_stars,
           buyer: {
