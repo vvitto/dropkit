@@ -31,7 +31,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     products = scope.limit(10).all
 
     resp = products.map do |product|
-      img_url = product.cover.attached? ? product.cover.url : "https://picsum.photos/536/354"
+      img_url = product.cover.attached? ? product.cover.url : "https://#{Rails.configuration.app[:app_host]}/img-placeholder.webp"
 
       {
         type: "article",
@@ -48,7 +48,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
         reply_markup: {
           inline_keyboard: [
             [
-              { text: I18n.t("telegram.purchase_button"), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=p_#{product.uuid}" }
+              { text: product.buy_button_text, url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=p_#{product.uuid}" }
             ]
           ]
         }

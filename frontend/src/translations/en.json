@@ -136,6 +136,11 @@
       "clickToUpload": "Click to upload",
       "uploadCover": "Upload cover",
       "changeCover": "Change cover"
+    },
+    "buyButtonText": {
+      "label": "Button text",
+      "placeholder": "Buy",
+      "hint": "Text displayed on the buy button in chat"
     }
   },
   "productOverview": {

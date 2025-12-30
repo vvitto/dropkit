@@ -7,6 +7,7 @@ export interface Product {
   price_stars: number;
   tg_message_id?: string;
   cover_url?: string;
+  buy_button_text?: string;
   created_at?: string;
   is_owner?: boolean;
   is_purchased?: boolean;
@@ -22,6 +23,7 @@ export interface CreateProductRequest {
   price_stars: number;
   tg_message_id: string;
   cover?: File;
+  buy_button_text?: string;
 }
 
 export async function getProducts(): Promise<Product[]> {
@@ -37,6 +39,7 @@ export interface UpdateProductRequest {
   description?: string;
   price_stars: number;
   cover?: File;
+  buy_button_text?: string;
 }
 
 export async function updateProduct(productId: string, data: UpdateProductRequest): Promise<Product> {
@@ -50,6 +53,10 @@ export async function updateProduct(productId: string, data: UpdateProductReques
 
   if (data.cover) {
     formData.append('product[cover]', data.cover);
+  }
+
+  if (data.buy_button_text) {
+    formData.append('product[buy_button_text]', data.buy_button_text);
   }
 
   return api.patch<Product>(`/products/${productId}`, formData);
@@ -71,6 +78,10 @@ export async function createProduct(data: CreateProductRequest): Promise<Product
 
   if (data.cover) {
     formData.append('product[cover]', data.cover);
+  }
+
+  if (data.buy_button_text) {
+    formData.append('product[buy_button_text]', data.buy_button_text);
   }
 
   return api.post<Product>('/products', formData);

@@ -8,6 +8,7 @@ import {Button} from '@/components/ui/button';
 import {createProduct, createProductShareMessage} from '@/api/products';
 import {routes} from '@/navigation/routes';
 import {
+    BuyButtonTextField,
     CoverUpload,
     DescriptionField,
     type FieldErrors,
@@ -33,6 +34,7 @@ export function ProductCreateView() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [buyButtonText, setBuyButtonText] = useState('');
   const [priceStars, setPriceStars] = useState('');
   const [cover, setCover] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
@@ -92,6 +94,7 @@ export function ProductCreateView() {
         price_stars: parseInt(priceStars, 10),
         tg_message_id: fileId!,
         cover: cover || undefined,
+        buy_button_text: buyButtonText.trim() || undefined,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -158,6 +161,11 @@ export function ProductCreateView() {
         <DescriptionField
           value={description}
           onChange={setDescription}
+        />
+
+        <BuyButtonTextField
+          value={buyButtonText}
+          onChange={setBuyButtonText}
         />
 
         <PriceField

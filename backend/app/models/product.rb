@@ -2,16 +2,17 @@
 #
 # Table name: products
 #
-#  id            :bigint           not null, primary key
-#  deleted_at    :datetime
-#  description   :string
-#  price_stars   :integer          not null
-#  title         :string           not null
-#  uuid          :string           not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  tg_message_id :string           not null
-#  user_id       :integer          not null
+#  id              :bigint           not null, primary key
+#  buy_button_text :string           default("Buy"), not null
+#  deleted_at      :datetime
+#  description     :string
+#  price_stars     :integer          not null
+#  title           :string           not null
+#  uuid            :string           not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  tg_message_id   :string           not null
+#  user_id         :integer          not null
 #
 # Indexes
 #
@@ -34,6 +35,7 @@ class Product < ApplicationRecord
   scope :deleted, -> { where.not(deleted_at: nil) }
 
   validates :title, presence: true, length: { maximum: 100 }
+  validates :buy_button_text, presence: true, length: { maximum: 30 }
   validates :price_stars, presence: true, numericality: { greater_than: 0, only_integer: true }
   validates :tg_message_id, presence: true
 

@@ -33,7 +33,7 @@ function CardGlass({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card-glass"
       className={cn(
-        "glass rounded-2xl text-card-foreground transition-all duration-200 cursor-pointer hover:border-primary/20 active:scale-[0.99] touch-manipulation",
+        "glass rounded-2xl text-card-foreground transition-all",
         className
       )}
       {...props}

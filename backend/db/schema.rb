@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_30_120849) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_30_191954) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -78,6 +78,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_30_120849) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.string "buy_button_text", default: "Buy", null: false
     t.index ["deleted_at"], name: "index_products_on_deleted_at"
     t.index ["user_id"], name: "index_products_on_user_id"
     t.index ["uuid"], name: "index_products_on_uuid", unique: true

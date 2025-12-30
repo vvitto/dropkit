@@ -7,6 +7,7 @@ import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
 import {getProduct, updateProduct} from '@/api/products';
 import {
+    BuyButtonTextField,
     CoverUpload,
     DescriptionField,
     ErrorState,
@@ -33,6 +34,7 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
   const [errors, setErrors] = useState<FieldErrors>({});
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [buyButtonText, setBuyButtonText] = useState('');
   const [priceStars, setPriceStars] = useState('');
   const [cover, setCover] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
@@ -47,6 +49,7 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
     if (product) {
       setTitle(product.title);
       setDescription(product.description || '');
+      setBuyButtonText(product.buy_button_text || '');
       setPriceStars(product.price_stars.toString());
       setCoverPreview(product.cover_url || null);
     }
@@ -102,6 +105,7 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
         description: description.trim() || undefined,
         price_stars: parseInt(priceStars, 10),
         cover: cover || undefined,
+        buy_button_text: buyButtonText.trim() || undefined,
       }),
     onSuccess: (updatedProduct) => {
       queryClient.setQueryData(['product', id], updatedProduct);
@@ -169,6 +173,11 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
         <DescriptionField
           value={description}
           onChange={setDescription}
+        />
+
+        <BuyButtonTextField
+          value={buyButtonText}
+          onChange={setBuyButtonText}
         />
 
         <PriceField

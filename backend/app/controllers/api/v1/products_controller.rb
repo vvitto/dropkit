@@ -54,7 +54,7 @@ module Api
       end
 
       def create_share_message
-        img_url = @product.cover.attached? ? @product.cover.url : "https://picsum.photos/536/354"
+        img_url = @product.cover.attached? ? @product.cover.url : "https://#{Rails.configuration.app[:app_host]}/img-placeholder.webp"
         response = Telegram.bots[:chat].save_prepared_inline_message(
           user_id: current_user.telegram_id,
           result: {
@@ -66,7 +66,7 @@ module Api
             reply_markup: {
               inline_keyboard: [
                 [
-                  { text: I18n.t("telegram.purchase_button"), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=p_#{@product.uuid}" }
+                  { text: @product.buy_button_text, url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=p_#{@product.uuid}" }
                 ]
               ]
             }
@@ -161,11 +161,11 @@ module Api
       end
 
       def product_params
-        params.require(:product).permit(:title, :description, :price_stars, :tg_message_id, :cover)
+        params.require(:product).permit(:title, :description, :price_stars, :tg_message_id, :cover, :buy_button_text)
       end
 
       def update_params
-        params.require(:product).permit(:title, :description, :price_stars, :cover)
+        params.require(:product).permit(:title, :description, :price_stars, :cover, :buy_button_text)
       end
 
       def owner_product_json(product)
@@ -176,6 +176,7 @@ module Api
           price_stars: product.price_stars,
           tg_message_id: product.tg_message_id,
           cover_url: product.cover.attached? ? product.cover.url : nil,
+          buy_button_text: product.buy_button_text,
           created_at: product.created_at.iso8601,
           is_owner: true
         }
@@ -188,6 +189,7 @@ module Api
           description: product.description,
           price_stars: product.price_stars,
           cover_url: product.cover.attached? ? product.cover.url : nil,
+          buy_button_text: product.buy_button_text,
           is_purchased: product.purchased_by?(current_user),
           is_owner: false,
           seller: {

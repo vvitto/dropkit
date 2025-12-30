@@ -14,7 +14,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <CardGlass
       onClick={() => navigate(generatePath(routes.product, { id: product.id })) }
-      className="p-4"
+      className="p-4 duration-200 cursor-pointer hover:border-primary/20 active:scale-[0.99] touch-manipulation"
     >
       <div className="flex items-center gap-4">
         {product.cover_url ? (
@@ -24,8 +24,8 @@ export function ProductCard({ product }: ProductCardProps) {
             className="w-14 h-14 rounded-xl object-cover shrink-0 shadow-sm"
           />
         ) : (
-          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
-            <FileText className="size-6 text-primary" />
+          <div className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0" style={{backgroundImage: 'url(/mini-placeholder.svg)', backgroundSize: 'cover'}}>
+            <FileText className="size-6 text-primary" color={'white'}/>
           </div>
         )}
 

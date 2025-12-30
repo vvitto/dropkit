@@ -82,6 +82,39 @@ export function DescriptionField({ value, onChange, disabled = false, showHints 
   );
 }
 
+interface BuyButtonTextFieldProps {
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+  showHints?: boolean;
+}
+
+export function BuyButtonTextField({ value, onChange, disabled = false, showHints = true }: BuyButtonTextFieldProps) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="buyButtonText" className="text-sm font-medium">
+        {t('formFields.buyButtonText.label')}
+      </Label>
+      <Input
+        id="buyButtonText"
+        placeholder={t('formFields.buyButtonText.placeholder')}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        maxLength={30}
+        disabled={disabled}
+      />
+      {showHints && (
+        <div className="flex justify-between text-xs">
+          <p className="text-muted-foreground">{t('formFields.buyButtonText.hint')}</p>
+          <span className="text-muted-foreground">{value.length}/30</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface PriceFieldProps {
   value: string;
   onChange: (value: string) => void;

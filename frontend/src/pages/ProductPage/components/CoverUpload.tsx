@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next';
-import { ImageIcon, Upload, Camera } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import {useTranslation} from 'react-i18next';
+import {Camera, Upload} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Label} from '@/components/ui/label';
 
 interface CoverUploadProps {
   coverPreview: string | null;
@@ -48,14 +48,7 @@ export function CoverUpload({ coverPreview, inputRef, onSelect, disabled = false
             )}
           </>
         ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <ImageIcon className="size-8 text-primary/60" />
-            </div>
-            {isEditable && (
-              <p className="text-sm text-muted-foreground">{t('formFields.cover.clickToUpload')}</p>
-            )}
-          </div>
+          <img src='/img-placeholder.webp' />
         )}
       </div>
       <input
