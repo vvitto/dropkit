@@ -1,0 +1,17 @@
+:4000 {
+	handle /api/* {
+		reverse_proxy localhost:3000
+	}
+
+	handle /telegram/* {
+		reverse_proxy localhost:3000
+	}
+
+	handle /rails/* {
+                reverse_proxy localhost:3000
+        }
+
+	handle * {
+		reverse_proxy localhost:5174
+	}
+}

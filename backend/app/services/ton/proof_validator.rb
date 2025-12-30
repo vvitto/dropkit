@@ -105,8 +105,6 @@ class Ton::ProofValidator
   end
 
   def allowed_domains
-    # host = Rails.configuration.config.frontend_host
-    # [ host.sub(%r{^https?://}, "") ]
-    [ "drop-kit.xyz" ]
+    [ Rails.configuration.app[:app_host] ]
   end
 end

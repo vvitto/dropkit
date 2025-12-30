@@ -1,13 +1,36 @@
 import react from '@vitejs/plugin-react-swc';
-import {defineConfig} from 'vite';
+import {defineConfig, loadEnv, Plugin} from 'vite';
 import mkcert from 'vite-plugin-mkcert';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from "@tailwindcss/vite"
 import path from "path"
+import fs from "fs"
+
+function tonconnectManifestPlugin(appHost: string): Plugin {
+  return {
+    name: 'tonconnect-manifest',
+    writeBundle(options) {
+      const manifest = {
+        url: `https://${appHost}`,
+        name: 'DropKit',
+        iconUrl: `https://${appHost}/favicon.ico`
+      };
+      const outDir = options.dir || 'dist';
+      fs.writeFileSync(
+        path.join(outDir, 'tonconnect-manifest.json'),
+        JSON.stringify(manifest, null, 2)
+      );
+    }
+  };
+}
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  base: 'https://drop-kit.xyz/',
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  const appHost = env.VITE_APP_HOST || 'drop-kit.xyz';
+
+  return {
+  base: `https://${appHost}/`,
   css: {
     preprocessorOptions: {
       scss: {
@@ -26,7 +49,9 @@ export default defineConfig({
     // Using this plugin requires admin rights on the first dev-mode launch.
     // https://www.npmjs.com/package/vite-plugin-mkcert
     process.env.HTTPS && mkcert(),
-    tailwindcss()
+    tailwindcss(),
+    // Generates tonconnect-manifest.json with correct host at build time
+    tonconnectManifestPlugin(appHost)
   ],
     resolve: {
         alias: {
@@ -41,6 +66,6 @@ export default defineConfig({
   server: {
     // Exposes your dev server and makes it accessible for the devices in the same network.
     host: true,
-    allowedHosts: ['drop-kit.xyz']
+    allowedHosts: [appHost]
   },
-});
+}});

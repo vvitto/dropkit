@@ -1,6 +1,7 @@
 import {retrieveRawInitData} from '@tma.js/sdk-react';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://drop-kit.xyz/api/v1';
+const APP_HOST = import.meta.env.VITE_APP_HOST || 'drop-kit.xyz';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || `https://${APP_HOST}/api/v1`;
 
 interface RequestOptions extends RequestInit {
   skipAuth?: boolean;

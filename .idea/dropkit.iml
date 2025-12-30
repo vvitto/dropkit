@@ -17,6 +17,12 @@
     <orderEntry type="library" scope="PROVIDED" name="activemodel (v6.1.7, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="activesupport (v6.1.7, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="addressable (v2.8.5, asdf: 2.7.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-eventstream (v1.2.0, asdf: 2.7.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-partitions (v1.557.0, asdf: 2.7.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-sdk-core (v3.126.2, asdf: 2.7.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-sdk-kms (v1.54.0, asdf: 2.7.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-sdk-s3 (v1.112.0, asdf: 2.7.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="aws-sigv4 (v1.4.0, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bindex (v0.8.1, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bootsnap (v1.13.0, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="brakeman (v5.2.1, asdf: 2.7.3) [gem]" level="application" />
@@ -29,6 +35,7 @@
     <orderEntry type="library" scope="PROVIDED" name="erubi (v1.12.0, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="i18n (v1.14.1, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jbuilder (v2.11.5, asdf: 2.7.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="jmespath (v1.6.0, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jwt (v2.5.0, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="loofah (v2.21.3, asdf: 2.7.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="matrix (v0.4.2, asdf: 2.7.3) [gem]" level="application" />

@@ -1,0 +1,14 @@
+default: &default
+  app_host: "drop-kit.xyz"
+  bot_name: "dkbtest_bot"
+
+development:
+  <<: *default
+  app_host: "dropkit.ngrok.dev"
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+  bot_name: "dropkitbot"

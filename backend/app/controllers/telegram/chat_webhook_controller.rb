@@ -10,7 +10,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     reply_with :message, text: text, parse_mode: "HTML", reply_markup: {
       inline_keyboard: [
         [
-          { text: "Создать цифровой товар", url: "https://t.me/dropkitbot?startapp=r_#{message[:message_id]}" }
+          { text: "Создать цифровой товар", url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=r_#{message[:message_id]}" }
         ]
       ]
     }
@@ -31,16 +31,16 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     products = scope.limit(10).all
 
     resp = products.map do |product|
-      img_url = product.cover.attached? ? "https://dropkit.ngrok.dev#{Rails.application.routes.url_helpers.rails_blob_path(product.cover)}" : "https://picsum.photos/536/354"
+      img_url = product.cover.attached? ? "https://#{Rails.configuration.app[:app_host]}#{Rails.application.routes.url_helpers.rails_blob_path(product.cover)}" : "https://picsum.photos/536/354"
 
       {
         type: "article",
-        id: product.id,
+        id: product.uuid,
         thumbnail_url: img_url,
         title: product.title,
         description: product.description || "",
         input_message_content: {
-          message_text: product.description || "",
+          message_text: product.title,
           link_preview_options: {
             url: img_url
           }
@@ -48,7 +48,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "⭐ Purchase product", url: "https://t.me/dropkit_bot?startapp=p_#{product.id}" }
+              { text: "⭐ Purchase product", url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=p_#{product.uuid}" }
             ]
           ]
         }
