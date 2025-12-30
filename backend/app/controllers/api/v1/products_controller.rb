@@ -66,7 +66,7 @@ module Api
             reply_markup: {
               inline_keyboard: [
                 [
-                  { text: "⭐ Purchase product", url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=p_#{@product.uuid}" }
+                  { text: I18n.t("telegram.purchase_button"), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=p_#{@product.uuid}" }
                 ]
               ]
             }
@@ -80,27 +80,27 @@ module Api
           render json: { message_id: response["result"]["id"] }, status: :ok
         else
           Rails.logger.error "Failed to prepare share message: #{response.inspect}"
-          render json: { error: "Failed to prepare share message" }, status: :unprocessable_entity
+          render json: { error: I18n.t("products.errors.share_message_failed") }, status: :unprocessable_entity
         end
 
       rescue Telegram::Bot::Error => e
         Rails.logger.error "Error while preparing share message: #{e.class.name} #{e.message}"
-        render json: { error: "Failed to prepare share message" }, status: :unprocessable_entity
+        render json: { error: I18n.t("products.errors.share_message_failed") }, status: :unprocessable_entity
       end
 
       def create_invoice
         if @product.deleted?
-          render json: { error: "Product is no longer available" }, status: :gone
+          render json: { error: I18n.t("products.errors.not_available") }, status: :gone
           return
         end
 
         if @product.user == current_user
-          render json: { error: "Cannot purchase your own product" }, status: :unprocessable_entity
+          render json: { error: I18n.t("products.errors.cannot_purchase_own") }, status: :unprocessable_entity
           return
         end
 
         if @product.purchased_by?(current_user)
-          render json: { error: "Already purchased" }, status: :unprocessable_entity
+          render json: { error: I18n.t("products.errors.already_purchased") }, status: :unprocessable_entity
           return
         end
 
@@ -110,13 +110,13 @@ module Api
 
           render json: { invoice_url: invoice_url }
         rescue TelegramBotService::ApiError => e
-          render json: { error: "Failed to create invoice: #{e.message}" }, status: :service_unavailable
+          render json: { error: I18n.t("products.errors.invoice_failed", message: e.message) }, status: :service_unavailable
         end
       end
 
       def content
         unless @product.purchased_by?(current_user) || @product.user == current_user
-          render json: { error: "Access denied" }, status: :forbidden
+          render json: { error: I18n.t("errors.access_denied") }, status: :forbidden
           return
         end
 
@@ -127,7 +127,7 @@ module Api
 
       def deliver_content
         unless @product.purchased_by?(current_user) || @product.user == current_user
-          render json: { error: "Access denied" }, status: :forbidden
+          render json: { error: I18n.t("errors.access_denied") }, status: :forbidden
           return
         end
 
@@ -141,7 +141,7 @@ module Api
 
           render json: { success: true }
         rescue TelegramBotService::ApiError => e
-          render json: { error: "Failed to send file: #{e.message}" }, status: :service_unavailable
+          render json: { error: I18n.t("products.errors.send_file_failed", message: e.message) }, status: :service_unavailable
         end
       end
 

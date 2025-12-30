@@ -5,7 +5,7 @@ module Api
       include Rails.application.routes.url_helpers
 
       rescue_from ActiveRecord::RecordNotFound do |e|
-        render json: { error: "Not found" }, status: :not_found
+        render json: { error: I18n.t("errors.not_found") }, status: :not_found
       end
 
       rescue_from ActiveRecord::RecordInvalid do |e|
@@ -13,7 +13,7 @@ module Api
       end
 
       rescue_from ActionController::ParameterMissing do |e|
-        render json: { error: "Missing parameter: #{e.param}" }, status: :bad_request
+        render json: { error: I18n.t("errors.missing_parameter", param: e.param) }, status: :bad_request
       end
     end
   end

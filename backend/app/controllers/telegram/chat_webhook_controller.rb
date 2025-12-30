@@ -5,12 +5,12 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
       return
     end
 
-    text = "<b>Хотите создать новый товар?</b>"
+    text = I18n.t("telegram.create_product_prompt")
 
     reply_with :message, text: text, parse_mode: "HTML", reply_markup: {
       inline_keyboard: [
         [
-          { text: "Создать цифровой товар", url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=r_#{message[:message_id]}" }
+          { text: I18n.t("telegram.create_product_button"), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=r_#{message[:message_id]}" }
         ]
       ]
     }
@@ -48,7 +48,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
         reply_markup: {
           inline_keyboard: [
             [
-              { text: "⭐ Purchase product", url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=p_#{product.uuid}" }
+              { text: I18n.t("telegram.purchase_button"), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=p_#{product.uuid}" }
             ]
           ]
         }

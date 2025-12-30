@@ -3,7 +3,7 @@ module Api
     class ProductIntentsController < BaseController
       def create
         TelegramChat::SendProductIntentInstruction.call(current_user)
-        render json: { message: "Instruction sent" }, status: :ok
+        render json: { message: I18n.t("product_intents.instruction_sent") }, status: :ok
       end
     end
   end

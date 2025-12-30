@@ -1,31 +1,38 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  errors:
+    not_found: "Not found"
+    missing_parameter: "Missing parameter: %{param}"
+    missing_authentication: "Missing authentication"
+    invalid_authentication: "Invalid authentication"
+    authentication_error: "Authentication error: %{message}"
+    access_denied: "Access denied"
+
+  products:
+    errors:
+      share_message_failed: "Failed to prepare share message"
+      not_available: "Product is no longer available"
+      cannot_purchase_own: "Cannot purchase your own product"
+      already_purchased: "Already purchased"
+      invoice_failed: "Failed to create invoice: %{message}"
+      send_file_failed: "Failed to send file: %{message}"
+
+  wallet:
+    success: "success"
+    invalid_proof: "Invalid proof"
+    validation_error: "Error validating proof"
+
+  withdrawals:
+    created: "Withdraw created successfully"
+    creation_error: "Withdraw creation error"
+    no_wallet: "No wallet connected"
+    no_balance: "No available balance"
+    pending_exists: "You already have a pending withdrawal request"
+
+  product_intents:
+    instruction_sent: "Instruction sent"
+
+  telegram:
+    create_product_prompt: "<b>Want to create a new product?</b>"
+    create_product_button: "Create digital product"
+    purchase_button: "⭐ Purchase product"
+    create_product_instruction: "<b>Want to create a new product?</b>\n📦 Just send it as one message in this chat.👇"

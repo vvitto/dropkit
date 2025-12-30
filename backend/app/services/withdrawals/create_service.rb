@@ -12,9 +12,9 @@ module Withdrawals
 
     def call!
       @user.with_lock do
-        raise Error, "No wallet connected" if @user.wallet_address.blank?
-        raise Error, "No available balance" if @user.available_stars <= 0
-        raise Error, "You already have a pending withdrawal request" if pending_withdrawal_exists?
+        raise Error, I18n.t("withdrawals.no_wallet") if @user.wallet_address.blank?
+        raise Error, I18n.t("withdrawals.no_balance") if @user.available_stars <= 0
+        raise Error, I18n.t("withdrawals.pending_exists") if pending_withdrawal_exists?
 
         @withdraw = @user.withdrawals.create!(
           amount_stars: @user.available_stars,

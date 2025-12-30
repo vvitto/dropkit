@@ -16,7 +16,7 @@ module TelegramChat
     private
 
     def message_text
-      "<b>Хотите создать новый товар?</b>📦 - просто скиньте его одним сообщением в этот чат.👇"
+      I18n.t("telegram.create_product_instruction")
     end
   end
 end
