@@ -31,7 +31,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     products = scope.limit(10).all
 
     resp = products.map do |product|
-      img_url = product.cover.attached? ? "https://#{Rails.configuration.app[:app_host]}#{Rails.application.routes.url_helpers.rails_blob_path(product.cover)}" : "https://picsum.photos/536/354"
+      img_url = product.cover.attached? ? product.cover.url : "https://picsum.photos/536/354"
 
       {
         type: "article",

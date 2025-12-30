@@ -2,7 +2,7 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-  config.hosts = [ "46.62.216.214" ]
+  config.hosts = [ "46.62.216.214", "drop-kit.xyz" ]
 
   # Code is not reloaded between requests.
   config.enable_reloading = false

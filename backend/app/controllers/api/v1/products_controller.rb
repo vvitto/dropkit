@@ -1,6 +1,8 @@
 module Api
   module V1
     class ProductsController < BaseController
+      include ActiveStorage::SetCurrent
+
       before_action :set_own_product, only: [ :update, :destroy, :create_share_message ]
       before_action :set_any_product, only: [ :show, :create_invoice, :content, :deliver_content ]
 
@@ -52,7 +54,7 @@ module Api
       end
 
       def create_share_message
-        img_url = @product.cover.attached? ? url_for(@product.cover) : "https://picsum.photos/536/354"
+        img_url = @product.cover.attached? ? @product.cover.url : "https://picsum.photos/536/354"
         response = Telegram.bots[:chat].save_prepared_inline_message(
           user_id: current_user.telegram_id,
           result: {
@@ -173,7 +175,7 @@ module Api
           description: product.description,
           price_stars: product.price_stars,
           tg_file_id: product.tg_file_id,
-          cover_url: product.cover.attached? ? url_for(product.cover) : nil,
+          cover_url: product.cover.attached? ? product.cover.url : nil,
           created_at: product.created_at.iso8601,
           is_owner: true
         }
@@ -185,7 +187,7 @@ module Api
           title: product.title,
           description: product.description,
           price_stars: product.price_stars,
-          cover_url: product.cover.attached? ? url_for(product.cover) : nil,
+          cover_url: product.cover.attached? ? product.cover.url : nil,
           is_purchased: product.purchased_by?(current_user),
           is_owner: false,
           seller: {
