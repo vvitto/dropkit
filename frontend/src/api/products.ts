@@ -5,7 +5,7 @@ export interface Product {
   title: string;
   description?: string;
   price_stars: number;
-  tg_file_id?: string;
+  tg_message_id?: string;
   cover_url?: string;
   created_at?: string;
   is_owner?: boolean;
@@ -20,7 +20,7 @@ export interface CreateProductRequest {
   title: string;
   description?: string;
   price_stars: number;
-  tg_file_id: string;
+  tg_message_id: string;
   cover?: File;
 }
 
@@ -63,7 +63,7 @@ export async function createProduct(data: CreateProductRequest): Promise<Product
   const formData = new FormData();
   formData.append('product[title]', data.title);
   formData.append('product[price_stars]', data.price_stars.toString());
-  formData.append('product[tg_file_id]', data.tg_file_id);
+  formData.append('product[tg_message_id]', data.tg_message_id);
 
   if (data.description) {
     formData.append('product[description]', data.description);

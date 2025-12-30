@@ -104,7 +104,7 @@
     "noFile": {
       "title": "File not found",
       "description": "To create a product, send a file or photo to the bot",
-      "openBot": "Open @dropkit_bot",
+      "openBot": "Open @dropkitbot",
       "close": "Close"
     },
     "delete": {

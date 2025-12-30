@@ -5,7 +5,7 @@ export interface Product {
   title: string;
   description?: string;
   price_stars: number;
-  tg_file_id?: string;
+  tg_message_id?: string;
   cover_url?: string;
   created_at?: string;
   is_owner?: boolean;

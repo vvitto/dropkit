@@ -51,7 +51,7 @@ export function useProductOverview(): UseProductOverviewResult {
   const deliverMutation = useMutation({
     mutationFn: () => deliverContent(id!),
     onSuccess: () => {
-      openTelegramLink('https://t.me/dropkit_bot');
+      openTelegramLink(`https://t.me/${import.meta.env.VITE_APP_HOST}`);
       setDelivered(true);
     },
   });

@@ -1,24 +1,24 @@
-import { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { useLaunchParams, shareMessage } from '@tma.js/sdk-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { createProduct, createProductShareMessage } from '@/api/products';
-import { routes } from '@/navigation/routes';
+import {useRef, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useNavigate} from 'react-router-dom';
+import {shareMessage, useLaunchParams} from '@tma.js/sdk-react';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {Loader2, Sparkles} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {createProduct, createProductShareMessage} from '@/api/products';
+import {routes} from '@/navigation/routes';
 import {
-  PageHeader,
-  FixedFooter,
-  CoverUpload,
-  TitleField,
-  DescriptionField,
-  PriceField,
-  GeneralError,
-  type FieldErrors,
+    CoverUpload,
+    DescriptionField,
+    type FieldErrors,
+    FixedFooter,
+    GeneralError,
+    PageHeader,
+    PriceField,
+    TitleField,
 } from '../components';
-import { SuccessScreen } from './SuccessScreen';
-import { NoFileScreen } from './NoFileScreen';
+import {SuccessScreen} from './SuccessScreen';
+import {NoFileScreen} from './NoFileScreen';
 
 export function ProductCreateView() {
   const { t } = useTranslation();
@@ -90,7 +90,7 @@ export function ProductCreateView() {
         title: title.trim(),
         description: description.trim() || undefined,
         price_stars: parseInt(priceStars, 10),
-        tg_file_id: fileId!,
+        tg_message_id: fileId!,
         cover: cover || undefined,
       }),
     onSuccess: () => {

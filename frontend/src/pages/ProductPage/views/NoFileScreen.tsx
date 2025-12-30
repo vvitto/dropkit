@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next';
-import { FileImage, X, MessageCircle } from 'lucide-react';
-import { miniApp } from '@tma.js/sdk-react';
-import { Button } from '@/components/ui/button';
+import {useTranslation} from 'react-i18next';
+import {FileImage, MessageCircle, X} from 'lucide-react';
+import {miniApp} from '@tma.js/sdk-react';
+import {Button} from '@/components/ui/button';
 
 export function NoFileScreen() {
   const { t } = useTranslation();
@@ -22,7 +22,7 @@ export function NoFileScreen() {
           className="w-full"
           size="lg"
           onClick={() => {
-            window.open('https://t.me/dropkit_bot', '_blank');
+            window.open(`https://t.me/${import.meta.env.VITE_APP_HOST}`, '_blank');
           }}
         >
           <MessageCircle className="size-5" />

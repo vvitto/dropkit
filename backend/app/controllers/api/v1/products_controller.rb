@@ -28,10 +28,10 @@ module Api
             id = client.copy_message(
               chat_id: TelegramChat::Const::PRODUCTS_CHAT_ID,
               from_chat_id: current_user.telegram_id,
-              message_id: params[:product][:tg_file_id]
+              message_id: params[:product][:tg_message_id]
             )
 
-            @product.update!(tg_file_id: id["result"]["message_id"])
+            @product.update!(tg_message_id: id["result"]["message_id"])
 
             render json: owner_product_json(@product), status: :created
           else
@@ -66,7 +66,7 @@ module Api
             reply_markup: {
               inline_keyboard: [
                 [
-                  { text: "⭐ Purchase product", url: "https://t.me/dropkit_bot?startapp=p_#{@product.uuid}" }
+                  { text: "⭐ Purchase product", url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=p_#{@product.uuid}" }
                 ]
               ]
             }
@@ -121,7 +121,7 @@ module Api
         end
 
         render json: {
-          tg_file_id: @product.tg_file_id
+          tg_message_id: @product.tg_message_id
         }
       end
 
@@ -136,7 +136,7 @@ module Api
           client.copy_message(
             chat_id: current_user.telegram_id,
             from_chat_id: "8552432490",
-            message_id: @product.tg_file_id
+            message_id: @product.tg_message_id
           )
 
           render json: { success: true }
@@ -161,7 +161,7 @@ module Api
       end
 
       def product_params
-        params.require(:product).permit(:title, :description, :price_stars, :tg_file_id, :cover)
+        params.require(:product).permit(:title, :description, :price_stars, :tg_message_id, :cover)
       end
 
       def update_params
@@ -174,7 +174,7 @@ module Api
           title: product.title,
           description: product.description,
           price_stars: product.price_stars,
-          tg_file_id: product.tg_file_id,
+          tg_message_id: product.tg_message_id,
           cover_url: product.cover.attached? ? product.cover.url : nil,
           created_at: product.created_at.iso8601,
           is_owner: true
