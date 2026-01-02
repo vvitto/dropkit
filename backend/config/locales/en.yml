@@ -32,7 +32,9 @@ en:
     instruction_sent: "Instruction sent"
 
   telegram:
+    greeting: "<b>Welcome to DropKit!</b> - start making money from your content today!"
+    start: "Start"
     create_product_prompt: "<b>Want to create a new product?</b>"
     create_product_button: "Create digital product"
     purchase_button: "⭐ Purchase product"
-    create_product_instruction: "<b>Want to create a new product?</b>\n📦 Just send it as one message in this chat.👇"
+    create_product_instruction: "<b>Want to create a new product📦 ?</b>\nJust send it as one message in this chat.👇"

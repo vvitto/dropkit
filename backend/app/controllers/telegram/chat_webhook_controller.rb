@@ -5,12 +5,13 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
       return
     end
 
-    text = I18n.t("telegram.create_product_prompt")
+    lang_code = payload.dig("from", "language_code")
+    text = I18n.t("telegram.create_product_prompt", locale: lang_code)
 
     reply_with :message, text: text, parse_mode: "HTML", reply_markup: {
       inline_keyboard: [
         [
-          { text: I18n.t("telegram.create_product_button"), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=r_#{message[:message_id]}" }
+          { text: I18n.t("telegram.create_product_button", locale: lang_code), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=r_#{message[:message_id]}" }
         ]
       ]
     }
@@ -59,41 +60,19 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
   end
 
   def start!(params = nil, *_)
-    p "================================"
-    # log_info("Start command received")
-    # log_info("Params: #{params.inspect}")
-    # log_info("Payload: #{payload}")
-    p "================================"
+    lang_code = payload.dig("from", "language_code")
+    text = I18n.t("telegram.greeting", locale: lang_code)
 
-    #     user_telegram_id = payload.dig("from", "id")
-    #     if user_telegram_id.is_a?(Integer)
-    #       User.where(telegram_id: user_telegram_id, bot_blocked: true).update_all(bot_blocked: false)
-    #     end
-    #
-    #     url = ReferralImage.random_image
-    #     caption = "
-    # <b>Mutant Gifts</b> - The first game with integrated AI and telegram gifts.
-    # Join the game to:
-    # 🧬 Mutate your unique characters with NFT.
-    # 🔥 Fight in epic arenas.
-    # 🎁 Win new gifts every season!"
-    #
-    #     respond_with :photo, photo: url, parse_mode: "HTML", caption:, reply_markup: {
-    #       inline_keyboard: [
-    #         [
-    #           { text: "🎮 Play game", url: "https://t.me/mutant_gifts_bot?startapp" },
-    #           { text: "📱Community", url: "https://t.me/mutant_gifts" }
-    #         ]
-    #       ]
-    #     }
-    #
-    #   rescue StandardError => e
-    #     if e.message.include? "bot was blocked by the user"
-    #       log_info("Bot was blocked by the user with telegram ID: #{user_telegram_id}")
-    #       User.where  (telegram_id: user_telegram_id).update_all(bot_blocked: true)
-    #     else
-    #       raise e
-    #     end
+    respond_with :message, parse_mode: "HTML", text:, reply_markup: {
+      inline_keyboard: [
+        [
+          { text: I18n.t("telegram.start", locale: lang_code), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp" },
+        ]
+      ]
+    }
+
+  rescue StandardError => e
+    p e
   end
 
   private

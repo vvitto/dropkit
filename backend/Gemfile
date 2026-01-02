@@ -70,3 +70,5 @@ gem "telegram-bot"
 gem "ed25519"
 gem "jwt"
 gem "aws-sdk-s3", require: false
+gem "sentry-ruby"
+gem "sentry-rails"

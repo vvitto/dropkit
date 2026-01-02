@@ -16,7 +16,7 @@ module TelegramChat
     private
 
     def message_text
-      I18n.t("telegram.create_product_instruction")
+      I18n.t("telegram.create_product_instruction", locale: @user.locale)
     end
   end
 end

@@ -7,6 +7,7 @@ import {Root} from '@/components/Root.tsx';
 import {EnvUnsupported} from '@/components/EnvUnsupported.tsx';
 import {init} from '@/init.ts';
 import {initI18n} from '@/i18n.ts';
+import * as Sentry from "@sentry/react";
 
 import './index.css';
 
@@ -22,7 +23,15 @@ try {
     || import.meta.env.DEV;
 
   // Initialize i18n with user's language
-  const languageCode = launchParams.tgWebAppData?.user?.languageCode;
+  const languageCode = launchParams.tgWebAppData?.user?.language_code;
+
+    Sentry.init({
+        dsn: "https://ce9a15c13e1ef65c2f5ee74e055ca39d@o231542.ingest.us.sentry.io/4510641115627520",
+        // Setting this option to true will send default PII data to Sentry.
+        // For example, automatic IP address collection on events
+        sendDefaultPii: true
+    });
+
   initI18n(typeof languageCode === 'string' ? languageCode : undefined);
 
   // Configure all application dependencies.

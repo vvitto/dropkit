@@ -77,4 +77,8 @@ class User < ApplicationRecord
   rescue Telegram::Bot::Error => e
     Rails.logger.error("Failed to send message to group: #{e.message}")
   end
+
+  def locale
+    language_code
+  end
 end
