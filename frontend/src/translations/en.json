@@ -91,7 +91,7 @@
     "validation": {
       "titleRequired": "Enter product title",
       "priceRequired": "Enter price",
-      "priceMinimum": "Minimum price is 1 star",
+      "priceMinimum": "Minimum price is 20 stars",
       "fileNotFound": "File not found. Try sending the file to the bot again",
       "createError": "Error creating product"
     },

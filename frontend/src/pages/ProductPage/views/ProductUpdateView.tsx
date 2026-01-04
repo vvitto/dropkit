@@ -66,7 +66,7 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
     setPriceStars(value);
     if (errors.priceStars) {
       const price = parseInt(value, 10);
-      if (price && price >= 1) {
+      if (price && price >= 20) {
         setErrors((prev) => ({ ...prev, priceStars: undefined }));
       }
     }
@@ -90,7 +90,7 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
     const price = parseInt(priceStars, 10);
     if (!priceStars) {
       newErrors.priceStars = t('productPage.validation.priceRequired');
-    } else if (!price || price < 1) {
+    } else if (!price || price < 20) {
       newErrors.priceStars = t('productPage.validation.priceMinimum');
     }
 
