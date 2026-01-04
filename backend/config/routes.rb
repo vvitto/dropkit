@@ -11,6 +11,7 @@ Rails.application.routes.draw do
           get :content
           post :deliver_content
         end
+        resources :reports, only: [ :create ]
       end
 
       resources :product_intents, only: [ :create ]

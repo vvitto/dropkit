@@ -24,6 +24,7 @@ class User < ApplicationRecord
   has_many :purchased_products, through: :purchases, source: :product
   has_many :balance_transactions, dependent: :destroy
   has_many :withdrawals, dependent: :destroy
+  has_many :reports, dependent: :destroy
 
   validates :telegram_id, presence: true, uniqueness: true
   validates :first_name, presence: true

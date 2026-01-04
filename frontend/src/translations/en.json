@@ -169,6 +169,16 @@
       "getProduct": "Get product",
       "paying": "Paying...",
       "buyFor": "Buy for"
+    },
+    "report": {
+      "title": "Report product",
+      "description": "Describe the issue with this product",
+      "placeholder": "What's wrong with this product?",
+      "descriptionRequired": "Please describe the issue",
+      "submit": "Submit report",
+      "submitting": "Submitting...",
+      "cancel": "Cancel",
+      "error": "Could not submit report"
     }
   }
 }

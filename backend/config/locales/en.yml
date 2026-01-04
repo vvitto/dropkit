@@ -16,6 +16,10 @@ en:
       invoice_failed: "Failed to create invoice: %{message}"
       send_file_failed: "Failed to send file: %{message}"
 
+  reports:
+    errors:
+      cannot_report_own: "Cannot report your own product"
+
   wallet:
     success: "success"
     invalid_proof: "Invalid proof"

@@ -28,7 +28,7 @@ export function ProductOverviewPage() {
 
   return (
     <div className="flex flex-col min-h-screen gradient-subtle">
-      <ProductOverviewHeader />
+      <ProductOverviewHeader product={product} />
 
       <div className="flex-1 p-4 pb-24">
         <ProductOverviewCard product={product} hasAccess={hasAccess} />

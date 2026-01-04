@@ -25,9 +25,9 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     user_id = payload.dig("from", "id")
     query = payload["query"]
 
-    scope = Product.joins(:user).where(user: { telegram_id: user_id })
+    scope = Product.active.joins(:user).where(user: { telegram_id: user_id })
     if query.present?
-      scope .where("title LIKE ?", "%#{query}%")
+      scope.where("title LIKE ?", "%#{query}%")
     end
     products = scope.limit(10).all
 
@@ -41,8 +41,10 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
         title: product.title,
         description: product.description || "",
         input_message_content: {
-          message_text: product.title,
+          message_text: "<b>#{product.title}</b>\n#{product.description}",
+          parse_mode: "HTML",
           link_preview_options: {
+            show_above_text: true,
             url: img_url
           }
         },
