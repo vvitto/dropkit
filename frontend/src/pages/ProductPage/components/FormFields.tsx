@@ -180,7 +180,7 @@ export function GeneralError({ error }: GeneralErrorProps) {
   if (!error) return null;
 
   return (
-    <Card className="p-4 bg-destructive/5 border-destructive/20">
+    <Card id="general-error" className="p-4 bg-destructive/5 border-destructive/20">
       <div className="flex gap-3">
         <AlertCircle className="size-5 text-destructive shrink-0 mt-0.5" />
         <p className="text-sm text-destructive">{error}</p>

@@ -96,6 +96,24 @@ export function ProductCreateView() {
     }
 
     setErrors(newErrors);
+
+    // Scroll to first error field
+    const errorFieldIds: Record<keyof FieldErrors, string> = {
+      title: 'title',
+      priceStars: 'price',
+      termsAccepted: 'termsAccepted',
+      general: 'general-error',
+    };
+
+    for (const key of Object.keys(newErrors) as (keyof FieldErrors)[]) {
+      const elementId = errorFieldIds[key];
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        break;
+      }
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 
