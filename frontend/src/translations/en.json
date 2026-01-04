@@ -118,7 +118,7 @@
   "formFields": {
     "title": {
       "label": "Title",
-      "placeholder": "Example: Earning guide",
+      "placeholder": "Example: Author's book",
       "hint": "Create an attractive title"
     },
     "description": {
@@ -141,6 +141,12 @@
       "label": "Button text",
       "placeholder": "Buy",
       "hint": "Text displayed on the buy button in chat"
+    },
+    "termsCheckbox": {
+      "text": "I agree to the",
+      "linkText": "Terms and Conditions",
+      "linkUrl": "https://telegra.ph/Terms-and-Conditions-for-Dropkit-Merchant-Agreement-01-04",
+      "error": "You must accept the Terms and Conditions"
     }
   },
   "productOverview": {

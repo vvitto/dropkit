@@ -4,10 +4,12 @@ import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {Label} from '@/components/ui/label';
 import {Card} from '@/components/ui/card';
+import {Checkbox} from '@/components/ui/checkbox';
 
 export interface FieldErrors {
   title?: string;
   priceStars?: string;
+  termsAccepted?: string;
   general?: string;
 }
 
@@ -184,5 +186,44 @@ export function GeneralError({ error }: GeneralErrorProps) {
         <p className="text-sm text-destructive">{error}</p>
       </div>
     </Card>
+  );
+}
+
+interface TermsCheckboxFieldProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  error?: string;
+}
+
+export function TermsCheckboxField({ checked, onChange, error }: TermsCheckboxFieldProps) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="space-y-2 mb-5">
+      <label className="flex items-center gap-3 cursor-pointer">
+        <Checkbox
+          id="termsAccepted"
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
+          error={!!error}
+          className="mt-0.5"
+        />
+        <span className="text-sm">
+          {t('formFields.termsCheckbox.text')}{' '}
+          <a
+            href={t('formFields.termsCheckbox.linkUrl')}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary underline underline-offset-2 hover:text-primary/80"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {t('formFields.termsCheckbox.linkText')}
+          </a>
+        </span>
+      </label>
+      {error && (
+        <p className="text-xs text-destructive">{error}</p>
+      )}
+    </div>
   );
 }

@@ -16,6 +16,7 @@ import {
     GeneralError,
     PageHeader,
     PriceField,
+    TermsCheckboxField,
     TitleField,
 } from '../components';
 import {SuccessScreen} from './SuccessScreen';
@@ -38,6 +39,7 @@ export function ProductCreateView() {
   const [priceStars, setPriceStars] = useState('');
   const [cover, setCover] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
@@ -64,6 +66,13 @@ export function ProductCreateView() {
     }
   };
 
+  const handleTermsChange = (checked: boolean) => {
+    setTermsAccepted(checked);
+    if (errors.termsAccepted && checked) {
+      setErrors((prev) => ({ ...prev, termsAccepted: undefined }));
+    }
+  };
+
   const validate = (): boolean => {
     const newErrors: FieldErrors = {};
 
@@ -82,6 +91,10 @@ export function ProductCreateView() {
       newErrors.general = t('productPage.validation.fileNotFound');
     }
 
+    if (!termsAccepted) {
+      newErrors.termsAccepted = t('formFields.termsCheckbox.error');
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -95,6 +108,7 @@ export function ProductCreateView() {
         tg_message_id: fileId!,
         cover: cover || undefined,
         buy_button_text: buyButtonText.trim() || undefined,
+        terms_accepted: termsAccepted,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -172,6 +186,12 @@ export function ProductCreateView() {
           value={priceStars}
           onChange={handlePriceChange}
           error={errors.priceStars}
+        />
+
+        <TermsCheckboxField
+          checked={termsAccepted}
+          onChange={handleTermsChange}
+          error={errors.termsAccepted}
         />
 
         <GeneralError error={errors.general} />

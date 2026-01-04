@@ -1,6 +1,6 @@
 import {useTranslation} from 'react-i18next';
 import {miniApp} from '@tma.js/sdk-react';
-import {Archive, Package, Plus, ShoppingBag, Sparkles} from 'lucide-react';
+import {Archive, Box, Plus, ShoppingBag} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {createProductIntent} from '@/api/product_intents';
 
@@ -20,7 +20,7 @@ export function EmptyState({ isArchive = false, isPurchases = false }: EmptyStat
   const getIcon = () => {
     if (isArchive) return <Archive className="size-10 text-muted-foreground" />;
     if (isPurchases) return <ShoppingBag className="size-10 text-muted-foreground" />;
-    return <Package className="size-10 text-primary" />;
+    return <Box className="size-10 text-muted-foreground" />;
   };
 
   const getTitle = () => {
@@ -41,11 +41,6 @@ export function EmptyState({ isArchive = false, isPurchases = false }: EmptyStat
         <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
           {getIcon()}
         </div>
-        {!isArchive && !isPurchases && (
-          <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-warning flex items-center justify-center shadow-lg">
-            <Sparkles className="size-4 text-white" />
-          </div>
-        )}
       </div>
 
       <h3 className="text-xl font-semibold mb-2">{getTitle()}</h3>

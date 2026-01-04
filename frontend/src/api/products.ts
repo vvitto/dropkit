@@ -24,6 +24,7 @@ export interface CreateProductRequest {
   tg_message_id: string;
   cover?: File;
   buy_button_text?: string;
+  terms_accepted: boolean;
 }
 
 export async function getProducts(): Promise<Product[]> {
@@ -83,6 +84,8 @@ export async function createProduct(data: CreateProductRequest): Promise<Product
   if (data.buy_button_text) {
     formData.append('product[buy_button_text]', data.buy_button_text);
   }
+
+  formData.append('product[terms_accepted]', data.terms_accepted.toString());
 
   return api.post<Product>('/products', formData);
 }

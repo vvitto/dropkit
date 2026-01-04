@@ -161,7 +161,7 @@ module Api
       end
 
       def product_params
-        params.require(:product).permit(:title, :description, :price_stars, :tg_message_id, :cover, :buy_button_text)
+        params.require(:product).permit(:title, :description, :price_stars, :tg_message_id, :cover, :buy_button_text, :terms_accepted)
       end
 
       def update_params

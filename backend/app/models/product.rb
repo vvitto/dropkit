@@ -31,6 +31,8 @@ class Product < ApplicationRecord
   has_many :purchases, dependent: :destroy
   has_one_attached :cover
 
+  attr_accessor :terms_accepted
+
   scope :active, -> { where(deleted_at: nil) }
   scope :deleted, -> { where.not(deleted_at: nil) }
 
@@ -38,6 +40,7 @@ class Product < ApplicationRecord
   validates :buy_button_text, presence: true, length: { maximum: 30 }
   validates :price_stars, presence: true, numericality: { greater_than: 0, only_integer: true }
   validates :tg_message_id, presence: true
+  validates :terms_accepted, acceptance: { accept: [ true, "true", "1" ] }, on: :create
 
   def purchased_by?(user)
     purchases.exists?(buyer: user)
