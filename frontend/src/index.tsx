@@ -7,6 +7,7 @@ import {Root} from '@/components/Root.tsx';
 import {EnvUnsupported} from '@/components/EnvUnsupported.tsx';
 import {init} from '@/init.ts';
 import {initI18n} from '@/i18n.ts';
+import telegramAnalytics from '@telegram-apps/analytics';
 import * as Sentry from "@sentry/react";
 
 import './index.css';
@@ -40,6 +41,16 @@ try {
     eruda: debug && ['ios', 'android'].includes(platform),
     mockForMacOS: platform === 'macos',
   })
+      .then(() => {
+          try {
+              telegramAnalytics.init({
+                  token: import.meta.env.VITE_TG_ANALYTICS_TOKEN,
+                  appName: import.meta.env.VITE_TG_ANALYTICS_NAME
+              });
+          } catch (error) {
+              console.error(error);
+          }
+      })
     .then(() => {
       root.render(
         // <StrictMode>
