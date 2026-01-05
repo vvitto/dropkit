@@ -48,7 +48,7 @@ try {
                   appName: import.meta.env.VITE_TG_ANALYTICS_NAME
               });
           } catch (error) {
-              console.error(error);
+              
           }
       })
     .then(() => {
