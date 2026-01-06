@@ -73,7 +73,7 @@ export function CoverUpload({ coverPreview, inputRef, onSelect, onError, error, 
             )}
           </>
         ) : (
-          <img src='/img-placeholder.webp' />
+          <img src='/img-placeholder2.webp' />
         )}
       </div>
       <input

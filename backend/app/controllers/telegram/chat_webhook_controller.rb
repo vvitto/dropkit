@@ -33,7 +33,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     products = scope.limit(10).all
 
     resp = products.map do |product|
-      img_url = product.cover.attached? ? product.cover.url : "https://#{Rails.configuration.app[:app_host]}/img-placeholder.webp"
+      img_url = product.cover.attached? ? product.cover.url : "https://#{Rails.configuration.app[:app_host]}/img-placeholder2.webp"
 
       {
         type: "article",
@@ -66,7 +66,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     lang_code = payload.dig("from", "language_code")
     text = I18n.t("telegram.greeting", locale: lang_code)
 
-    respond_with :message, parse_mode: "HTML", text:, reply_markup: {
+    respond_with :photo, photo: "https://#{Rails.configuration.app[:app_host]}/img-placeholder2.webp", parse_mode: "HTML", caption: text, reply_markup: {
       inline_keyboard: [
         [
           { text: I18n.t("telegram.start", locale: lang_code), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp" },
