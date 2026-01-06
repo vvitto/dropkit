@@ -10,6 +10,7 @@ export interface FieldErrors {
   title?: string;
   priceStars?: string;
   termsAccepted?: string;
+  cover?: string;
   general?: string;
 }
 

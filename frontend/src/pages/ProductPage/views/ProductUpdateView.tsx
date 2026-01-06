@@ -77,7 +77,14 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
     if (file) {
       setCover(file);
       setCoverPreview(URL.createObjectURL(file));
+      if (errors.cover) {
+        setErrors((prev) => ({ ...prev, cover: undefined }));
+      }
     }
+  };
+
+  const handleCoverError = (message: string) => {
+    setErrors((prev) => ({ ...prev, cover: message }));
   };
 
   const validate = (): boolean => {
@@ -162,6 +169,8 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
           coverPreview={coverPreview}
           inputRef={coverInputRef}
           onSelect={handleCoverSelect}
+          onError={handleCoverError}
+          error={errors.cover}
         />
 
         <TitleField

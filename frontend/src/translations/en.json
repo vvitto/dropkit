@@ -135,7 +135,10 @@
       "label": "Product cover",
       "clickToUpload": "Click to upload",
       "uploadCover": "Upload cover",
-      "changeCover": "Change cover"
+      "changeCover": "Change cover",
+      "hint": "PNG, JPEG or WebP, up to {{size}} MB",
+      "errorFormat": "Only PNG, JPEG and WebP formats are allowed",
+      "errorSize": "File size must not exceed {{size}} MB"
     },
     "buyButtonText": {
       "label": "Button text",

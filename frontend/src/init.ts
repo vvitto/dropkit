@@ -7,8 +7,9 @@ import {
     mockTelegramEnv,
     retrieveLaunchParams,
     setDebug,
+    swipeBehavior,
     themeParams,
-    viewport,
+    viewport
 } from '@tma.js/sdk-react';
 
 /**
@@ -70,5 +71,10 @@ export async function init(options: {
     viewport.mount().then(() => {
       viewport.bindCssVars();
     });
+  }
+
+  if (swipeBehavior.mount.isAvailable()) {
+      swipeBehavior.mount();
+      swipeBehavior.disableVertical();
   }
 }

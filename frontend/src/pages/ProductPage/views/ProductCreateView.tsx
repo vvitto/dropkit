@@ -63,7 +63,14 @@ export function ProductCreateView() {
     if (file) {
       setCover(file);
       setCoverPreview(URL.createObjectURL(file));
+      if (errors.cover) {
+        setErrors((prev) => ({ ...prev, cover: undefined }));
+      }
     }
+  };
+
+  const handleCoverError = (message: string) => {
+    setErrors((prev) => ({ ...prev, cover: message }));
   };
 
   const handleTermsChange = (checked: boolean) => {
@@ -99,6 +106,7 @@ export function ProductCreateView() {
 
     // Scroll to first error field
     const errorFieldIds: Record<keyof FieldErrors, string> = {
+      cover: 'cover',
       title: 'title',
       priceStars: 'price',
       termsAccepted: 'termsAccepted',
@@ -182,6 +190,8 @@ export function ProductCreateView() {
           coverPreview={coverPreview}
           inputRef={coverInputRef}
           onSelect={handleCoverSelect}
+          onError={handleCoverError}
+          error={errors.cover}
         />
 
         <TitleField
