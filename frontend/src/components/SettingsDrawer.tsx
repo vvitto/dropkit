@@ -1,8 +1,9 @@
 import {useTranslation} from 'react-i18next';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {Check, Globe} from 'lucide-react';
 import {CardGlass} from '@/components/ui/card';
 import {Drawer, DrawerContent, DrawerHeader, DrawerTitle,} from '@/components/ui/drawer';
-import {saveLanguage} from '@/i18n';
+import {updateSession} from '@/api/session';
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -16,10 +17,20 @@ interface SettingsDrawerProps {
 
 export function SettingsDrawer({ isOpen, onClose }: SettingsDrawerProps) {
   const { t, i18n } = useTranslation();
+  const queryClient = useQueryClient();
+
+  const updateLanguageMutation = useMutation({
+    mutationFn: (languageCode: string) => updateSession({ language_code: languageCode }),
+    onSuccess: (updatedUser) => {
+      queryClient.setQueryData(['session'], updatedUser);
+      i18n.changeLanguage(updatedUser.language_code);
+    },
+  });
 
   const handleLanguageChange = (langCode: string) => {
-    i18n.changeLanguage(langCode);
-    saveLanguage(langCode);
+    if (langCode !== i18n.language) {
+      updateLanguageMutation.mutate(langCode);
+    }
   };
 
   return (

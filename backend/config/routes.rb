@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   # API routes
   namespace :api do
     namespace :v1 do
-      resource :session, only: [ :show ]
+      resource :session, only: [ :show, :update ]
 
       resources :products, only: [ :index, :create, :show, :update, :destroy ] do
         member do

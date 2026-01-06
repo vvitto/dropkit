@@ -1,9 +1,10 @@
-import {createContext, type ReactNode} from 'react';
+import {createContext, type ReactNode, useContext, useEffect} from 'react';
 import {useQuery} from '@tanstack/react-query';
 import {Loader2} from 'lucide-react';
 import {getSession} from '@/api/session';
 import type {User} from '@/types/user';
 import {useTranslation} from "react-i18next";
+import i18n from '@/i18n';
 
 interface AuthContextType {
   user: User | null;
@@ -13,6 +14,14 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
 
 function AuthLoading() {
     const { t } = useTranslation();
@@ -34,6 +43,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryFn: getSession,
     retry: false,
   });
+
+  useEffect(() => {
+    if (user?.language_code && i18n.language !== user.language_code) {
+      i18n.changeLanguage(user.language_code);
+    }
+  }, [user?.language_code]);
 
   const errorMessage = error instanceof Error ? error.message : error ? 'Failed to load user' : null;
 

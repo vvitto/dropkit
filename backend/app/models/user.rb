@@ -31,13 +31,18 @@ class User < ApplicationRecord
 
   def self.find_or_create_from_telegram_data(data)
     user = find_or_initialize_by(telegram_id: data["id"])
-    send_message_to_group(user) unless user.persisted?
-    user.update!(
+    attrs = {
       first_name: data["first_name"],
       last_name: data["last_name"],
       username: data["username"],
       language_code: data["language_code"] || "en"
-    )
+    }
+    if user.persisted?
+      attrs.except!(:language_code)
+    else
+      send_message_to_group(user)
+    end
+    user.update!(**attrs)
     user
   end
 
