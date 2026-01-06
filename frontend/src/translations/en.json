@@ -1,5 +1,9 @@
 {
   "loading": "Loading...",
+  "settings": {
+    "title": "Settings",
+    "language": "Language"
+  },
   "header": {
     "myProducts": "My Products",
     "income": "Income"

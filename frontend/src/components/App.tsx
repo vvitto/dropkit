@@ -1,12 +1,13 @@
-import {type ComponentType, type JSX, useEffect} from 'react';
+import {type ComponentType, type JSX, useEffect, useState} from 'react';
 import {HashRouter, Navigate, Route, Routes, useNavigate} from 'react-router-dom';
-import {useLaunchParams} from '@tma.js/sdk-react';
+import {settingsButton, useLaunchParams} from '@tma.js/sdk-react';
 
 import {routes} from '@/navigation/routes.tsx';
 import {IndexPage} from "@/pages/IndexPage";
 import {ProductPage} from "@/pages/ProductPage";
 import {ProductOverviewPage} from "@/pages/ProductOverviewPage";
 import {IncomePage} from "@/pages/IncomePage";
+import {SettingsDrawer} from "@/components/SettingsDrawer";
 
 function StartParamRouter() {
   const navigate = useNavigate();
@@ -43,6 +44,18 @@ export const pageRoutesConfig: RoutePath[] = [
 ];
 
 export function App() {
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+    useEffect(() => {
+        if (settingsButton.isMounted()) {
+            const openSettings = () => setIsSettingsOpen(true);
+            settingsButton.onClick(openSettings);
+            return () => {
+                settingsButton.offClick(openSettings);
+            };
+        }
+    }, []);
+
   return (
       <HashRouter>
           <Routes>
@@ -50,6 +63,10 @@ export function App() {
               <Route path="*" element={<Navigate to="/" />} />
           </Routes>
           <StartParamRouter />
+          <SettingsDrawer
+            isOpen={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}
+          />
       </HashRouter>
   );
 }

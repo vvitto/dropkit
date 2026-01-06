@@ -7,6 +7,7 @@ import {
     mockTelegramEnv,
     retrieveLaunchParams,
     setDebug,
+    settingsButton,
     swipeBehavior,
     themeParams,
     viewport
@@ -76,5 +77,10 @@ export async function init(options: {
   if (swipeBehavior.mount.isAvailable()) {
       swipeBehavior.mount();
       swipeBehavior.disableVertical();
+  }
+
+  if (settingsButton.mount.isAvailable()) {
+      settingsButton.mount();
+      settingsButton.show()
   }
 }
