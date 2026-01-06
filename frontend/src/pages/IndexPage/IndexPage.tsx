@@ -1,9 +1,10 @@
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery} from '@tanstack/react-query';
-import {miniApp} from '@tma.js/sdk-react';
+import {miniApp, openTelegramLink, requestWriteAccess} from '@tma.js/sdk-react';
 import {Package, Plus, RefreshCw, ShoppingBag} from 'lucide-react';
 import {Button} from '@/components/ui/button';
+import {toast} from '@/components/ui/sonner';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs';
 import {HeaderTabs} from '@/components/layout/HeaderTabs';
 import {Badge} from '@/components/ui/badge';
@@ -30,7 +31,21 @@ export function IndexPage() {
 
   const createIntentMutation = useMutation({
     mutationFn: createProductIntent,
-    onSuccess: () => miniApp.close(),
+    onSuccess: () => {
+        openTelegramLink(`https://t.me/${import.meta.env.VITE_BOT_NAME}`);
+        miniApp.close()
+    },
+    onError: async (error) => {
+        if (error.message === 'Bot is blocked') {
+            const status = await requestWriteAccess();
+            if (status === 'allowed') {
+                openTelegramLink(`https://t.me/${import.meta.env.VITE_BOT_NAME}`);
+                miniApp.close()
+            } else {
+                toast.error(t('botBlocked'));
+            }
+        }
+    }
   });
 
   const handleProductCreate = () => {

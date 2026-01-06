@@ -1,5 +1,6 @@
 {
   "loading": "Loading...",
+  "botBlocked": "To continue, start the bot first",
   "settings": {
     "title": "Settings",
     "language": "Language"
@@ -18,7 +19,7 @@
       "defaultMessage": "Loading error",
       "retry": "Retry"
     },
-    "createProduct": "Create new product"
+    "createProduct": "Create new product",
   },
   "emptyState": {
     "archive": {

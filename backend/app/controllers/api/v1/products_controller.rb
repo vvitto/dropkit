@@ -142,7 +142,9 @@ module Api
           )
 
           render json: { success: true }
-        rescue TelegramBotService::ApiError => e
+        rescue Telegram::Bot::Forbidden => e
+          render json: { error: 'Bot is blocked' }, status: :forbidden
+        rescue StandardError => e
           render json: { error: I18n.t("products.errors.send_file_failed", message: e.message) }, status: :service_unavailable
         end
       end

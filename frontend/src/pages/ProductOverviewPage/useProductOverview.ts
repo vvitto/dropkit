@@ -1,8 +1,10 @@
 import {useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {invoice, openTelegramLink} from '@tma.js/sdk-react';
+import {invoice, miniApp, openTelegramLink, requestWriteAccess} from '@tma.js/sdk-react';
 import {createInvoice, deliverContent, getProduct, type Product} from '@/api/products';
+import {toast} from "@/components/ui/sonner.tsx";
+import {useTranslation} from "react-i18next";
 
 interface UseProductOverviewResult {
   product: Product | null;
@@ -17,6 +19,7 @@ interface UseProductOverviewResult {
 }
 
 export function useProductOverview(): UseProductOverviewResult {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const [delivered, setDelivered] = useState(false);
@@ -54,6 +57,17 @@ export function useProductOverview(): UseProductOverviewResult {
       openTelegramLink(`https://t.me/${import.meta.env.VITE_BOT_NAME}`);
       setDelivered(true);
     },
+      onError: async (error) => {
+          if (error.message === 'Bot is blocked') {
+              const status = await requestWriteAccess();
+              if (status === 'allowed') {
+                  openTelegramLink(`https://t.me/${import.meta.env.VITE_BOT_NAME}`);
+                  miniApp.close()
+              } else {
+                  toast.error(t('botBlocked'));
+              }
+          }
+      }
   });
 
   const handleBuy = async () => {

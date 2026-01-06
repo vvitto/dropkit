@@ -1,8 +1,10 @@
 import {useTranslation} from 'react-i18next';
-import {miniApp} from '@tma.js/sdk-react';
+import {miniApp, openTelegramLink, requestWriteAccess} from '@tma.js/sdk-react';
 import {Archive, Box, Plus, ShoppingBag} from 'lucide-react';
 import {Button} from '@/components/ui/button';
+import {toast} from '@/components/ui/sonner';
 import {createProductIntent} from '@/api/product_intents';
+import {useMutation} from "@tanstack/react-query";
 
 interface EmptyStateProps {
   isArchive?: boolean;
@@ -12,10 +14,24 @@ interface EmptyStateProps {
 export function EmptyState({ isArchive = false, isPurchases = false }: EmptyStateProps) {
   const { t } = useTranslation();
 
-  const handleProductCreate = async () => {
-    await createProductIntent();
-    miniApp.close();
-  };
+    const handleProductCreate = useMutation({
+        mutationFn: createProductIntent,
+        onSuccess: () => {
+            openTelegramLink(`https://t.me/${import.meta.env.VITE_BOT_NAME}`);
+            miniApp.close()
+        },
+        onError: async (error) => {
+            if (error.message === 'Bot is blocked') {
+                const status = await requestWriteAccess();
+                if (status === 'allowed') {
+                    openTelegramLink(`https://t.me/${import.meta.env.VITE_BOT_NAME}`);
+                    miniApp.close()
+                } else {
+                    toast.error(t('botBlocked'));
+                }
+            }
+        }
+    });
 
   const getIcon = () => {
     if (isArchive) return <Archive className="size-10 text-muted-foreground" />;
@@ -49,7 +65,7 @@ export function EmptyState({ isArchive = false, isPurchases = false }: EmptyStat
       </p>
 
       {!isArchive && !isPurchases && (
-        <Button size="lg" onClick={handleProductCreate} className="shadow-lg">
+        <Button size="lg" onClick={() => handleProductCreate.mutate()} className="shadow-lg">
           <Plus className="size-5" />
           {t('emptyState.createProduct')}
         </Button>

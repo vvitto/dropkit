@@ -8,6 +8,7 @@ import {ProductPage} from "@/pages/ProductPage";
 import {ProductOverviewPage} from "@/pages/ProductOverviewPage";
 import {IncomePage} from "@/pages/IncomePage";
 import {SettingsDrawer} from "@/components/SettingsDrawer";
+import {Toaster} from "@/components/ui/sonner";
 
 function StartParamRouter() {
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ export function App() {
             isOpen={isSettingsOpen}
             onClose={() => setIsSettingsOpen(false)}
           />
+          <Toaster />
       </HashRouter>
   );
 }
