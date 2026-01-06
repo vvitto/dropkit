@@ -18,3 +18,7 @@ production:
     class: UpdateTonRateJob
     queue: default
     schedule: every hour
+  unlock_stars:
+    class: UnlockStarsJob
+    queue: default
+    schedule: every day
