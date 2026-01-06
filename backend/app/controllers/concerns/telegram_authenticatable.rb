@@ -26,7 +26,8 @@ module TelegramAuthenticatable
       user_data = TelegramAuthService.get_user_from_init_data(init_data)
       @current_user = User.find_or_create_from_telegram_data(user_data)
     rescue JSON::ParserError, StandardError => e
-      render json: { error: I18n.t("errors.authentication_error", message: e.message) }, status: :unauthorized
+      Rails.logger.error("Authentication error: #{e.class.name} - #{e.message}")
+      render json: { error: I18n.t("errors.authentication_error") }, status: :unauthorized
     end
   end
 

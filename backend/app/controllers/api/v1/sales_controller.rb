@@ -37,7 +37,9 @@ module Api
 
         # Search by username (with or without @)
         username = query.delete_prefix("@")
-        scope.joins(:buyer).where("users.username ILIKE ? OR telegram_payment_charge_id LIKE ?", "%#{username}%", "#{query}")
+        sanitized_username = ActiveRecord::Base.sanitize_sql_like(username)
+        sanitized_query = ActiveRecord::Base.sanitize_sql_like(query)
+        scope.joins(:buyer).where("users.username ILIKE ? OR telegram_payment_charge_id LIKE ?", "%#{sanitized_username}%", "%#{sanitized_query}%")
       end
 
       def offset

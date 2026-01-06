@@ -27,7 +27,8 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
 
     scope = Product.active.joins(:user).where(user: { telegram_id: user_id })
     if query.present?
-      scope.where("title LIKE ?", "%#{query}%")
+      sanitized_query = ActiveRecord::Base.sanitize_sql_like(query)
+      scope = scope.where("title LIKE ?", "%#{sanitized_query}%")
     end
     products = scope.limit(10).all
 
@@ -41,7 +42,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
         title: product.title,
         description: product.description || "",
         input_message_content: {
-          message_text: "<b>#{product.title}</b>\n#{product.description}",
+          message_text: "<b>#{CGI.escapeHTML(product.title)}</b>\n#{CGI.escapeHTML(product.description.to_s)}",
           parse_mode: "HTML",
           link_preview_options: {
             show_above_text: true,
@@ -74,7 +75,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     }
 
   rescue StandardError => e
-    p e
+    Rails.logger.error("Start command error: #{e.class.name} - #{e.message}")
   end
 
   private

@@ -59,19 +59,21 @@ class Purchase < ApplicationRecord
     immediate = lockup.zero?
     seller_amount = net_amount
 
-    BalanceTransaction.create!(
-      user: seller,
-      transaction_type: "sale",
-      amount: seller_amount,
-      available_at: immediate ? nil : lockup.from_now,
-      processed: immediate,
-      source: self
-    )
+    seller.with_lock do
+      BalanceTransaction.create!(
+        user: seller,
+        transaction_type: "sale",
+        amount: seller_amount,
+        available_at: immediate ? nil : lockup.from_now,
+        processed: immediate,
+        source: self
+      )
 
-    if immediate
-      seller.increment!(:cached_available_stars, seller_amount)
-    else
-      seller.increment!(:cached_pending_stars, seller_amount)
+      if immediate
+        seller.increment!(:cached_available_stars, seller_amount)
+      else
+        seller.increment!(:cached_pending_stars, seller_amount)
+      end
     end
   end
 end

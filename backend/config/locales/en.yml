@@ -4,8 +4,17 @@ en:
     missing_parameter: "Missing parameter: %{param}"
     missing_authentication: "Missing authentication"
     invalid_authentication: "Invalid authentication"
-    authentication_error: "Authentication error: %{message}"
+    authentication_error: "Authentication error"
     access_denied: "Access denied"
+
+  activerecord:
+    errors:
+      models:
+        product:
+          attributes:
+            cover:
+              invalid_content_type: "must be PNG, JPEG or WebP"
+              file_too_large: "must be less than 2MB"
 
   products:
     errors:

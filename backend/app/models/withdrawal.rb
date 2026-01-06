@@ -22,9 +22,9 @@
 #
 class Withdrawal < ApplicationRecord
   STATUSES = {
-    pending: 10,
-    completed: 20,
-    rejected: 30
+    pending: "10",
+    completed: "20",
+    rejected: "30"
   }.freeze
 
   STAR_TO_USD = 0.013

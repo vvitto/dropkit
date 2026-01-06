@@ -16,12 +16,14 @@ module Withdrawals
         raise Error, I18n.t("withdrawals.no_balance") if @user.available_stars <= 0
         raise Error, I18n.t("withdrawals.pending_exists") if pending_withdrawal_exists?
 
+        withdrawal_amount = @user.available_stars
+
         @withdraw = @user.withdrawals.create!(
-          amount_stars: @user.available_stars,
+          amount_stars: withdrawal_amount,
           wallet_address: @user.wallet_address
         )
 
-        @user.decrement!(:cached_available_stars, @user.available_stars)
+        @user.decrement!(:cached_available_stars, withdrawal_amount)
         send_message_to_group!
       end
     end

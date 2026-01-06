@@ -37,10 +37,13 @@ class Product < ApplicationRecord
   scope :deleted, -> { where.not(deleted_at: nil) }
 
   validates :title, presence: true, length: { maximum: 100 }
+  validates :description, length: { maximum: 1000 }
   validates :buy_button_text, presence: true, length: { maximum: 30 }
   validates :price_stars, presence: true, numericality: { greater_than_or_equal_to: 20, only_integer: true }
   validates :tg_message_id, presence: true
   validates :terms_accepted, acceptance: { accept: [ true, "true", "1" ] }, on: :create
+  validates :cover, content_type: { in: %w[image/png image/jpeg image/webp], message: :invalid_content_type },
+                    size: { less_than: 2.megabytes, message: :file_too_large }
 
   def purchased_by?(user)
     purchases.exists?(buyer: user)
