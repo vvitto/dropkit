@@ -95,7 +95,7 @@ function ProductSeller({ seller, t }: ProductSellerProps) {
       <div>
         <p className="text-xs text-muted-foreground">{t('productOverview.seller')}</p>
         <p className="font-medium">
-          {seller.first_name}
+          {seller.first_name}<br />
           {seller.username && (
             <span className="text-primary ml-1">@{seller.username}</span>
           )}
