@@ -19,7 +19,7 @@
       "defaultMessage": "Loading error",
       "retry": "Retry"
     },
-    "createProduct": "Create new product",
+    "createProduct": "Create new product"
   },
   "emptyState": {
     "archive": {
