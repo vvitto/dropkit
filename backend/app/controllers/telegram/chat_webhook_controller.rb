@@ -30,7 +30,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
       sanitized_query = ActiveRecord::Base.sanitize_sql_like(query)
       scope = scope.where("title LIKE ?", "%#{sanitized_query}%")
     end
-    products = scope.limit(10).all
+    products = scope.limit(50).all
 
     resp = products.map do |product|
       img_url = product.cover.attached? ? product.cover.url : "https://#{Rails.configuration.app[:app_host]}/img-placeholder2.webp"
@@ -59,7 +59,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
       }
     end
 
-    answer_inline_query(resp)
+    answer_inline_query(resp, is_personal: true,)
   end
 
   def start!(params = nil, *_)
