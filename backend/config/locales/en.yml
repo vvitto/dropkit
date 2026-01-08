@@ -45,7 +45,7 @@ en:
     instruction_sent: "Instruction sent"
 
   telegram:
-    greeting: "<b>Welcome to DropKit!</b> - start making money from your content today!"
+    greeting: "<b>Welcome to DropKit!</b>\nStart making money from your content today 🚀\n\n<b>Follow instructions or click “Start“:</b>\n1. Send the content you want to sell (text, file, video, or photo) as one message.\n2. Click “Create new product” in the reply message.\n3. Fill in the product details in the app. \n4. Share the link with your audience."
     start: "Start"
     create_product_prompt: "<b>Want to create a new product?</b>"
     create_product_button: "Create digital product"
