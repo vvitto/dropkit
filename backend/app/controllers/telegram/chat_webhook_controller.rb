@@ -6,12 +6,13 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     end
 
     lang_code = payload.dig("from", "language_code")
-    text = I18n.t("telegram.create_product_prompt", locale: lang_code)
+    locale = lang_code.presence_in(%w[en ru]) || "en"
+    text = I18n.t("telegram.create_product_prompt", locale: locale)
 
     reply_with :message, text: text, parse_mode: "HTML", reply_markup: {
       inline_keyboard: [
         [
-          { text: I18n.t("telegram.create_product_button", locale: lang_code), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=r_#{message[:message_id]}" }
+          { text: I18n.t("telegram.create_product_button", locale: locale), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp=r_#{message[:message_id]}" }
         ]
       ]
     }
