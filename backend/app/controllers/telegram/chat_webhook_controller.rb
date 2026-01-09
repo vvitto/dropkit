@@ -65,12 +65,13 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
 
   def start!(params = nil, *_)
     lang_code = payload.dig("from", "language_code")
-    text = I18n.t("telegram.greeting", locale: lang_code)
+    locale = lang_code.presence_in(%w[en ru]) || "en"
+    text = I18n.t("telegram.greeting", locale: locale)
 
     respond_with :photo, photo: "https://#{Rails.configuration.app[:app_host]}/img-placeholder2.webp", parse_mode: "HTML", caption: text, reply_markup: {
       inline_keyboard: [
         [
-          { text: I18n.t("telegram.start", locale: lang_code), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp" },
+          { text: I18n.t("telegram.start", locale: locale), url: "https://t.me/#{Rails.configuration.app[:bot_name]}?startapp" },
         ]
       ]
     }
