@@ -97,6 +97,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
       return
     end
 
+    amount_stars = payment["total_amount"]
     fee_rate = product.user.commission_rate
     commission = (amount_stars * fee_rate).floor
     net_amount = amount_stars - commission
