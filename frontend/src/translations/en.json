@@ -134,7 +134,7 @@
     "price": {
       "label": "Price",
       "starRate": "1 star ≈ $0.013",
-      "commission": "Service fee — 5% per sale"
+      "commission": "Service fee — {{rate}}% per sale"
     },
     "cover": {
       "label": "Product cover",

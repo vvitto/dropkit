@@ -124,9 +124,10 @@ interface PriceFieldProps {
   error?: string;
   disabled?: boolean;
   showHints?: boolean;
+  commissionRate?: number;
 }
 
-export function PriceField({ value, onChange, error, disabled = false, showHints = true }: PriceFieldProps) {
+export function PriceField({ value, onChange, error, disabled = false, showHints = true, commissionRate = 0.05 }: PriceFieldProps) {
   const { t } = useTranslation();
 
   return (
@@ -165,7 +166,7 @@ export function PriceField({ value, onChange, error, disabled = false, showHints
               <Star className="size-3.5 text-warning fill-warning" />
               {t('formFields.price.starRate')}
             </p>
-            <p>{t('formFields.price.commission')}</p>
+            <p>{t('formFields.price.commission', { rate: Math.round(commissionRate * 100) })}</p>
           </div>
         </Card>
       ) : null}

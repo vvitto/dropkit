@@ -5,6 +5,7 @@
 #  id                     :bigint           not null, primary key
 #  cached_available_stars :integer          default(0), not null
 #  cached_pending_stars   :integer          default(0), not null
+#  commission_rate        :decimal(5, 4)    default(0.05), not null
 #  first_name             :string           not null
 #  language_code          :string           default("en")
 #  last_name              :string
@@ -28,6 +29,8 @@ class User < ApplicationRecord
 
   validates :telegram_id, presence: true, uniqueness: true
   validates :first_name, presence: true
+  validates :commission_rate, presence: true,
+            numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1 }
 
   def self.find_or_create_from_telegram_data(data)
     user = find_or_initialize_by(telegram_id: data["id"])

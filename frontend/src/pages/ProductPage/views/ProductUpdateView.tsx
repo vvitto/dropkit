@@ -3,6 +3,7 @@ import {useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {Loader2, Save, X} from 'lucide-react';
+import {useAuth} from '@/context/AuthContext';
 import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
 import {getProduct, updateProduct} from '@/api/products';
@@ -27,6 +28,7 @@ interface ProductUpdateViewProps {
 
 export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProps) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const coverInputRef = useRef<HTMLInputElement>(null);
@@ -193,6 +195,7 @@ export function ProductUpdateView({ onCancel, onSuccess }: ProductUpdateViewProp
           value={priceStars}
           onChange={handlePriceChange}
           error={errors.priceStars}
+          commissionRate={user?.commission_rate}
         />
 
         <GeneralError error={errors.general} />

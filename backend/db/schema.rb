@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_04_000001) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_09_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -122,6 +122,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_04_000001) do
     t.integer "cached_available_stars", default: 0, null: false
     t.integer "cached_pending_stars", default: 0, null: false
     t.string "wallet_address"
+    t.decimal "commission_rate", precision: 5, scale: 4, default: "0.05", null: false
     t.index ["telegram_id"], name: "index_users_on_telegram_id", unique: true
   end
 

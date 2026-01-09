@@ -42,14 +42,7 @@ class Purchase < ApplicationRecord
   validates :telegram_payment_charge_id, uniqueness: true, allow_nil: true
   validates :payment_method, presence: true
 
-  COMMISSION_RATE = 0.05
-
   after_create :create_seller_transaction
-
-  def net_amount
-    commission = (amount_stars * COMMISSION_RATE).floor
-    amount_stars - commission
-  end
 
   private
 
@@ -57,22 +50,21 @@ class Purchase < ApplicationRecord
     seller = product.user
     lockup = LOCKUP_PERIODS.fetch(payment_method, 21.days)
     immediate = lockup.zero?
-    seller_amount = net_amount
 
     seller.with_lock do
       BalanceTransaction.create!(
         user: seller,
         transaction_type: "sale",
-        amount: seller_amount,
+        amount: amount_stars,
         available_at: immediate ? nil : lockup.from_now,
         processed: immediate,
         source: self
       )
 
       if immediate
-        seller.increment!(:cached_available_stars, seller_amount)
+        seller.increment!(:cached_available_stars, amount_stars)
       else
-        seller.increment!(:cached_pending_stars, seller_amount)
+        seller.increment!(:cached_pending_stars, amount_stars)
       end
     end
   end

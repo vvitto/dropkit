@@ -4,6 +4,7 @@ import {useNavigate} from 'react-router-dom';
 import {shareMessage, useLaunchParams} from '@tma.js/sdk-react';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {Loader2, Sparkles} from 'lucide-react';
+import {useAuth} from '@/context/AuthContext';
 import {Button} from '@/components/ui/button';
 import {createProduct, createProductShareMessage} from '@/api/products';
 import {routes} from '@/navigation/routes';
@@ -24,6 +25,7 @@ import {NoFileScreen} from './NoFileScreen';
 
 export function ProductCreateView() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const launchParams = useLaunchParams();
@@ -214,6 +216,7 @@ export function ProductCreateView() {
           value={priceStars}
           onChange={handlePriceChange}
           error={errors.priceStars}
+          commissionRate={user?.commission_rate}
         />
 
         <TermsCheckboxField
