@@ -52,7 +52,7 @@ export function ProductCreateView() {
     setPriceStars(value);
     if (errors.priceStars) {
       const price = parseInt(value, 10);
-      if (price && price >= 20) {
+      if (price && price >= 1) {
         setErrors((prev) => ({ ...prev, priceStars: undefined }));
       }
     }
@@ -90,7 +90,7 @@ export function ProductCreateView() {
     const price = parseInt(priceStars, 10);
     if (!priceStars) {
       newErrors.priceStars = t('productPage.validation.priceRequired');
-    } else if (!price || price < 20) {
+    } else if (!price || price < 1) {
       newErrors.priceStars = t('productPage.validation.priceMinimum');
     }
 
