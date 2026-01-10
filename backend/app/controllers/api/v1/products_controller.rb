@@ -54,7 +54,7 @@ module Api
       end
 
       def create_share_message
-        img_url = @product.cover.attached? ? @product.cover.url : "https://#{Rails.configuration.app[:app_host]}/img-placeholder2.webp"
+        img_url = @product.cover.attached? ? @product.cover.url : "https://#{Rails.configuration.app[:app_host]}/img-placeholder3.webp"
         caption = "<b>#{CGI.escapeHTML(@product.title)}</b>\n#{CGI.escapeHTML(@product.description.to_s)}"
         response = Telegram.bots[:chat].save_prepared_inline_message(
           user_id: current_user.telegram_id,

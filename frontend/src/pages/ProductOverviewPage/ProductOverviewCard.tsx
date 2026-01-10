@@ -14,7 +14,7 @@ export function ProductOverviewCard({ product, hasAccess }: ProductOverviewCardP
 
   return (
     <CardGlass className="mb-4 overflow-hidden">
-      <ProductImage coverUrl={product.cover_url || '/img-placeholder2.webp'} title={product.title} />
+      <ProductImage coverUrl={product.cover_url || '/img-placeholder3.webp'} title={product.title} />
       <div className="p-4 space-y-4">
         <div>
           <h2 className="text-xl font-bold mb-2">{product.title}</h2>
