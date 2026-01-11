@@ -5,6 +5,8 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
       return
     end
 
+    log_chat_message(message)
+
     lang_code = payload.dig("from", "language_code")
     locale = lang_code.presence_in(%w[en ru]) || "en"
     text = I18n.t("telegram.create_product_prompt", locale: locale)
@@ -125,5 +127,29 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     )
   rescue StandardError => e
     Rails.logger.error("Failed to send withdrawal notification: #{e.message}")
+  end
+
+  def log_chat_message(message)
+    client = Telegram.bots[:group]
+
+    username = message['from']['username']
+    id = message['from']['id']
+
+    if message['text'].present?
+      text = message['text']
+    elsif message['photo'].present?
+      text = 'photo sent'
+    elsif message['document'].present?
+      text = 'document sent'
+    end
+
+    text = "Username: #{username}\nID: #{id}\nMessage: #{text}"
+
+    client.send_message(
+      chat_id: TelegramChat::Const::GROUP_CHAT_ID,
+      message_thread_id: TelegramChat::Const::CHAT_LOGS_THREAD_ID,
+      text: text,
+      parse_mode: "HTML"
+    )
   end
 end

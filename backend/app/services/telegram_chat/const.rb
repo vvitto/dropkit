@@ -6,5 +6,6 @@ module TelegramChat
     WITHDRAWS_THREAD_ID = 3
     PURCHASES_THREAD_ID = 52
     REPORTS_THREAD_ID = 76
+    CHAT_LOGS_THREAD_ID = 251
   end
 end

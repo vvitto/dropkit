@@ -43,7 +43,7 @@ class User < ApplicationRecord
     if user.persisted?
       attrs.except!(:language_code)
     else
-      send_message_to_group(user)
+      send_message_to_group(user, attrs)
     end
     user.update!(**attrs)
     user
@@ -77,11 +77,11 @@ class User < ApplicationRecord
     )
   end
 
-  def self.send_message_to_group(user)
+  def self.send_message_to_group(user, attrs)
     Telegram.bots[:group].send_message(
       chat_id: TelegramChat::Const::GROUP_CHAT_ID,
       message_thread_id: TelegramChat::Const::USERS_THREAD_ID,
-      text: "New user | Username: #{user.display_name} ID: #{user.telegram_id}"
+      text: "New user | Username: #{attrs[:username]} ID: #{user.telegram_id}, Lang: #{attrs[:language_code]}"
     )
   rescue Telegram::Bot::Error => e
     Rails.logger.error("Failed to send message to group: #{e.message}")
