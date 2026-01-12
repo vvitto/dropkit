@@ -137,7 +137,7 @@
       "commission": "Service fee — {{rate}}% per sale"
     },
     "cover": {
-      "label": "Product cover",
+      "label": "Product cover (visible to everyone)",
       "clickToUpload": "Click to upload",
       "uploadCover": "Upload cover",
       "changeCover": "Change cover",
@@ -168,7 +168,9 @@
     "loading": "Loading product...",
     "error": {
       "title": "Product not found",
-      "description": "It may have been deleted or the link is incorrect"
+      "description": "It may have been deleted or the link is incorrect",
+      "paymentFailed": "Payment failed. Please try again.",
+      "invoiceFailed": "Could not create the payment"
     },
     "goHome": "Go to home",
     "button": {

@@ -88,6 +88,6 @@ class User < ApplicationRecord
   end
 
   def locale
-    language_code.presence_in(%w[en ru]) || "en"
+    language_code.presence_in(%w[en]) || "en"
   end
 end

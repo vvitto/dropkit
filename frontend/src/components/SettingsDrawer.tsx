@@ -7,7 +7,6 @@ import {updateSession} from '@/api/session';
 
 const LANGUAGES = [
   { code: 'en', label: 'English' },
-  { code: 'ru', label: 'English' },
 ] as const;
 
 interface SettingsDrawerProps {

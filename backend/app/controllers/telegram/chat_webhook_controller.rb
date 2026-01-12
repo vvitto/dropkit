@@ -8,7 +8,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
     log_chat_message(message)
 
     lang_code = payload.dig("from", "language_code")
-    locale = lang_code.presence_in(%w[en ru]) || "en"
+    locale = lang_code.presence_in(%w[en]) || "en"
     text = I18n.t("telegram.create_product_prompt", locale: locale)
 
     reply_with :message, text: text, parse_mode: "HTML", reply_markup: {
@@ -67,7 +67,7 @@ class Telegram::ChatWebhookController < Telegram::Bot::UpdatesController
 
   def start!(params = nil, *_)
     lang_code = payload.dig("from", "language_code")
-    locale = lang_code.presence_in(%w[en ru]) || "en"
+    locale = lang_code.presence_in(%w[en]) || "en"
     text = I18n.t("telegram.greeting", locale: locale)
 
     respond_with :photo, photo: "https://#{Rails.configuration.app[:app_host]}/img-placeholder3.webp", parse_mode: "HTML", caption: text, reply_markup: {

@@ -47,7 +47,7 @@ en:
   telegram:
     greeting: "<b>Welcome!</b>\nDropKit is a service for monetizing digital products and content on Telegram. 🚀\n\n<b>Follow instructions or click “Start“:</b>\n1. Send the content you want to sell (text, file, video, or photo) as one message.\n2. Click “Create new product” in the reply message.\n3. Fill in the product details in the app. \n4. Share the link with your audience."
     start: "Start"
-    create_product_prompt: "<b>Want to create a new product?</b>"
+    create_product_prompt: "<b>Want to create a new product?</b>This message will be available to the buyer after payment."
     create_product_button: "Create digital product"
     purchase_button: "⭐ Purchase product"
-    create_product_instruction: "<b>Want to create a new product📦 ?</b>\nJust send it as one message in this chat.👇"
+    create_product_instruction: "<b>Want to create a new product📦 ?</b>\nJust send it in one message to this chat and the buyer will get access to it after payment👇"

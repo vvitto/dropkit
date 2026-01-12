@@ -43,11 +43,11 @@ export function useProductOverview(): UseProductOverviewResult {
           old ? { ...old, is_purchased: true } : old
         );
       } else if (status === 'failed') {
-        setPurchaseError('Payment failed. Please try again.');
+        setPurchaseError(t('productOverview.error.paymentFailed'));
       }
     },
     onError: (err) => {
-      setPurchaseError(err instanceof Error ? err.message : 'Could not create the payment');
+      setPurchaseError(err instanceof Error ? err.message : t('productOverview.error.invoiceFailed'));
     },
   });
 
@@ -85,7 +85,7 @@ export function useProductOverview(): UseProductOverviewResult {
   const hasAccess = isPurchased;
 
   const error = queryError
-    ? (queryError instanceof Error ? queryError.message : 'Product not found')
+    ? (queryError instanceof Error ? queryError.message : t('productOverview.error.title'))
     : purchaseError
     ?? (deliverMutation.error instanceof Error ? deliverMutation.error.message : null);
 
